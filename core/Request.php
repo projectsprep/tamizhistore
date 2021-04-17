@@ -10,6 +10,7 @@ class Request{
 
     public function getPath(){
         $path = $_SERVER['REQUEST_URI'] ?? '/';
+        $path = strtolower($path);
         $position = strpos($path, '?') ?? false;
 
         if($position === false){
