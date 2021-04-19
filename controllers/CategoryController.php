@@ -3,21 +3,34 @@
 namespace app\controllers;
 
 use app\core\Controller;
-use app\models\TamizhiStoreApp;
+use app\models\CategoryModel;
+if(!(isset($_COOKIE['user'])))
+header("Location: /login");
 
 class CategoryController extends Controller{
     private $db;
     public function __construct()
     {
-        $this->db = new TamizhiStoreApp();
+        $this->db = new CategoryModel();
     }
+
+    public function add(){
+        return $this->render("categories/addCategory");
+    }
+
+    public function upload(){
+        if(isset($_POST['categoryName']) && isset($_POST['categoryImage'])){
+            $this->db->upload('category', $_POST['categoryName'], $_POST['categoryImage']);
+        }
+    }
+
     public function home(){
         return $this->render('home');
     }
 
     public function categoryList(){
         $json = $this->db->read("category");
-        return $this->render("categoryList", $json);
+        return $this->render("categories/categoryList", $json);
     }
 
     public function delete(){
@@ -31,7 +44,7 @@ class CategoryController extends Controller{
     public function edit(){
         if(isset($_GET['id'])){
             $json = $this->db->edit("category", $_GET['id']);
-            return $this->render("editCategory", $json);
+            return $this->render("categories/editCategory", $json);
         }else{
             echo "Invalid ID";
         }

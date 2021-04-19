@@ -4,33 +4,25 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    
-<!-- Mirrored from skote-v-light.codeigniter.themesbrand.com/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 16 Apr 2021 09:45:35 GMT -->
-<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 <head>    
     <meta charset="utf-8" />
     <title><?= $uriTitle?> - Admin & <?= $uriTitle?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
-    <!-- App favicon -->
     <link rel="shortcut icon" href="/assets/images/favicon.ico"/>
 
-            <!-- Bootstrap Css -->
     <link href="/assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
-    <!-- Icons Css -->
     <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
-    <!-- App Css-->
     <link href="/assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
 </head>
 
 <body data-sidebar="dark">
-        <!-- Begin page -->
     <div id="layout-wrapper">
         <header id="page-topbar">
         <div class="navbar-header">
             <div class="d-flex">
-                <!-- LOGO -->
                 <div class="navbar-brand-box">
                     <a href="/" class="logo logo-dark">
                         <span class="logo-sm">
@@ -53,7 +45,6 @@
                     <i class="fa fa-fw fa-bars"></i>
                 </button>
 
-                <!-- App Search-->
                 <form class="app-search d-none d-lg-block">
                     <div class="position-relative">
                         <input type="text" class="form-control" placeholder="Search...">
@@ -61,133 +52,6 @@
                     </div>
                 </form>
 
-                <div class="dropdown dropdown-mega d-none d-lg-block ms-2">
-                    <button type="button" class="btn header-item waves-effect" data-bs-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
-                        <span key="t-megamenu">Mega Menu</span>
-                        <i class="mdi mdi-chevron-down"></i> 
-                    </button>
-                    <div class="dropdown-menu dropdown-megamenu">
-                        <div class="row">
-                            <div class="col-sm-8">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <h5 class="font-size-14 mt-0" key="t-ui-components">UI Components</h5>
-                                        <ul class="list-unstyled megamenu-list">
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-lightbox">Lightbox</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-range-slider">Range Slider</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-sweet-alert">Sweet-Alert</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-rating">Rating</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-forms">Forms</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-tables">Tables</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-charts">Charts</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <h5 class="font-size-14 mt-0" key="t-applications">Applications</h5>
-                                        <ul class="list-unstyled megamenu-list">
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-ecommerce">Ecommerce</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-calendar">Calendar</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-email">Email</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-projects">Projects</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-tasks">Tasks</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-contacts">Contacts</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <h5 class="font-size-14 mt-0" key="t-extra-pages">Extra Pages</h5>
-                                        <ul class="list-unstyled megamenu-list">
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-light-sidebar">Light Sidebar</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-compact-sidebar">Compact Sidebar</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-horizontal">Horizontal Layout</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-maintenance">Maintenance</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-coming-soon">Coming Soon</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-timeline">Timeline</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-faqs">FAQs</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <h5 class="font-size-14 mt-0" key="t-ui-components">UI Components</h5>
-                                        <ul class="list-unstyled megamenu-list">
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-lightbox">Lightbox</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-range-slider">Range Slider</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-sweet-alert">Sweet-Alert</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-rating">Rating</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-forms">Forms</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-tables">Tables</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:void(0);" key="t-charts">Charts</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="col-sm-5">
-                                        <div>
-                                            <img src="/assets/images/megamenu-img.png" alt="" class="img-fluid mx-auto d-block">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         <div class="d-flex">
 
@@ -218,26 +82,21 @@
                     <img src="/assets/images/flags/us.jpg" alt="Header Language" height="16">                </button>
                 <div class="dropdown-menu dropdown-menu-end">
 
-                    <!-- item-->
                                             <a href="http://localhost:8080/lang/en" class="dropdown-item notify-item language" data-lang="en">
                             <img src="/assets/images/flags/us.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">English</span>
                         </a>
-                                        <!-- item-->
                                             <a href="http://localhost:8080/lang/es" class="dropdown-item notify-item language" data-lang="sp">
                             <img src="/assets/images/flags/spain.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Spanish</span>
                         </a>
                     
-                    <!-- item-->
                                             <a href="http://localhost:8080/lang/de" class="dropdown-item notify-item language" data-lang="gr">
                             <img src="/assets/images/flags/germany.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">German</span>
                         </a>
                     
-                    <!-- item-->
                                             <a href="http://localhost:8080/lang/it" class="dropdown-item notify-item language" data-lang="it">
                             <img src="/assets/images/flags/italy.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Italian</span>
                         </a>
                     
-                    <!-- item-->
                                             <a href="http://localhost:8080/lang/ru" class="dropdown-item notify-item language" data-lang="ru">
                             <img src="/assets/images/flags/russia.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Russian</span>
                         </a>
@@ -398,7 +257,6 @@
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
-                    <!-- item-->
                     <a class="dropdown-item" href="#"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">Profile</span></a>
                     <a class="dropdown-item" href="#"><i class="bx bx-wallet font-size-16 align-middle me-1"></i> <span key="t-my-wallet">My Wallet</span></a>
                     <a class="dropdown-item d-block" href="#"><span class="badge bg-success float-end">11</span><i class="bx bx-wrench font-size-16 align-middle me-1"></i> <span key="t-settings">Settings</span></a>
@@ -417,21 +275,17 @@
         </div>
     </div>
 </header>
-<!-- ========== Left Sidebar Start ========== -->
 <div class="vertical-menu">
 
     <div data-simplebar class="h-100">
 
-        <!--- Sidemenu -->
         <div id="sidebar-menu">
-            <!-- Left Menu Start -->
             <ul class="metismenu list-unstyled" id="side-menu">
                 <li class="menu-title" key="t-menu">Menu</li>
 
                 <li>
                     <a href="javascript: void(0);" class="waves-effect">
                         <i class="bx bx-home-circle"></i>
-                        <!-- <span class="badge rounded-pill bg-info float-end">04</span> -->
                         <span key="t-dashboards">Dashboards</span>
                     </a>
                 </li>
@@ -442,7 +296,7 @@
                         <span key="t-ecommerce"><span>Category</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="ecommerce-products.html" key="t-products">Add Category</a></li>
+                        <li><a href="/categorylist/add" key="t-products">Add Category</a></li>
                         <li><a href="/categorylist" key="t-product-detail">Category List</a></li>
                     </ul>
                 </li>
@@ -453,9 +307,9 @@
                         <span key="t-ecommerce"><span>Product</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="ecommerce-products.html" key="t-products">Add Product</a></li>
+                        <li><a href="/productlist/add" key="t-products">Add Product</a></li>
                         <li><a href="ecommerce-product-detail.html" key="t-product-detail">Import Product</a></li>
-                        <li><a href="ecommerce-orders.html" key="t-orders">Product List</a></li>
+                        <li><a href="/productlist" key="t-orders">Product List</a></li>
                     </ul>
                 </li>
 
@@ -830,10 +684,8 @@
 
             </ul>
         </div>
-        <!-- Sidebar -->
     </div>
 </div>
-<!-- Left Sidebar End -->
 {{content}}
 
 <script src="/assets/libs/jquery/jquery.min.js"></script>
@@ -841,11 +693,8 @@
 <script src="/assets/libs/metismenu/metisMenu.min.js"></script>
 <script src="/assets/libs/simplebar/simplebar.min.js"></script>
 <script src="/assets/libs/node-waves/waves.min.js"></script>
-        <!-- apexcharts -->
         <script src="/assets/libs/apexcharts/apexcharts.min.js"></script>
 
-        <!-- dashboard init -->
         <script src="/assets/js/pages/dashboard.init.js"></script>
 
-        <!-- App js -->
         <script src="/assets/js/app.js"></script>
