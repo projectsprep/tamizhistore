@@ -5,31 +5,39 @@ namespace App\models;
 use mysqli;
 use app\models\DB;
 
-class CategoryModel{
-    // protected string $hostName = "cloud1.zolahost.net";
-    // protected string $port = "3306";
-    // protected string $dbName = "tamizhistoreapp";
-    // protected string $username = "tamizhistoreadmin";
-    // protected string $password = "Tamizhistore2020";
-    protected string $hostName = "localhost";
-    protected string $port = "3306";
-    protected string $dbName = "tamizhistoreapp";
-    protected string $username = "root";
-    protected string $password = "dharshan";
-    
+// header("Content-type: application/json");
+
+class CategoryModel{    
     private $conn = null;
 
     public function __construct(){
-        if($this->conn == null){
-            $this->conn = new mysqli($this->hostName, $this->username, $this->password, $this->dbName);
-            if($this->conn->connect_error){
-                die("Error connecting to Database");
-            }else{
-                return $this->conn;
-            }
+        $this->conn = new DB();
+        $this->conn = $this->conn->conn();
+    }
+
+    public function create($table, $categoryName, $categoryImage){
+        $query = "INSERT INTO $table (catname, catimg) VALUES ('$categoryName', '$categoryImage');";
+        $result = $this->conn->query($query);
+        if($result){
+            return true;
         }else{
-            return $this->conn;
+            return false;
         }
+    }
+
+    public function getCount(){
+        $tables = ['category', "subcategory", "product", "tbl_coupon", "area_db", "timeslot", "user", "feedback"];
+        $array = [];
+        foreach($tables as $table){
+            $query = "SELECT COUNT(id) $table FROM $table";
+            $result = $this->conn->query($query);
+            if($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                    array_push($array, $row);
+                }
+            }
+        }
+            return json_encode($array);
     }
 
     public function read($table){
@@ -42,27 +50,7 @@ class CategoryModel{
             }
             return json_encode($array);
         }else{
-            return "No results found";
-        }
-    }
-
-    public function upload($table, $categoryName, $categoryImage){
-        $query = "INSERT INTO $table (catname, catimg) VALUES ('$categoryName', '$categoryImage');";
-        $result = $this->conn->query($query);
-        if($result){
-            header("Location: /categorylist");
-        }else{
-            echo "Record not uploaded".$this->conn->error;
-        }
-    }
-
-    public function delete($table, $id){
-        $query = "DELETE FROM $table where id=$id";
-        $result = $this->conn->query($query);
-        if($result){
-            header("Location: /categorylist");
-        }else{
-            echo "Record cannot be deleted";
+            return false;
         }
     }
 
@@ -70,9 +58,9 @@ class CategoryModel{
         $query = "UPDATE $table set catname='$catname', catimg='$catimage' where id=$id";
         $result = $this->conn->query($query);
         if($result){
-            header("Location: /categorylist");
+            return true;
         }else{
-            echo "Record cannot be deleted";
+            return false;
         }
     }
 
@@ -86,7 +74,17 @@ class CategoryModel{
             }
             return json_encode($array);
         }else{
-            return "No results found";
+            return false;
+        }
+    }
+
+    public function delete($table, $id){
+        $query = "DELETE FROM $table where id=$id";
+        $result = $this->conn->query($query);
+        if($result){
+            return true;
+        }else{
+            return false;
         }
     }
 }

@@ -6,30 +6,11 @@ use mysqli;
 use app\models\DB;
 
 class ProductsModel{
-    // protected string $hostName = "cloud1.zolahost.net";
-    // protected string $port = "3306";
-    // protected string $dbName = "tamizhistoreapp";
-    // protected string $username = "tamizhistoreadmin";
-    // protected string $password = "Tamizhistore2020";
-    protected string $hostName = "localhost";
-    protected string $port = "3306";
-    protected string $dbName = "tamizhistoreapp";
-    protected string $username = "root";
-    protected string $password = "dharshan";
-    
     private $conn = null;
 
     public function __construct(){
-        if($this->conn == null){
-            $this->conn = new mysqli($this->hostName, $this->username, $this->password, $this->dbName);
-            if($this->conn->connect_error){
-                die("Error connecting to Database");
-            }else{
-                return $this->conn;
-            }
-        }else{
-            return $this->conn;
-        }
+        $this->conn = new DB();
+        $this->conn = $this->conn->conn();
     }
 
     public function read($table){
@@ -42,21 +23,30 @@ class ProductsModel{
             }
             return json_encode($array);
         }else{
-            return "No results found";
+            return false;
         }
     }
 
-    public function add($table , $productName, $sellerName, $category, $subCategory, $stock, $publish, $description, $unit, $price, $discount){
-        
-    }
+    public function create($table , $productName, $sellerName, $category, $subCategory, $stock, $publish, $description, $unit, $price, $discount, $popular){
+        $query = "INSERT INTO $table SET 
+        pname='$productName',
+        sname='$sellerName',
+        cid='$category',
+        sid='$subCategory',
+        psdesc='$description',
+        pgms='$unit',
+        pprice='$price',
+        status='$publish',
+        stock='$stock',
+        discount='$discount',
+        popular='$popular'
+        ";
 
-    public function upload($table, $categoryName, $categoryImage){
-        $query = "INSERT INTO $table (catname, catimg) VALUES ('$categoryName', '$categoryImage');";
         $result = $this->conn->query($query);
         if($result){
-            header("Location: /categorylist");
+            return true;
         }else{
-            echo "Record not uploaded".$this->conn->error;
+            return false;
         }
     }
 
@@ -64,9 +54,9 @@ class ProductsModel{
         $query = "DELETE FROM $table where id=$id";
         $result = $this->conn->query($query);
         if($result){
-            header("Location: /categorylist");
+            return true;
         }else{
-            echo "Record cannot be deleted";
+            return false;
         }
     }
 
@@ -74,9 +64,10 @@ class ProductsModel{
         // $query = "UPDATE $table set catname='$catname', catimg='$catimage' where id=$id";
         $result = $this->conn->query($query);
         if($result){
-            header("Location: /categorylist");
+            return true;
+            // header("Location: /categorylist")
         }else{
-            echo "Record cannot be deleted";
+            return false;
         }
     }
 
@@ -90,7 +81,7 @@ class ProductsModel{
             }
             return json_encode($array);
         }else{
-            return "No results found";
+            return false;
         }
     }
 }
