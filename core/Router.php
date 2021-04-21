@@ -5,6 +5,8 @@ namespace app\core;
 use app\core\Application;
 use app\core\Response;
 
+use function PHPSTORM_META\type;
+
 class Router{
     public Request $request;
     public Response $response;
@@ -15,10 +17,10 @@ class Router{
         $this->response = $response;
     }
     public function get($path, $callback){
-        $this->routes['get'][$path] = $callback;
+        return $this->routes['get'][$path] = $callback;
     }
     public function post($path, $callback){
-        $this->routes['post'][$path] = $callback;
+        return $this->routes['post'][$path] = $callback;
     }
 
     public function resolve(){
@@ -39,7 +41,7 @@ class Router{
             $callback[0] = new $callback[0]();
         }
 
-        return call_user_func($callback);
+        echo call_user_func($callback);
     }
 
     public function renderView($callback, $params=[]){
@@ -56,8 +58,14 @@ class Router{
 
     public function renderOnlyView($view, $params=[]){
         if(!empty($params)){
-            $params = json_decode($params);
+            // if(type($params) === "array"){
+            //     $params = "Hello world";
+            // }else if(type($params) === "json"){
+                $params = json_decode($params, true);
+            // }
         }
+
+        
         // foreach($params as $param){
         //     foreach($param as $key=>$value){
         //         $$key = $value;

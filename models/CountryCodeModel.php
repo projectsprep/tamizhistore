@@ -5,14 +5,13 @@ namespace App\models;
 use mysqli;
 use app\models\DB;
 
-// header("Content-type: application/json");
-
-class CategoryModel{    
+class CountryCodeModel{
+    
     private $conn = null;
 
     public function __construct(){
-        $this->conn = new DB();
-        $this->conn = $this->conn->conn();
+            $this->conn = new DB();
+            $this->conn = $this->conn->conn();
     }
 
     public function create($table, $categoryName, $categoryImage){
@@ -23,21 +22,6 @@ class CategoryModel{
         }else{
             return false;
         }
-    }
-
-    public function getCount(){
-        $tables = ['category', "subcategory", "product", "tbl_coupon", "area_db", "timeslot", "user", "feedback"];
-        $array = [];
-        foreach($tables as $table){
-            $query = "SELECT COUNT(id) $table FROM $table";
-            $result = $this->conn->query($query);
-            if($result->num_rows > 0){
-                while($row = $result->fetch_assoc()){
-                    array_push($array, $row);
-                }
-            }
-        }
-            return json_encode($array);
     }
 
     public function read($table){

@@ -7,7 +7,7 @@ use app\models\DB;
 
 // header("Content-type: application/json");
 
-class CategoryModel{    
+class NotificationsModel{  
     private $conn = null;
 
     public function __construct(){
@@ -25,23 +25,22 @@ class CategoryModel{
         }
     }
 
-    public function getCount(){
-        $tables = ['category', "subcategory", "product", "tbl_coupon", "area_db", "timeslot", "user", "feedback"];
+    public function read($table){
+        $query = "Select * from $table ORDER BY id DESC";
+        $result = $this->conn->query($query);
         $array = [];
-        foreach($tables as $table){
-            $query = "SELECT COUNT(id) $table FROM $table";
-            $result = $this->conn->query($query);
-            if($result->num_rows > 0){
-                while($row = $result->fetch_assoc()){
-                    array_push($array, $row);
-                }
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                array_push($array, $row);
             }
-        }
             return json_encode($array);
+        }else{
+            return false;
+        }
     }
 
-    public function read($table){
-        $query = "Select * from $table";
+    public function pushedNotifies($table){
+        $query = "Select * from $table where pushed=1 ORDER BY id DESC";
         $result = $this->conn->query($query);
         $array = [];
         if($result->num_rows > 0){
@@ -80,6 +79,16 @@ class CategoryModel{
 
     public function delete($table, $id){
         $query = "DELETE FROM $table where id=$id";
+        $result = $this->conn->query($query);
+        if($result){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function push($table, $id){
+        $query = "update $table set pushed=1, duration=NOW() where id = $id";
         $result = $this->conn->query($query);
         if($result){
             return true;

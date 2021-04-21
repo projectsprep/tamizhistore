@@ -7,7 +7,7 @@ use app\models\DB;
 
 // header("Content-type: application/json");
 
-class CategoryModel{    
+class TimeSlotsModel{ 
     private $conn = null;
 
     public function __construct(){
@@ -23,21 +23,6 @@ class CategoryModel{
         }else{
             return false;
         }
-    }
-
-    public function getCount(){
-        $tables = ['category', "subcategory", "product", "tbl_coupon", "area_db", "timeslot", "user", "feedback"];
-        $array = [];
-        foreach($tables as $table){
-            $query = "SELECT COUNT(id) $table FROM $table";
-            $result = $this->conn->query($query);
-            if($result->num_rows > 0){
-                while($row = $result->fetch_assoc()){
-                    array_push($array, $row);
-                }
-            }
-        }
-            return json_encode($array);
     }
 
     public function read($table){

@@ -4,6 +4,11 @@ namespace app\models;
 use mysqli;
 
 class DB{
+    // protected string $hostName = "cloud1.zolahost.net";
+    // protected string $port = "3306";
+    // protected string $dbName = "tamizhistoreapp";
+    // protected string $username = "tamizhistoreadmin";
+    // protected string $password = "Tamizhistore2020";
     protected string $hostName = "localhost";
     protected string $port = "3306";
     protected string $dbName = "tamizhistoreapp";
