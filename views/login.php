@@ -1,3 +1,13 @@
+<?php
+
+foreach($params as $key=>$value){
+    $$key = $value;
+}
+if(isset($notValid)){
+    
+}
+?>
+
 <!doctype html>
 <html lang="en">
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
@@ -40,18 +50,18 @@
                         </div>
                         <div class="card-body pt-0">
                             <div class="auth-logo">
-                                <a href="index.html" class="auth-logo-light">
+                                <a href="/" class="auth-logo-light">
                                     <div class="avatar-md profile-user-wid mb-4">
                                         <span class="avatar-title rounded-circle bg-light">
-                                            <img src="/assets/images/logo-light.svg" alt="" class="rounded-circle" height="34">
+                                            <img src="/assets/images/firsticon.png" alt="" class="rounded-circle" height="50">
                                         </span>
                                     </div>
                                 </a>
 
-                                <a href="index.html" class="auth-logo-dark">
+                                <a href="/" class="auth-logo-dark">
                                     <div class="avatar-md profile-user-wid mb-4">
                                         <span class="avatar-title rounded-circle bg-light">
-                                            <img src="/assets/images/logo.svg" alt="" class="rounded-circle" height="34">
+                                            <img src="/assets/images/firsticon.png" alt="" class="rounded-circle" height="70">
                                         </span>
                                     </div>
                                 </a>
