@@ -2,11 +2,10 @@
     use app\models\NotificationsModel;
     $uriTitle = $_SERVER['REQUEST_URI'] == "/" ? "Dashboard" : ucwords(ltrim($_SERVER['REQUEST_URI'], "/"));
 
-    // $notify = new NotificationsModel();
+    $notify = new NotificationsModel();
     // $json = file_get_contents("http://project.local/api/notifications");
-    // echo $json;
-    // $array = json_decode($json, true);
-    $i = 0;
+    $json = $notify->pushedNotifies("noti");
+    $array = json_decode($json, true);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -93,7 +92,7 @@
                 <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-notifications-dropdown"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="bx bx-bell bx-tada"></i>
-                    <span class="badge bg-danger rounded-pill"><?= $i?></span>
+                    <span class="badge bg-danger rounded-pill"></span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
                     aria-labelledby="page-header-notifications-dropdown">
@@ -107,13 +106,10 @@
                             </div>
                         </div>
                     </div>
+                    <audio src="/assets/notification.mp3" id="notifyaudio" muted="true" autoplay></audio>
                     <div data-simplebar style="max-height: 230px;" id="notify">
-                        <!-- // foreach($array as $item){
-                        //     $i++;
-                        //     foreach($item as $key => $value){
-                        //         $$key = $value;
-                        //     } -->
-                            <a href="#" class="text-reset notification-item">
+                        
+                        <!-- <a href="#" class="text-reset notification-item">
                             <div class="media">
                                 <div class="avatar-xs me-3">
                                     <span class="avatar-title bg-primary rounded-circle font-size-16">
@@ -129,7 +125,75 @@
                                 </div>
                             </div>
                         </a>
-                        <!-- // } -->
+
+                        <a href="#" class="text-reset notification-item">
+                            <div class="media">
+                                <div class="avatar-xs me-3">
+                                    <span class="avatar-title bg-primary rounded-circle font-size-16">
+                                        <i class="bx bx-cart"></i>
+                                    </span>
+                                </div>
+                                <div class="media-body">
+                                    <h6 class="mt-0 mb-1" key="t-your-order">something</h6>
+                                    <div class="font-size-12 text-muted">
+                                        <p class="mb-1" key="t-grammer">something</p>
+                                        <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span key="t-min-ago">3 min ago</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a href="#" class="text-reset notification-item">
+                            <div class="media">
+                                <div class="avatar-xs me-3">
+                                    <span class="avatar-title bg-primary rounded-circle font-size-16">
+                                        <i class="bx bx-cart"></i>
+                                    </span>
+                                </div>
+                                <div class="media-body">
+                                    <h6 class="mt-0 mb-1" key="t-your-order">something</h6>
+                                    <div class="font-size-12 text-muted">
+                                        <p class="mb-1" key="t-grammer">something</p>
+                                        <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span key="t-min-ago">3 min ago</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a href="#" class="text-reset notification-item">
+                            <div class="media">
+                                <div class="avatar-xs me-3">
+                                    <span class="avatar-title bg-primary rounded-circle font-size-16">
+                                        <i class="bx bx-cart"></i>
+                                    </span>
+                                </div>
+                                <div class="media-body">
+                                    <h6 class="mt-0 mb-1" key="t-your-order">something</h6>
+                                    <div class="font-size-12 text-muted">
+                                        <p class="mb-1" key="t-grammer">something</p>
+                                        <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span key="t-min-ago">3 min ago</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a href="#" class="text-reset notification-item">
+                            <div class="media">
+                                <div class="avatar-xs me-3">
+                                    <span class="avatar-title bg-primary rounded-circle font-size-16">
+                                        <i class="bx bx-cart"></i>
+                                    </span>
+                                </div>
+                                <div class="media-body">
+                                    <h6 class="mt-0 mb-1" key="t-your-order">something</h6>
+                                    <div class="font-size-12 text-muted">
+                                        <p class="mb-1" key="t-grammer">something</p>
+                                        <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span key="t-min-ago">3 min ago</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a> -->
+                        
                     
                         <!-- <a href="#" class="text-reset notification-item">
                             <div class="media">
@@ -277,7 +341,7 @@
                         <span key="t-ecommerce"><span>Coupon</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="/coupon/add" key="t-products">Add Coupon</a></li>
+                        <li><a href="/couponlist/add" key="t-products">Add Coupon</a></li>
                         <li><a href="/couponlist" key="t-product-detail">Coupon List</a></li>
                     </ul>
                 </li>

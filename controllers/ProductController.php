@@ -34,12 +34,12 @@ class ProductController extends Controller{
     }
 
     public function read(){
-        $json = $this->db->read($this->table);
-        if($json){
-            return $this->render("products/productList", $json);
-        }else{
-            return false;
-        }
+        // $json = $this->db->read($this->table);
+        // if($json){
+            return $this->render("products/productList");
+        // }else{
+        //     return false;
+        // }
     }
 
     public function update(){

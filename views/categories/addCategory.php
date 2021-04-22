@@ -15,7 +15,7 @@
                                 <div class="mb-3">
                                     <label for="productname">Image</label>
                                     <div class="fallback">
-                                        <input name="categoryImage" type="file" multiple name="categoryImage" />
+                                        <input type="file" multiple name="categoryImage" />
                                     </div>
                                 </div>
                                 <div>
