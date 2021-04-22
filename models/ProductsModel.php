@@ -13,8 +13,8 @@ class ProductsModel{
         $this->conn = $this->conn->conn();
     }
 
-    public function read($table){
-        $query = "select p.id, p.pname, p.pimg, p.sname, category.catname, subcategory.name, p.pgms, p.pprice, p.stock, p.status from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id order by id desc limit 10";
+    public function read($table, $min, $max){
+        $query = "select p.id, p.pname, p.pimg, p.sname, category.catname, subcategory.name, p.pgms, p.pprice, p.stock, p.status from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id order by id desc limit $min, $max";
         $result = $this->conn->query($query);
         $array = [];
         if($result->num_rows > 0){
@@ -60,16 +60,16 @@ class ProductsModel{
         }
     }
 
-    public function update($table , $productName, $sellerName, $category, $subCategory, $stock, $publish, $description, $unit, $price, $discount){
-        // $query = "UPDATE $table set catname='$catname', catimg='$catimage' where id=$id";
-        $result = $this->conn->query($query);
-        if($result){
-            return true;
-            // header("Location: /categorylist")
-        }else{
-            return false;
-        }
-    }
+    // public function update($table , $productName, $sellerName, $category, $subCategory, $stock, $publish, $description, $unit, $price, $discount){
+    //     // $query = "UPDATE $table set catname='$catname', catimg='$catimage' where id=$id";
+    //     $result = $this->conn->query($query);
+    //     if($result){
+    //         return true;
+    //         // header("Location: /categorylist")
+    //     }else{
+    //         return false;
+    //     }
+    // }
 
     public function edit($table, $id){
         $query = "SELECT * FROM $table where id=$id";

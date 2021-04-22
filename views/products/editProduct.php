@@ -35,8 +35,8 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="validationCustom03" class="form-label">Select Category</label>
-                                        <select class="form-select" id="validationCustom03" required="">
-                                            <option selected="" disabled="" value="<?=$id?>"><?=$cat?></option>
+                                        <select class="form-select" required="">
+                                            <option selected="" disabled="" value="">choose...</option>
                                             <?php
                                                 if($result->num_rows > 0){
                                                     while($row = $result->fetch_assoc()){    
@@ -53,7 +53,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="validationCustom03" class="form-label">Select Subcategory</label>
-                                        <select class="form-select" id="validationCustom03" required="">
+                                        <select class="form-select" required="">
                                             <option selected="" disabled="" value="">Choose...</option>
                                             <option>...</option>
                                         </select>
@@ -63,21 +63,21 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="validationCustom03" class="form-label">Out of Stock?</label>
-                                        <select class="form-select" id="validationCustom03" required="">
+                                        <select class="form-select" required="">
                                             <option selected="" value="<?=$stock == '1' ? 'yes' : 'no'?>"><?=$stock == '1' ? 'Yes' : 'No'?></option>
                                             <option value="<?=$stock == '1' ? 'no' : 'yes'?>"><?=$stock == '1' ? 'No' : 'Yes'?></option>
                                         </select>
                                     </div>
                                     <div class="mb-3">
                                         <label for="validationCustom03" class="form-label">Product publish or unpublish?</label>
-                                        <select class="form-select" id="validationCustom03" required="">
+                                        <select class="form-select" required="">
                                             <option selected="" value="<?=$status == '1' ? 'publish' : 'unpublish'?>"><?=$status == '1' ? 'Publish' : 'Unpublish'?></option>
                                             <option value="<?=$status == '1' ? 'unpublish' : 'publish'?>"><?=$status == '1' ? 'Unpublish' : 'Publish'?></option>
                                         </select>
                                     </div>
                                     <div class="mb-3">
                                         <label for="validationCustom03" class="form-label">Make product popular?</label>
-                                        <select class="form-select" id="validationCustom03" required="">
+                                        <select class="form-select" required="">
                                             <option selected="" value="<?=$status == '1' ? '1' : '0'?>"><?=$status == '1' ? 'Yes' : 'No'?></option>
                                             <option value="<?=$status == '1' ? '0' : '1'?>"><?=$status == '1' ? 'No' : 'Yes'?></option>
                                         </select>
@@ -90,7 +90,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="validationCustom03" class="form-label">Product (GMS,KG,LTR,ML,PCS)</label>
-                                        <!-- <select class="form-select" id="validationCustom03" required="">
+                                        <!-- <select class="form-select" required="">
                                             <option selected="" value="KG"></option>
                                             <option value="KG">KG</option>
                                             <option value="GMS">GMS</option>
