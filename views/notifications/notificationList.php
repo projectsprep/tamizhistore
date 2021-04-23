@@ -42,11 +42,18 @@
                                                                             <h5 class="font-size-14 mb-1"><?= $img ?></h5>
                                                                         </div>
                                                                     </td>
-                                                                    <td>
+                                                                    <!-- <td>
                                                                         <a href="/notifications/delete?id=<?= $id?>" class="text-danger"><i class="bx bx-trash-alt"></i></a>
                                                                         <a href="/notifications/push?id=<?=$id?>"><i class="bx bxs-bell-ring"></i></a>
+                                                                    </td> -->
+                                                                    <td>
+                                                                        <a href="/notifications/delete?id=<?= $id?>" class="text-danger"><i class="bx bx-trash-alt"></i></a>
+                                                                        <form action="/notifications" method="post" name="form">
+                                                                        <input type="hidden" name="id" value="<?=$id?>">
+                                                                        <button type="submit" style="border: none;background: transparent; color: #556ee6"><i class="bx bxs-bell-ring"></i></button>
+                                                                        </form>
+                                                                        <!-- <a href="" onclick="document.getElement"><i class="bx bxs-bell-ring"></i></a> -->
                                                                     </td>
-                                                                    
                                                                 </tr>
                                                                 <?php
                                                         }

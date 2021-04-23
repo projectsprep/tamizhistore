@@ -62,7 +62,7 @@ $app->router->get("/couponlist/add", [CouponController::class, "create"]);
 $app->router->get("/notifications", [NotificationsController::class, "read"]);
 $app->router->get("/notifications/add", [NotificationsController::class, "create"]);
 $app->router->get("/notifications/delete", [NotificationsController::class, "delete"]);
-$app->router->get("/notifications/push", [NotificationsController::class, "push"]);
+$app->router->post("/notifications", [NotificationsController::class, "push"]);
 
 // /countrycode
 $app->router->get("/countrycode", [CountryCodeController::class, "read"]);

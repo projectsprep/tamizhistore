@@ -22,7 +22,7 @@ class NotificationsController extends Controller{
         if($json){
             return $this->render("notifications/notificationList", $json);
         }else{
-            return "Something went wrong";
+            return "No Notifications Found";
         }
     }
 
@@ -49,11 +49,11 @@ class NotificationsController extends Controller{
     }
 
     public function push(){
-        if(isset($_GET['id'])){
-            if($this->db->push("noti", $_GET['id'])){
-                return "Notification Pushed";
+        if(isset($_POST['id'])){
+            if(!($this->db->push("noti", $_POST['id']))){
+                return "Notification not pushed";
             }else{
-                "Notification not pushed";
+                return header("Location: /notifications");
             }
         }
     }

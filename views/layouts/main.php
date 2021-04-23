@@ -88,7 +88,7 @@
                 </button>
             </div>
 
-            <div class="dropdown d-inline-block">
+            <div class="dropdown d-inline-block" id="notifydropdown">
                 <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-notifications-dropdown"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="bx bx-bell bx-tada"></i>
@@ -106,9 +106,13 @@
                             </div>
                         </div>
                     </div>
-                    <audio src="/assets/notification.mp3" id="notifyaudio" muted="true" autoplay></audio>
-                    <div data-simplebar style="max-height: 230px;" id="notify">
-                        
+                    <!-- <audio src="/assets/notification.mp3" id="notifyaudio" muted="true" autoplay type="audio/mp3"></audio> -->
+                    <audio id="notifyaudio">
+                        <source src="/assets/notification.mp3" type="audio/mp3">
+                        Your browser does not support audio element
+                    </audio>
+                    <div data-simplebar style="max-height: 230px;">
+                        <div id="notify"></div>
                         <!-- <a href="#" class="text-reset notification-item">
                             <div class="media">
                                 <div class="avatar-xs me-3">
@@ -434,4 +438,12 @@
 <script src="/assets/libs/apexcharts/apexcharts.min.js"></script>
 <script src="/assets/js/pages/dashboard.init.js"></script>
 <script src="/assets/js/app.js"></script>
-<script src="/assets/js/notifications.js"></script>
+<script src="/assets/js/notify.js"></script>
+<script>
+    $(document).ready(function(){
+        $("#notifydropdown").on("click", function(){
+            console.log("yes")
+        })
+        console.log("yes");
+    })
+</script>
