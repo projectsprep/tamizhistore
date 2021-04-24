@@ -23,6 +23,9 @@ $db = new DB();
 $app->router->get('/login', [ProfileController::class, 'login']);
 $app->router->post('/login', [ProfileController::class, 'login']);
 $app->router->get("/logout", [ProfileController::class, "logout"]);
+$app->router->get("/login/forgotpassword", [ProfileController::class, "forgotPassword"]);
+$app->router->post("/login/forgotpassword", [ProfileController::class, "forgotPassword"]);
+$app->router->get("/resetpassword", [ProfileController::class, "resetPassword"]);
 
 // /categorylist routes
 $app->router->get('/', [CategoryController::class, 'home']);

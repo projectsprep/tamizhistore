@@ -39,8 +39,7 @@ if(isset($notValid)){
                             <div class="row">
                                 <div class="col-7">
                                     <div class="text-primary p-4">
-                                        <h5 class="text-primary">Welcome Back !</h5>
-                                        <p>Sign in to continue to TamizhiStore.</p>
+                                        <h5 class="text-primary">Reset Password</h5>
                                     </div>
                                 </div>
                                 <div class="col-5 align-self-end">
@@ -67,17 +66,20 @@ if(isset($notValid)){
                                 </a>
                             </div>
                             <div class="p-2">
-                                <form class="form-horizontal" action="" method="post">
+                                <form class="custom-validation" action="" method="post" novalidate>
 
                                     <div class="mb-3">
-                                        <label for="username" class="form-label">Username</label>
-                                        <input type="text" class="form-control" id="username" placeholder="Enter username" name="username" required>
+                                        <label for="username" class="form-label">New Password</label>
+                                        <div class="input-group auth-pass-inputgroup">
+                                            <input type="password" class="form-control" id="password" placeholder="Enter new password" name="newpassword" required>
+                                            <button class="btn btn-light " type="button" id="password-addon"><i class="mdi mdi-eye-outline"></i></button>
+                                        </div>
                                     </div>
 
-                                    <div class="mb-3">
-                                        <label class="form-label">Password</label>
-                                        <div class="input-group auth-pass-inputgroup">
-                                            <input type="password" class="form-control" placeholder="Enter password" aria-label="Password" aria-describedby="password-addon" required name="pass">
+                                    <div class="mt-2">
+                                        <label class="form-label">Re-type Password</label>
+                                        <div class="auth-pass-inputgroup">
+                                            <input type="password" class="form-control" placeholder="Re-type password" required data-parsley-equalto="#password" name="confirmpassword">
                                             <button class="btn btn-light " type="button" id="password-addon"><i class="mdi mdi-eye-outline"></i></button>
                                         </div>
                                     </div>
@@ -106,6 +108,8 @@ if(isset($notValid)){
 <script src="/assets/libs/metismenu/metisMenu.min.js"></script>
 <script src="/assets/libs/simplebar/simplebar.min.js"></script>
 <script src="/assets/libs/node-waves/waves.min.js"></script>
+<script src="assets/libs/parsleyjs/parsley.min.js"></script>
+<script src="assets/js/pages/form-validation.init.js"></script>
     <!-- App js -->
     <script src="/assets/js/app.js"></script>
 </body>
