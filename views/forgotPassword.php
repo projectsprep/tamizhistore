@@ -9,8 +9,6 @@ foreach($params as $param){
     }
 }
 
-echo $email;
-
 if(isset($id)){
     $verify = md5($id);
 }
@@ -65,7 +63,12 @@ function sendMail($username, $verify, $mail){
             </body>
         </html>
     EOD;
-    $headers = "From: sudharshanrms2004@gmail.com";
+    $headers = "From: Tamizhistore <tamizhis@tamizhistore.com>" . "\r\n";
+    $headers .= "MIME-Version: 1.0" . "\r\n";
+    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n"; 
+    $headers .= "Cc: Tamizhistore <tamizhis@tamizhistore.com>\r\n"; 
+    $headers .= "X-Sender: Tamizhistore <tamizhis@tamizhistore.com>\r\n";
+    $headers .= "Return-Path: Tamizhistore <tamizhis@tamizhistore.com>\r\n";
     return mail($mail, $subject, $message, $headers);
 }
 ?>
@@ -102,7 +105,7 @@ function sendMail($username, $verify, $mail){
                         <?php
                             if(isset($_POST['username'])){
                                 if($msg == 1){
-                                    echo sendMail($username, $verify, $email);
+                                    sendMail($username, $verify, $email);
                                     ?>
                                     <div class="alert alert-success">
                                         Reset link sent to your mail

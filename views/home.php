@@ -4,6 +4,7 @@ foreach($params as $param){
         $$key=$value;
     }
 }
+
 ?>
             <!-- ============================================================== -->
             <!-- Start right Content here -->
@@ -13,25 +14,20 @@ foreach($params as $param){
                 <div class="page-content">
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="col-xl-12">
+                            <div class="col-xl-5">
                                 <div class="card overflow-hidden">
                                     <div class="bg-primary bg-soft">
                                         <div class="row">
-                                            <div class="col-7">
-                                                <div class="text-primary p-3">
-                                                    <h5 class="text-primary">Welcome Back !</h5>
-                                                    <p>Admin Dashboard</p>
-                                                </div>
-                                            </div>
-                                            <div class="col-5 align-self-end">
-                                                <img src="/assets/images/profile-img.png" alt="" class="img-fluid">
+                                            
+                                            <div class="col-12">
+                                                <img src="/assets/images/2153.jpg" alt="" class="img-fluid">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="card-body pt-0">
                                         <div class="row">
                                             <div class="col-xl-6">
-                                                <div class="avatar-md profile-user-wid mb-4">
+                                                <div class="avatar-lg profile-user-wid mb-4">
                                                     <img src="/assets/images/firsticon.png" alt="" class="img-thumbnail rounded-circle">
                                                 </div>
                                                 <h5 class="font-size-15 text-truncate">Tamizhistore</h5>
@@ -52,7 +48,7 @@ foreach($params as $param){
                                                         </div>
                                                     </div>
                                                     <div class="mt-4">
-                                                        <a href="#" class="btn btn-primary waves-effect waves-light btn-sm">View Profile <i class="mdi mdi-arrow-right ms-1"></i></a>
+                                                        <a href="/profile" class="btn btn-primary waves-effect waves-light btn-sm">View Profile <i class="mdi mdi-arrow-right ms-1"></i></a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -82,7 +78,7 @@ foreach($params as $param){
                                     </div>
                                 </div> -->
                             </div>
-                            <div class="col-xl-12">
+                            <div class="col-xl-7">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="card mini-stats-wid">

@@ -63,7 +63,9 @@ $j=$_GET['page'] ?? 1;
                                                                     <td>
                                                                         <h5 class="font-size-14 mb-1"><?= $pname; ?></h5>
                                                                     </td>
-                                                                    <td><?= $pimg; ?></td>
+                                                                    <td>
+                                                                            <img src="<?= $pimg; ?>" class="img-thumbnail rounded" alt="">
+                                                                    </td>
                                                                     <td>
                                                                         <div>
                                                                             <h5 class="font-size-14 mb-1"><?= $sname; ?></h5>

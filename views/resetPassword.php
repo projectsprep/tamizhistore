@@ -67,12 +67,10 @@ if(isset($notValid)){
                             </div>
                             <div class="p-2">
                                 <form class="custom-validation" action="" method="post" novalidate>
-
                                     <div class="mb-3">
-                                        <label for="username" class="form-label">New Password</label>
+                                        <label for="newpassword" class="form-label">New Password</label>
                                         <div class="input-group auth-pass-inputgroup">
                                             <input type="password" class="form-control" id="password" placeholder="Enter new password" name="newpassword" required>
-                                            <button class="btn btn-light " type="button" id="password-addon"><i class="mdi mdi-eye-outline"></i></button>
                                         </div>
                                     </div>
 
@@ -80,9 +78,10 @@ if(isset($notValid)){
                                         <label class="form-label">Re-type Password</label>
                                         <div class="auth-pass-inputgroup">
                                             <input type="password" class="form-control" placeholder="Re-type password" required data-parsley-equalto="#password" name="confirmpassword">
-                                            <button class="btn btn-light " type="button" id="password-addon"><i class="mdi mdi-eye-outline"></i></button>
                                         </div>
                                     </div>
+
+                                    <input type="hidden" class="form-control" required name="username" value="<?=$_GET['username']?>">
 
                                     <div class="mt-3 d-grid">
                                         <button class="btn btn-primary waves-effect waves-light" type="submit">Log In</button>

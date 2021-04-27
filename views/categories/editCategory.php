@@ -29,7 +29,7 @@
                                                         <label for="productname">Image</label>
                                                         <img src="<?=$catimg?>" alt="">
                                                         <div class="fallback">
-                                                            <input name="categoryImage" type="file" multiple />
+                                                            <input name="categoryImage" type="file" />
                                                         </div>
                                                     </div>
                                                     <input type="hidden" value="<?=$id?>" name="id">

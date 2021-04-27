@@ -40,7 +40,9 @@ $conn = $db->conn();
                                                                     <td>
                                                                         <h5 class="font-size-14 mb-1"><?= $catname; ?></h5>
                                                                     </td>
-                                                                    <td><?= $catimg; ?></td>
+                                                                    <td>
+                                                                        <img src="<?= $catimg; ?>" class="img-thumbnail rounded" alt="">
+                                                                    </td>
                                                                     <td>
                                                                         <div>
                                                                             <h5 class="font-size-14 mb-1"><?= $conn->query("select * from subcategory where cat_id = $id;")->num_rows; ?></h5>

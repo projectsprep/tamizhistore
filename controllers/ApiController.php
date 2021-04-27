@@ -10,8 +10,10 @@ use app\models\NotificationsModel;
 use app\models\DB;
 use app\core\Application;
 
-if(!(isset($_COOKIE['user'])))
-header("Location: /login");
+session_start();
+if(!(isset($_COOKIE['user']) && isset($_SESSION['user']))){
+    header("Location: /login");
+}
 
 class ApiController extends Controller{
     private DB $db;
@@ -68,7 +70,6 @@ class ApiController extends Controller{
             }else{
                 $output .= "No Notifications found";
             }
-
             $query1 = "SELECT * FROM noti WHERE pushed=1 and is_seen=0";
             $result1 = $this->conn->query($query1);
             $count = $result1->num_rows;
@@ -77,8 +78,11 @@ class ApiController extends Controller{
                 "notification"=>$output,
                 "unseenNotification"=>$count
             );
-
-            echo json_encode($data);
+            return json_encode($data);
         }
+    }
+    
+    public function pushedNotifications(){
+        return $this->nDB->pushedNotifies("noti");
     }
 }

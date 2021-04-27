@@ -3,7 +3,6 @@
     $uriTitle = $_SERVER['REQUEST_URI'] == "/" ? "Dashboard" : ucwords(ltrim($_SERVER['REQUEST_URI'], "/"));
 
     $notify = new NotificationsModel();
-    // $json = file_get_contents("http://project.local/api/notifications");
     $json = $notify->pushedNotifies("noti");
     $array = json_decode($json, true);
 ?>
@@ -18,7 +17,7 @@
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
     <link rel="shortcut icon" href="/assets/images/favicon.ico"/>
-
+    <link href="/assets/libs/dropzone/min/dropzone.min.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
     <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
     <link href="/assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
@@ -84,11 +83,11 @@
 
             <div class="dropdown d-none d-lg-inline-block ms-1">
                 <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
-                    <i class="bx bx-fullscreen"></i>
+                <i class="bx bx-fullscreen"></i>
                 </button>
             </div>
 
-            <div class="dropdown d-inline-block" id="notifydropdown">
+            <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-notifications-dropdown"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="bx bx-bell bx-tada"></i>
@@ -100,9 +99,6 @@
                         <div class="row align-items-center">
                             <div class="col">
                                 <h6 class="m-0" key="t-notifications"> Notifications </h6>
-                            </div>
-                            <div class="col-auto">
-                                <a href="#!" class="small" key="t-view-all"> Files.View All </a>
                             </div>
                         </div>
                     </div>
@@ -292,7 +288,7 @@
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
-                    <a class="dropdown-item" href="#"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">Profile</span></a>
+                    <a class="dropdown-item" href="/profile"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">Profile</span></a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item text-danger" href="/logout"><i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> <span key="t-logout">Logout</span></a>
                 </div>
@@ -439,11 +435,4 @@
 <script src="/assets/js/pages/dashboard.init.js"></script>
 <script src="/assets/js/app.js"></script>
 <script src="/assets/js/notify.js"></script>
-<script>
-    $(document).ready(function(){
-        $("#notifydropdown").on("click", function(){
-            console.log("yes")
-        })
-        console.log("yes");
-    })
-</script>
+<script src="/assets/libs/dropzone/min/dropzone.min.js"></script>

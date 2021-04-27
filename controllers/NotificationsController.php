@@ -5,9 +5,11 @@ namespace app\controllers;
 use app\core\Controller;
 use app\models\NotificationsModel;
 use app\core\Application;
+session_start();
 
-if(!(isset($_COOKIE['user'])))
-header("Location: /login");
+if(!(isset($_COOKIE['user']) && isset($_SESSION['user']))){
+    header("Location: /login");
+}
 
 class NotificationsController extends Controller{
     private $db;

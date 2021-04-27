@@ -12,8 +12,17 @@
                                 <form class="needs-validation" action="" method="post" novalidate>
                                     <div class="mb-3">
                                         <label for="couponImage">Image</label>
-                                        <div class="fallback">
-                                            <input type="file" multiple name="couponImage" />
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div action="#" class="dropzone dz-clickable">
+                                                    <div class="dz-message needsclick">
+                                                        <div class="mb-3">
+                                                            <i class="display-4 text-muted bx bxs-cloud-upload"></i>
+                                                        </div>
+                                                        <h4>Drop files here or click to upload.</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 

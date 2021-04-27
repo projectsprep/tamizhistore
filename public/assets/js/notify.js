@@ -17,13 +17,23 @@ $(document).ready(function(){
     }
 
     loadUnseenNotification()
-    $(document).on('click', "#notifydropdown", function(){
-        console.log("something");
-        $(".badge").html('');
-        loadUnseenNotification("yes");
+    $(document).on('click', "#page-header-notifications-dropdown", function(){
+        // console.log("something");
+        // $(".badge").html('');
+        // loadUnseenNotification("yes");
+        alert("Hello world");
     })
 
+    // $(document).on("change","button[aria-expanded]", function(){
+    //     alert("something");
+    // })
+
+    // if($("button[aria-expanded]")[1].ariaExpanded == 'false'){
+    //     alert("something");
+    // }else{
+    //     alert("yes");
+    // }
     setInterval(function(){
         loadUnseenNotification();
-    }, 10000);
+    }, 1000 * 60 * 2);
 })

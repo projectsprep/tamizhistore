@@ -5,8 +5,11 @@ namespace app\controllers;
 use app\core\Controller;
 use app\models\CouponModel;
 use app\core\Application;
-if(!(isset($_COOKIE['user'])))
-header("Location: /login");
+session_start();
+
+if(!(isset($_COOKIE['user']) && isset($_SESSION['user']))){
+    header("Location: /login");
+}
 
 class CouponController extends Controller{
     private $db;

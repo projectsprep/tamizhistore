@@ -4,9 +4,11 @@ namespace app\controllers;
 use app\core\Controller;
 use app\models\CountryCodeModel;
 use app\core\Application;
+session_start();
 
-if(!(isset($_COOKIE['user'])))
-header("Location: /login");
+if(!(isset($_COOKIE['user']) && isset($_SESSION['user']))){
+    header("Location: /login");
+}
 
 class CountryCodeController extends Controller{
     private $db;

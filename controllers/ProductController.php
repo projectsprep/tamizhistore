@@ -5,13 +5,17 @@ use app\core\Controller;
 use app\models\ProductsModel;
 use app\core\Application;
 
-if(!(isset($_COOKIE['user'])))
-header("Location: /login");
+session_start();
+
+if(!(isset($_COOKIE['user']) && isset($_SESSION['user']))){
+    header("Location: /login");
+}
 
 class ProductController extends Controller{
     private $db;
     private $table = "product";
     private Application $app;
+    private $imageDest;
     
     public function __construct()
     {
@@ -23,11 +27,16 @@ class ProductController extends Controller{
         if($this->app->request->getMethod() === "get"){
             return $this->render("products/addProduct");
         }else if($this->app->request->getMethod() === "post"){
-            if(isset($_POST["productName"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["outofstock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["unit"]) && isset($_POST["price"]) && isset($_POST["discount"])){
-                if($this->db->create("product", $_POST["productName"], $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["unit"], $_POST["price"], $_POST["discount"], $_POST['popular'])){
-                    return header("Location: /productlist");
+            if(isset($_POST["productName"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["outofstock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["unit"]) && isset($_POST["price"]) && isset($_POST["discount"]) && isset($_FILES['productimage'])){
+                
+                if($this->validateImage() == true){
+                    if($this->db->create("product", $_POST["productName"], $this->imageDest, $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["unit"], $_POST["price"], $_POST["discount"], $_POST['popular'])){
+                        return header("Location: /productlist");
+                    }else{
+                        return header("Location: /productlist/add");
+                    }
                 }else{
-                    return header("Location: /productlist/add");
+                    echo "something happened";
                 }
             }
         }
@@ -69,6 +78,53 @@ class ProductController extends Controller{
         }else{
             return "why not";
         }
+    }
+
+    public function validateImage(){
+        $targetDir = Application::$ROOT_DIR . "/public/assets/images/product/";
+        $targetFile = $targetDir . basename($_FILES['productimage']['name']);
+        $uploadOk = 1;
+        $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+
+        //check if image is an actual image
+        if(isset($_POST['submit'])){
+            $check = getimagesize($_FILES['productimage']['tmp_name']);
+            if($check !== false){
+                $uploadOk = 1;
+            }else{
+                $uploadOk = 0;
+                echo "File is not an image";
+            }
+        }
+
+        //check if image file already exist
+        if(file_exists($targetFile)){
+            echo "Image file already exist";
+            $uploadOk = 0;
+        }
+
+        // limit the file size
+        if($_FILES['productimage']['size'] > 5000000){
+            $uploadOk = 0;
+            echo "File size too large";
+        }
+
+        if($imageFileType != "jpg" && $imageFileType != 'png' && $imageFileType != "jpeg"){
+            $uploadOk = 0;
+            echo "Only jpg, png and jpeg file formats are allowed";
+        }
+
+        if ($uploadOk == 0) {
+            echo "Your file didn't uploaded for some reasons";
+          // if everything is ok, try to upload file
+          } else {
+            if (move_uploaded_file($_FILES["productimage"]["tmp_name"], $targetFile)) {
+                $this->imageDest = "/assets/images/product/".basename($_FILES['productimage']['name']);
+              return true;
+            } else {
+              return false;
+            }
+          }
     }
 
 }
