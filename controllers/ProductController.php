@@ -27,28 +27,33 @@ class ProductController extends Controller{
         if($this->app->request->getMethod() === "get"){
             return $this->render("products/addProduct");
         }else if($this->app->request->getMethod() === "post"){
-            if(isset($_POST["productName"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["outofstock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["unit"]) && isset($_POST["price"]) && isset($_POST["discount"]) && isset($_FILES['productimage'])){
+            if(isset($_POST["productName"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["outofstock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["range"]) && isset($_POST["price"]) && isset($_POST["discount"]) && isset($_FILES['productimage'])){
                 
                 if($this->validateImage() == true){
                     if($this->db->create("product", $_POST["productName"], $this->imageDest, $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["unit"], $_POST["price"], $_POST["discount"], $_POST['popular'])){
-                        return header("Location: /productlist");
+                        $msg = urlencode("New product created successfully");
+                        return header("Location: /productlist?msg=$msg");
                     }else{
                         return header("Location: /productlist/add");
                     }
                 }else{
                     echo "something happened";
                 }
+            }else{
+                echo "<pre>";
+                var_dump($_POST);
+                echo "</pre>";
             }
         }
     }
 
     public function read(){
-        // $json = $this->db->read($this->table);
-        // if($json){
-            return $this->render("products/productList");
-        // }else{
-        //     return false;
-        // }
+        $json = $this->db->read($this->table);
+        if($json){
+            return $this->render("products/productList", $json);
+        }else{
+            return false;
+        }
     }
 
     public function update(){
@@ -62,16 +67,27 @@ class ProductController extends Controller{
                 }
             }
         }else if($this->app->request->getMethod() === "post"){
-            // if(isset($_POST["productName"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["stock"]) && isset($_POST["publish"]) && isset($_POST["description"]) && isset($_POST["unit"]) && isset($_POST["price"]) && isset($_POST["discount"])){
-            //     return $this->db->update();
-            // }
+            if(isset($_POST["id"]) && isset($_POST["productName"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["outofstock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["range"]) && isset($_POST["price"]) && isset($_POST["discount"])){
+                if($this->db->update("product", $_POST['id'],$_POST["productName"], $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["range"], $_POST["price"], $_POST["discount"], $_POST['popular'])){
+                    $msg = urlencode("Product updated!");
+                    return header("Location: /productlist?msg=$msg");
+                }else{
+                    echo "<pre>";
+                    var_dump($_POST);
+                    echo "</pre>";
+                }
+            }else{
+                echo "<pre>";
+                var_dump($_POST);
+                echo "</pre>";
+            }
         }
     }
 
     public function delete(){
-        if(isset($_GET['id'])){
-            if($this->db->delete("product", $_GET['id'])){
-                return header("Location: /productlist");
+        if(isset($_POST['id'])){
+            if($this->db->delete("product", $_POST['id'])){
+                return header("Location: /productlist?something=something");
             }else{
                 return "content cannot be deleted";
             }

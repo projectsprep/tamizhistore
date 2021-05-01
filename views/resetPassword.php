@@ -3,9 +3,6 @@
 foreach($params as $key=>$value){
     $$key = $value;
 }
-if(isset($notValid)){
-    
-}
 ?>
 
 <!doctype html>
@@ -65,6 +62,26 @@ if(isset($notValid)){
                                     </div>
                                 </a>
                             </div>
+
+                            <?php
+                                    if(isset($_POST['newpassword']) && isset($_POST['confirmpassword'])){
+                                        if($msg == false){
+                                    ?>
+                                            <div class="alert alert-danger">
+                                                Unable to reset password. Please try again later
+                                            </div>
+                                            <?php
+                                        }else if($msg == true){
+                                            ?>
+                                            <div class="alert alert-success">
+                                                New password updated
+                                            </div>
+                                            <?php
+                                            return header("Refresh: 2; URL=/login");
+                                        }
+                                    }
+
+                                ?>
                             <div class="p-2">
                                 <form class="custom-validation" action="" method="post" novalidate>
                                     <div class="mb-3">

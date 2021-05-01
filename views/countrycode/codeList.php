@@ -1,6 +1,31 @@
+<?php
+
+echo "<pre>";
+var_dump($params);
+echo "</pre>";
+?>
+
 <div class="main-content">
                 <div class="page-content">
                     <div class="container-fluid">
+                    <?php
+                        if(isset($_POST['cc']) && isset($_POST['codeStatus'])){
+                            if($msg == true){
+                        ?>
+                                <div class="alert alert-success">
+                                    Added new country code
+                                </div>
+                                <?php
+                            }else if($msg == false){
+                                ?>
+                                <div class="alert alert-danger">
+                                    Unable to create new country code
+                                </div>
+                                <?php
+                            }
+                        }
+
+                    ?>
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="card">

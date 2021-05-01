@@ -1,16 +1,7 @@
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
-        <?php
-            if (isset($_GET['msg'])) {
-            ?>
-                <div class="alert alert-primary alert-dismissible fade show">
-                    <?php echo $_GET['msg']; ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            <?php
-            }
-            ?>
+            <span id="errorMessage"></span>
             <div class="row">
                 <div class="col-xl-6">
                     <div class="card">
@@ -20,7 +11,7 @@
                             <form class="needs-validation" action="" method="post" novalidate enctype="multipart/form-data">
                                 <div class="mb-3">
                                     <label for="formrow-firstname-input" class="form-label">Category name</label>
-                                    <input type="text" class="form-control" id="formrow-firstname-input" name="categoryName" required>
+                                    <input type="text" class="form-control" id="categoryName" name="categoryName" required>
                                 </div>
                                 <!-- <div class="mb-3">
                                     <label for="productname">Image</label>
@@ -39,7 +30,7 @@
                                 </div> -->
                                 <div class="mb-3">
                                     <label class="form-label">Category Image</label>
-                                    <input type="file" class="form-control" required name="categoryimage" />
+                                    <input type="file" class="form-control" required id="categoryImage" name="categoryimage"/>
                                     <div class="invalid-feedback">
                                         Please select a valid category image
                                     </div>
@@ -64,3 +55,31 @@
 </div>
 
 <script src="/assets/libs/dropzone/min/dropzone.min.js"></script>
+<script src="/assets/libs/jquery/jquery.min.js"></script>
+
+<script>
+    $(document).ready(
+        function(){
+            $(document).submit(function(e){
+                var form_data = new FormData();
+                form_data.append("categoryName", document.getElementById("categoryName").value);
+                form_data.append("categoryimage", document.getElementById("categoryImage").files[0].name);
+                $.ajax({
+                    url: "/categorylist/add",
+                    method: "POST",
+                    data: form_data,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    beforeSend: function(){
+                        console.log("uploading...");
+                    },
+                    success: function(){
+                        $(".container-fluid").prepend("<div class='alert alert-primary alert-dismissible fade show'>Category added successfully <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>")
+                    }
+                })
+                // e.preventDefault();
+            })
+        }
+    )
+</script>

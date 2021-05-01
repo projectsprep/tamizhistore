@@ -14,8 +14,8 @@ class CountryCodeModel{
             $this->conn = $this->conn->conn();
     }
 
-    public function create($table, $categoryName, $categoryImage){
-        $query = "INSERT INTO $table (catname, catimg) VALUES ('$categoryName', '$categoryImage');";
+    public function create($table, $ccode, $status){
+        $query = "INSERT INTO $table (ccode, status) VALUES ('$ccode', '$status');";
         $result = $this->conn->query($query);
         if($result){
             return true;

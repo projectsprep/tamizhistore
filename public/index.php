@@ -1,6 +1,7 @@
 <?php
 
 require __DIR__. '/../vendor/autoload.php';
+// error_reporting(0);
 
 use app\core\Application;
 use app\controllers\CategoryController;
@@ -21,6 +22,7 @@ $db = new DB();
 
 // /profile controlling routes
 $app->router->get('/login', [ProfileController::class, 'login']);
+$app->router->get('/maintenance', "maintenance");
 $app->router->post('/login', [ProfileController::class, 'login']);
 $app->router->get("/logout", [ProfileController::class, "logout"]);
 $app->router->get("/login/forgotpassword", [ProfileController::class, "forgotPassword"]);
@@ -37,8 +39,8 @@ $app->router->get('/', [CategoryController::class, 'home']);
 $app->router->get("/categorylist/add", [CategoryController::class, "add"]);
 $app->router->post("/categorylist/add", [CategoryController::class, "add"]);
 $app->router->get("/categorylist", [CategoryController::class, "read"]);
-$app->router->get("/categorylist/delete", [CategoryController::class, "delete"]);
-$app->router->get("/categorylist/edit", [CategoryController::class, "update"]);
+$app->router->post("/categorylist/delete", [CategoryController::class, "delete"]);
+// $app->router->get("/categorylist/edit", [CategoryController::class, "update"]);
 $app->router->post("/categorylist/edit", [CategoryController::class, "update"]);
 
 // /productlist routes
@@ -47,11 +49,16 @@ $app->router->get("/productlist/add", [ProductController::class, "create"]);
 $app->router->post("/productlist/add", [ProductController::class, "create"]);
 $app->router->get("/productlist/edit", [ProductController::class, "update"]);
 $app->router->post("/productlist/edit", [ProductController::class, "update"]);
-$app->router->get("/productlist/delete", [ProductController::class, "delete"]);
+$app->router->post("/productlist/delete", [ProductController::class, "delete"]);
 
 // /api
 $app->router->get("/api/product", [ApiController::class, "getProducts"]);
 $app->router->get("/api/category", [ApiController::class, "getCategories"]);
+$app->router->post("/api/coupons", [ApiController::class, "getCoupons"]);
+$app->router->get("/api/getcategory", [ApiController::class, "getCategory"]);
+$app->router->get("/api/getcategorynames", [ApiController::class, "getCategoryNames"]);
+$app->router->post("/api/getsubcategorynames", [ApiController::class, "getSubcategoryNames"]);
+$app->router->get("/api/getproduct", [ApiController::class, "getProduct"]);
 $app->router->get("/api/pushednotifies", [ApiController::class, "getNotifications"]);
 $app->router->get("/api/pushednotifiessite", [ApiController::class, "pushedNotifications"]);
 
@@ -77,6 +84,7 @@ $app->router->post("/notifications", [NotificationsController::class, "push"]);
 // /countrycode
 $app->router->get("/countrycode", [CountryCodeController::class, "read"]);
 $app->router->get("/countrycode/add", [CountryCodeController::class, "create"]);
+$app->router->post("/countrycode/add", [CountryCodeController::class, "create"]);
 
 // /paymentlist
 $app->router->get("/paymentlist", [PaymentController::class, "read"]);

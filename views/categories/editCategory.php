@@ -11,7 +11,7 @@
                                         <h4 class="card-title">Basic Information</h4>
                                         <p class="card-title-desc">Fill all information below</p>
         
-                                        <form action="" method="post">
+                                        <form action="" method="post" enctype="multipart/form-data">
                                             <?php 
                                                 foreach($params as $param){
                                                     foreach($param as $key=>$value){
@@ -23,13 +23,13 @@
                                                 <div class="col-sm-6">
                                                     <div class="mb-3">
                                                         <label for="productname">Category Name</label>
-                                                        <input id="productname" name="categoryName" type="text" class="form-control" value="<?= $catname?>">
+                                                        <input id="productname" name="categoryName" type="text" class="form-control" value="<?= $catname?>" required>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label for="productname">Image</label>
                                                         <img src="<?=$catimg?>" alt="">
                                                         <div class="fallback">
-                                                            <input name="categoryImage" type="file" />
+                                                            <input name="categoryimage" type="file" />
                                                         </div>
                                                     </div>
                                                     <input type="hidden" value="<?=$id?>" name="id">

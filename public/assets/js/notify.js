@@ -17,7 +17,7 @@ $(document).ready(function(){
     }
 
     loadUnseenNotification()
-    $(document).on('click', "#page-header-notifications-dropdown", function(){
+    $(document).on('click', "#notifydropdown", function(){
         // console.log("something");
         // $(".badge").html('');
         // loadUnseenNotification("yes");

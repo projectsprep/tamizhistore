@@ -19,8 +19,11 @@ class CategoryModel{
         $query = "INSERT INTO $table (catname, catimg) VALUES ('$categoryName', '$categoryImage');";
         $result = $this->conn->query($query);
         if($result){
+            
+            
             return true;
         }else{
+            
             return false;
         }
     }
@@ -37,29 +40,56 @@ class CategoryModel{
                 }
             }
         }
-            return json_encode($array);
+        
+        
+        return json_encode($array);
     }
 
     public function read($table){
-        $query = "Select * from $table";
+        $query = "Select * from $table ORDER BY id DESC";
         $result = $this->conn->query($query);
         $array = [];
         if($result->num_rows > 0){
             while($row = $result->fetch_assoc()){
                 array_push($array, $row);
             }
+            
+            
             return json_encode($array);
         }else{
+            
+            
             return false;
         }
+    }
+
+    public function getCategoryById($table, $id){
+        $table = $this->conn->real_escape_string($table);
+        $id = $this->conn->real_escape_string($id);
+        $query = "SELECT * FROM $table WHERE id = $id";
+        $result = $this->conn->query($query);
+        $array=[];
+       
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                array_push($array, $row);
+            }
+            return json_encode($array);
+        }else{
+            return json_encode("No results found");
+        }
+
     }
 
     public function update($table, $id, $catname, $catimage){
         $query = "UPDATE $table set catname='$catname', catimg='$catimage' where id=$id";
         $result = $this->conn->query($query);
         if($result){
+            
+            
             return true;
         }else{
+            
             return false;
         }
     }
@@ -72,8 +102,11 @@ class CategoryModel{
             while($row = $result->fetch_assoc()){
                 array_push($array, $row);
             }
+            
+            
             return json_encode($array);
         }else{
+            
             return false;
         }
     }
@@ -81,9 +114,11 @@ class CategoryModel{
     public function delete($table, $id){
         $query = "DELETE FROM $table where id=$id";
         $result = $this->conn->query($query);
-        if($result){
+        if($result == 1){
+            
             return true;
         }else{
+            
             return false;
         }
     }

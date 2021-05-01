@@ -44,9 +44,9 @@ class Router{
         echo call_user_func($callback);
     }
 
-    public function renderView($callback, $params=[]){
+    public function renderView($callback, $params=[], $msg=[]){
         $layout = $this->renderLayout($callback);
-        $view = $this->renderOnlyView($callback, $params);
+        $view = $this->renderOnlyView($callback, $params, $msg);
         return str_replace('{{content}}', $view, $layout);
     }
 
@@ -56,13 +56,18 @@ class Router{
         return ob_get_clean();
     }
 
-    public function renderOnlyView($view, $params=[]){
+    public function renderOnlyView($view, $params=[], $msg=[]){
         if(!empty($params)){
             // if(type($params) === "array"){
             //     $params = "Hello world";
             // }else if(type($params) === "json"){
                 $params = json_decode($params, true);
+                // $params = array_merge($params, json_decode($msg));
             // }
+        }
+
+        if(!empty($msg)){
+            $msg = json_decode($msg, true);
         }
 
         

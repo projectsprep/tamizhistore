@@ -3,9 +3,7 @@
 foreach($params as $key=>$value){
     $$key = $value;
 }
-if(isset($notValid)){
-    
-}
+
 ?>
 
 <!doctype html>
@@ -67,6 +65,24 @@ if(isset($notValid)){
                                 </a>
                             </div>
                             <div class="p-2">
+                            <?php
+                                    if(isset($_POST['username']) && isset($_POST['pass'])){
+                                        if($msg == false){
+                                    ?>
+                                            <div class="alert alert-danger">
+                                                Username or password is incorrect
+                                            </div>
+                                            <?php
+                                        }else if($msg == "not set"){
+                                            ?>
+                                            <div class="alert alert-danger">
+                                                All fields are required
+                                            </div>
+                                            <?php
+                                        }
+                                    }
+
+                                ?>
                                 <form class="form-horizontal" action="" method="post">
 
                                     <div class="mb-3">

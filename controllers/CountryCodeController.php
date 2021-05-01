@@ -31,9 +31,12 @@ class CountryCodeController extends Controller{
         if($this->app->request->getMethod() === "get"){
             return $this->render("countrycode/addCode");
         }else if($this->app->request->getMethod() === "post"){
-            if(isset($_POST['categoryName']) && isset($_POST['categoryImage'])){
-                if($this->db->create('category', $_POST['categoryName'], $_POST['categoryImage'])){
-                    return header("Location: /categorylist");
+            if(isset($_POST['cc']) && isset($_POST['codeStatus'])){
+                $status = $_POST['status'] == "publish" ? 1 : 0;
+                if($this->db->create('code', $_POST['ccode'], $status)){
+                    return $this->render("countrycode/codeList");
+                }else{
+                    return $this->render("countrycode/codeList");
                 }
             }
         }

@@ -22,21 +22,30 @@ class CategoryController extends Controller{
     }
 
     public function add(){
+        $json = $this->db->read("category");
         if($this->app->request->getMethod() === "get"){
-            return $this->render("categories/addCategory");
+            return $this->render("categories/tempAC");
         }else if($this->app->request->getMethod() === "post"){
             if(isset($_POST['categoryName'])){
-                if($this->validateImage() == true){
+                $validateImage = $this->validateImage();
+                if($validateImage === true){
                     if($this->db->create("category", $_POST["categoryName"], $this->imageDest)){
-                        return header("Location: /categorylist");
+                        return header("Refresh: 1; URL=/categorylist");
                     }else{
-                        return header("Location: /categorylist/add");
+                        $msg=urlencode("Unable to add new category");
+                        return header("Location: /categorylist?msg=".$msg);    
+                        // return $this->render("categories/categoryList", $json, json_encode(["msg"=>"Unable to add new category"]));
                     }
                 }else{
-                    echo "something happened";
+                    $msg=urlencode($validateImage);
+                    return header("Location: /categorylist?msg=".$msg);
+                    // return $this->render("categories/tempCL", $msg=json_encode(["msg"=>$validateImage]));
                 }
             }else{
-                echo "here somethng happened";
+                $msg=urlencode("Unable to add new category");
+                return header("Location: /categorylist?msg=".$msg);
+
+                // return $this->render("categories/categoryList", $json, json_encode(["msg"=>"Unable to add new category. Check if all values are set"]));
             }
         }
     }
@@ -49,42 +58,59 @@ class CategoryController extends Controller{
     public function read(){
         $json = $this->db->read("category");
         return $this->render("categories/categoryList", $json);
+        // return $this->render("categories/categoryList");
     }
 
     public function delete(){
-        if(isset($_GET['id'])){
-            if($this->db->delete("category", $_GET['id'])){
+        $json = $this->db->read("category");
+        if(isset($_POST['id'])){
+            if($this->db->delete("category", $_POST['id'])){
                 return header("Location: /categorylist");
+            }else{
+                return "something";
             }
         }else{
-            echo "Invalid ID";
+            return $this->render("categories/categoryList", $json, json_encode(["msg"=>"Unable to delete a category"]));
         }
     }
 
     public function update(){
+        $json = $this->db->read("category");
         if($this->app->request->getMethod() === "get"){
-            if(isset($_GET['id'])){
+            if(isset($_GET['id']) && $_GET['id']!=""){
                 $json = $this->db->edit("category", $_GET['id']);
                 return $this->render("categories/editCategory", $json);
             }else{
-                echo "Invalid ID";
+                return $this->render("categories/categoryList", $json, json_encode(["msg"=>"Invalid Id"]));
             }
         }else if($this->app->request->getMethod() === "post"){
-            if(isset($_POST['id']) and isset($_POST['categoryName']) and isset($_POST['categoryimage'])){
-                if($this->db->update("category", $_POST['id'], $_POST['categoryName'], $_POST['categoryimage'])){
-                    return header("Location: /categorylist");
+            if(isset($_POST['id']) && isset($_POST['categoryName']) && isset($_FILES['categoryimage'])){
+                $validateImage = $this->validateImage();
+                if($validateImage === true){
+                    if($this->db->update("category", $_POST['id'],$_POST["categoryName"], $this->imageDest)){
+                        return header("Refresh: 1; URL=/categorylist");
+                    }else{
+                        $msg = urlencode("Unable to update category");
+                        return header("Location: /categorylist?msg=$msg");
+                        // return $this->render("categories/tempCL", $json, json_encode(["msg"=>"Unable to add new category"]));
+                    }
+                }else{
+                    $msg = urlencode("$validateImage");
+                    return header("Location: /categorylist?msg=$msg");
+
+                    // return $this->render("categories/temp", $json, json_encode(["msg"=>$validateImage]));
                 }
             }else{
-                echo "Invalid ID";
+                $msg = urlencode("Unable to update category");
+                return header("Location: /categorylist?msg=$msg");
+
+                // return $this->render("categories/categoryList", $json, json_encode(["msg"=>"Unable to add new category. Check if all values are set"]));
             }
         }
         
     }
 
     public function validateImage(){
-        echo "<pre>";
-        var_dump($_FILES);
-        echo "</pre>";
         $targetDir = Application::$ROOT_DIR . "/public/assets/images/category/";
         $targetFile = $targetDir . basename($_FILES['categoryimage']['name']);
         $uploadOk = 1;
@@ -97,29 +123,29 @@ class CategoryController extends Controller{
                 $uploadOk = 1;
             }else{
                 $uploadOk = 0;
-                echo "File is not an image";
+                return "File is not an image";
             }
         }
 
         //check if image file already exist
         if(file_exists($targetFile)){
-            echo "Image file already exist";
+            return "Image file already exist";
             $uploadOk = 0;
         }
 
         // limit the file size
         if($_FILES['categoryimage']['size'] > 5000000){
             $uploadOk = 0;
-            echo "File size too large";
+            return "File size too large";
         }
 
         if($imageFileType != "jpg" && $imageFileType != 'png' && $imageFileType != "jpeg"){
             $uploadOk = 0;
-            echo "Only jpg, png and jpeg file formats are allowed";
+            return "Only jpg, png and jpeg file formats are allowed";
         }
 
         if ($uploadOk == 0) {
-            echo "Your file didn't uploaded for some reasons";
+            return "Your file didn't uploaded for some reasons";
           // if everything is ok, try to upload file
           } else {
             if (move_uploaded_file($_FILES["categoryimage"]["tmp_name"], $targetFile)) {

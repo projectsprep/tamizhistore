@@ -34,12 +34,14 @@ class ProfileController extends Controller{
                     $this->setAccess($_POST['username']);
                     return header("Location: /");
                 }else{
-                    $array = ["notValid"=>"true"];
+                    $array = ["msg"=>false];
                     $json = json_encode($array);
                     return $this->app->router->renderOnlyView("login", $json);
                 }
             }else{
-                return "somethibg happened";
+                    $array = ["msg"=>'not set'];
+                    $json = json_encode($array);
+                    return $this->app->router->renderOnlyView("login", $json);  
             }
         }
     }
@@ -102,8 +104,6 @@ class ProfileController extends Controller{
                     if($verify === $_GET['verify']){
                         return $this->app->router->renderOnlyView("resetPassword");
                     }
-                }else{
-                    
                 }
             }
             $this->DB->close();
@@ -113,8 +113,11 @@ class ProfileController extends Controller{
                     $newPassword = $this->DB->real_escape_string($_POST['newpassword']);
                     $username = $this->DB->real_escape_string($_POST['username']);
                     $result = $this->DB->query("UPDATE admin SET password='$newPassword' WHERE username='$username'");
+                    echo $result;
                     if($result == 1){
-                        return header("Location: /login");
+                        return $this->app->router->renderOnlyView("resetPassword", json_encode(["msg"=>true]));
+                    }else{
+                        return $this->app->router->renderOnlyView("resetPassword", json_encode(["msg"=>false]));
                     }
                 }
             }

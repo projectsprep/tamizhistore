@@ -39,6 +39,22 @@ class CouponModel{
         }
     }
 
+    public function getCouponById($table, $id){
+        $table = $this->conn->real_escape_string($table);
+        // $id = htmlspecialchars($id);
+        $query = "SELECT * FROM $table WHERE id = $id";
+        $result = $this->conn->query($query);
+        $array = [];
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                array_push($array, $row);
+            }
+            return json_encode($array);
+        }else{
+            return false;
+        }
+    }
+
     public function update($table, $id, $catname, $catimage){
         $query = "UPDATE $table set catname='$catname', catimg='$catimage' where id=$id";
         $result = $this->conn->query($query);

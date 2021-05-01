@@ -114,14 +114,8 @@
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">Product (GMS,KG,LTR,ML,PCS)</label>
-                                        <select class="form-select" required="" name="unit">
-                                            <option selected="" value="KG">KG</option>
-                                            <option value="GMS">GMS</option>
-                                            <option value="LTR">LTR</option>
-                                            <option value="ML">ML</option>
-                                            <option value="PCS">PCS</option>
-                                        </select>
+                                        <label class="form-label">Product (GMS,KG,LTR,ML,PCS..)</label>
+                                        <input type="text" name="range" class="form-control">
                                         <div class="invalid-feedback">
                                             Please select a valid option.
                                         </div>
