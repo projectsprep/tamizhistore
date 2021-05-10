@@ -55,8 +55,18 @@ class CouponModel{
         }
     }
 
-    public function update($table, $id, $catname, $catimage){
-        $query = "UPDATE $table set catname='$catname', catimg='$catimage' where id=$id";
+    public function update($table, $id, $expiry, $code, $title, $status, $minAmt, $discount, $description){
+        $table = $this->conn->real_escape_string($table);
+        $expiry = $this->conn->real_escape_string($expiry);
+        $code = $this->conn->real_escape_string($code);
+        $title = $this->conn->real_escape_string($table);
+        $status = $this->conn->real_escape_string($status);
+        $minAmt = $this->conn->real_escape_string($minAmt);
+        $discount = $this->conn->real_escape_string($discount);
+        $description = $this->conn->real_escape_string($description);
+        $id = htmlspecialchars($id);
+
+        $query = "UPDATE $table set cdate='$expiry', c_desc='$description', c_value='$discount', c_title='$code', ctitle='$title', status='$status', min_amt='$minAmt' where id=$id";
         $result = $this->conn->query($query);
         if($result){
             return true;

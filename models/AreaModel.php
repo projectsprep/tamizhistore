@@ -15,8 +15,11 @@ class AreaModel{
         $this->conn = $this->conn->conn();
     }
 
-    public function create($table, $categoryName, $categoryImage){
-        $query = "INSERT INTO $table (catname, catimg) VALUES ('$categoryName', '$categoryImage');";
+    public function create($table, $areaName, $delCharge, $status){
+        $table = $this->conn->real_escape_string($table);
+        $areaName = $this->conn->real_escape_string($areaName);
+        $delCharge = $this->conn->real_escape_string($delCharge);
+        $query = "INSERT INTO $table (`name`, dcharge, `status`) VALUES ('$areaName', '$delCharge', $status);";
         $result = $this->conn->query($query);
         if($result){
             return true;
@@ -33,14 +36,38 @@ class AreaModel{
             while($row = $result->fetch_assoc()){
                 array_push($array, $row);
             }
+            // return json_encode($array);
+            return false;
+        }else{
+            return false;
+        }
+    }
+
+    public function getAreaById($table, $id){
+        $table = $this->conn->real_escape_string($table);
+        $id = htmlspecialchars($id);
+        $query = "SELECT * FROM $table where id=$id";
+        $result = $this->conn->query($query);
+        $array = [];
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                array_push($array, $row);
+            }
+
             return json_encode($array);
         }else{
             return false;
         }
     }
 
-    public function update($table, $id, $catname, $catimage){
-        $query = "UPDATE $table set catname='$catname', catimg='$catimage' where id=$id";
+    public function update($table, $id, $areaName, $delCharge, $status){
+        $table = $this->conn->real_escape_string($table);
+        $areaName = $this->conn->real_escape_string($areaName);
+        $delCharge = $this->conn->real_escape_string($delCharge);
+        $status = $this->conn->real_escape_string($status);
+        $id = htmlspecialchars($id);
+
+        $query = "UPDATE $table set name='$areaName', dcharge='$delCharge' ,status='$status' where id=$id";
         $result = $this->conn->query($query);
         if($result){
             return true;

@@ -20,7 +20,7 @@
 
                                     <div class="mb-3">
                                         <label class="form-label">Max Time Slot</label>
-                                        <input type="time" class="form-control" required name="MaxTime"/>
+                                        <input type="time" class="form-control" required name="maxTime"/>
                                         <div class="invalid-feedback">
                                             Please enter a valid Max time
                                         </div>

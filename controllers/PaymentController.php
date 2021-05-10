@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\core\Controller;
 use app\models\PaymentModel;
 use app\core\Application;
+use Exception;
 
 session_start();
 
@@ -21,10 +22,34 @@ class PaymentController extends Controller{
     }
     public function read(){
         $json = $this->db->read("payment_list");
-        if($json){
-            return $this->render("payment/paymentList", $json);
-        }else{
-            return "Something went wrong";
+        try{
+            if($json){
+                return $this->render("payment/paymentList", $json);
+            }else{
+                throw new Exception("Unable to fetch data. Please try again later!");
+            }
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /paymentlist?msg=$msg");
+        }
+    }
+
+    public function update(){
+        try{
+            if(isset($_POST['id']) && isset($_POST['gateway']) && isset($_POST['title']) && isset($_POST['value']) && isset($_POST['status'])){
+                if($this->db->update("payment_list", $_POST['id'], $_POST['gateway'], $_POST['title'], $_POST['value'], $_POST['status'])){
+                    $msg = urlencode("Updated Paymentlist!");
+                    return header("Location: /paymentlist?msg=$msg");
+                }else{
+                    $msg = urlencode("Unable to update paymentlist");
+                    return header("Location: /paymentlist?msg=$msg");
+                }
+            }else{
+                throw new Exception("All fields are required!");
+            }
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /paymentlist?msg=$msg");
         }
     }
 }

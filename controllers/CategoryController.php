@@ -5,12 +5,19 @@ namespace app\controllers;
 use app\core\Controller;
 use app\models\CategoryModel;
 use app\core\Application;
+use Exception;
+
 session_start();
 
 if(!(isset($_COOKIE['user']) && isset($_SESSION['user']))){
     header("Location: /login");
 }
-
+if($_SESSION['notify'] === true){
+    ?>
+    <!-- <script>$("audio")[0].play();</script> -->
+    <script>document.getElementsByTagName("audio")[0].play()</script>
+    <?php
+}
 class CategoryController extends Controller{
     private $db;
     private $imageDest;
@@ -22,11 +29,10 @@ class CategoryController extends Controller{
     }
 
     public function add(){
-        $json = $this->db->read("category");
         if($this->app->request->getMethod() === "get"){
-            return $this->render("categories/tempAC");
+            return $this->render("categories/addCategory");
         }else if($this->app->request->getMethod() === "post"){
-            if(isset($_POST['categoryName'])){
+            if(isset($_POST['categoryName']) && isset($_FILES['categoryimage']['name']) && $_FILES['categoryimage']['name'] != ""){
                 $validateImage = $this->validateImage();
                 if($validateImage === true){
                     if($this->db->create("category", $_POST["categoryName"], $this->imageDest)){
@@ -34,65 +40,93 @@ class CategoryController extends Controller{
                     }else{
                         $msg=urlencode("Unable to add new category");
                         return header("Location: /categorylist?msg=".$msg);    
-                        // return $this->render("categories/categoryList", $json, json_encode(["msg"=>"Unable to add new category"]));
                     }
                 }else{
                     $msg=urlencode($validateImage);
                     return header("Location: /categorylist?msg=".$msg);
-                    // return $this->render("categories/tempCL", $msg=json_encode(["msg"=>$validateImage]));
                 }
             }else{
-                $msg=urlencode("Unable to add new category");
-                return header("Location: /categorylist?msg=".$msg);
-
-                // return $this->render("categories/categoryList", $json, json_encode(["msg"=>"Unable to add new category. Check if all values are set"]));
+                $msg=urlencode("All input fields are required!");
+                return header("Location: /categorylist/add?msg=".$msg);
             }
         }
     }
 
     public function home(){
         $json = $this->db->getCount();
-        return $this->render('home', $json);
+        try{
+            if($json){
+                return $this->render('home', $json);
+            }else{
+                throw new Exception("Unable to fetch data. Please try again later.");
+            }
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /categorylist?msg=$msg");
+        }
     }
 
     public function read(){
         $json = $this->db->read("category");
-        return $this->render("categories/categoryList", $json);
-        // return $this->render("categories/categoryList");
+        try{
+            if($json){
+                return $this->render("categories/categoryList", $json);
+            }else{
+                throw new Exception("Unable to fetch data. Please try again later");
+            }
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /cateorylist?msg=$msg");
+        }
     }
 
     public function delete(){
-        $json = $this->db->read("category");
-        if(isset($_POST['id'])){
-            if($this->db->delete("category", $_POST['id'])){
-                return header("Location: /categorylist");
+        try{
+            if(isset($_POST['id'])){
+                if($this->db->delete("category", $_POST['id'])){
+                    return header("Location: /categorylist");
+                }else{
+                    $msg = urlencode("Unable to delete a category.");
+                    return header("Location: /categorylist?msg=$msg");
+                }
             }else{
-                return "something";
+                throw new Exception("Unable to delete a category.");
             }
-        }else{
-            return $this->render("categories/categoryList", $json, json_encode(["msg"=>"Unable to delete a category"]));
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /categorylist?msg=$msg");
         }
     }
 
     public function update(){
         $json = $this->db->read("category");
         if($this->app->request->getMethod() === "get"){
-            if(isset($_GET['id']) && $_GET['id']!=""){
-                $json = $this->db->edit("category", $_GET['id']);
-                return $this->render("categories/editCategory", $json);
-            }else{
-                return $this->render("categories/categoryList", $json, json_encode(["msg"=>"Invalid Id"]));
+            try{
+                if($json){
+                    if(isset($_GET['id']) && $_GET['id']!=""){
+                        $json = $this->db->edit("category", $_GET['id']);
+                        return $this->render("categories/editCategory", $json);
+                    }else{
+                        $msg = urlencode("Invalid ID");
+                        return header("Location: /categorylist?msg=$msg");
+                    }
+                }else{
+                    throw new Exception("Unable to fetch data. Please try again later!");
+                }
+            }catch(Exception $e){
+                $msg = urlencode($e->getMessage());
+                return header("Location: /categorylist?msg=$msg");
             }
         }else if($this->app->request->getMethod() === "post"){
             if(isset($_POST['id']) && isset($_POST['categoryName']) && isset($_FILES['categoryimage'])){
                 $validateImage = $this->validateImage();
                 if($validateImage === true){
                     if($this->db->update("category", $_POST['id'],$_POST["categoryName"], $this->imageDest)){
-                        return header("Refresh: 1; URL=/categorylist");
+                        $msg = urlencode("Category updated successfully!");
+                        return header("Location: /categorylist?msg=$msg");
                     }else{
                         $msg = urlencode("Unable to update category");
                         return header("Location: /categorylist?msg=$msg");
-                        // return $this->render("categories/tempCL", $json, json_encode(["msg"=>"Unable to add new category"]));
                     }
                 }else{
                     $msg = urlencode("$validateImage");

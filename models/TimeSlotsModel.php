@@ -15,11 +15,32 @@ class TimeSlotsModel{
         $this->conn = $this->conn->conn();
     }
 
-    public function create($table, $categoryName, $categoryImage){
-        $query = "INSERT INTO $table (catname, catimg) VALUES ('$categoryName', '$categoryImage');";
+    public function create($table, $minTime, $maxTime){
+        $table = $this->conn->real_escape_string($table);
+        $minTime = $this->conn->real_escape_string($minTime);
+        $maxTime = $this->conn->real_escape_string($maxTime);
+
+        $query = "INSERT INTO $table (mintime, maxtime) VALUES ('$minTime', '$maxTime');";
         $result = $this->conn->query($query);
         if($result){
             return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function getTimeslotById($table, $id){
+        $table = $this->conn->real_escape_string($table);
+        $id = htmlspecialchars($id);
+        $query = "SELECT * FROM $table where id = $id";
+        $result = $this->conn->query($query);
+        $array = [];
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                array_push($array, $row);
+            }
+
+            return json_encode($array);
         }else{
             return false;
         }
@@ -39,8 +60,13 @@ class TimeSlotsModel{
         }
     }
 
-    public function update($table, $id, $catname, $catimage){
-        $query = "UPDATE $table set catname='$catname', catimg='$catimage' where id=$id";
+    public function update($table, $id, $minTime, $maxTime){
+        $table = $this->conn->real_escape_string($table);
+        $minTime = $this->conn->real_escape_string($minTime);
+        $maxTime = $this->conn->real_escape_string($maxTime);
+        $id = htmlspecialchars($id);
+        
+        $query = "UPDATE $table set mintime='$minTime', maxtime='$maxTime' where id=$id";
         $result = $this->conn->query($query);
         if($result){
             return true;
@@ -64,6 +90,9 @@ class TimeSlotsModel{
     }
 
     public function delete($table, $id){
+        $table = $this->conn->real_escape_string($table);
+        $id = htmlspecialchars($id);
+        
         $query = "DELETE FROM $table where id=$id";
         $result = $this->conn->query($query);
         if($result){

@@ -23,11 +23,8 @@ $db = $db->conn();
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="spinner-border" role="status" id="loader">
-                                <span class="sr-only">Loading...</span>
-                            </div>
                             <div class="table-responsive">
-                                <table class="table align-middle table-nowrap table-hover" style="display: none;" id="datatable">
+                                <table class="table table-nowrap table-hover table-striped" style="display: none;" id="datatable">
                                     <thead class="table-light thead-dark">
                                         <tr>
                                             <th scope="col" style="width: 70px;">Sl.no</th>
@@ -62,7 +59,7 @@ $db = $db->conn();
                                                     <h5 class="font-size-14 mb-1"><?= $pname; ?></h5>
                                                 </td>
                                                 <td>
-                                                    <img src="<?= $pimg; ?>" class="img-thumbnail rounded" alt="">
+                                                    <!-- <img src="<?= $pimg; ?>" class="img-thumbnail rounded" alt=""> -->
                                                 </td>
                                                 <td>
                                                     <div>
@@ -110,6 +107,11 @@ $db = $db->conn();
                                         ?>
                                     </tbody>
                                 </table>
+                                <div class="text-center">
+                                    <div class="spinner-border" role="status" id="loader">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -127,7 +129,7 @@ $db = $db->conn();
             <form action="/productlist/edit" method="Post" id="editProductForm" enctype="multipart/form-data">
                 <div class="modal-header">
                     <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                    <h4 class="modal-title">Edit category</h4>
+                    <h4 class="modal-title">Edit Product</h4>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
@@ -169,21 +171,24 @@ $db = $db->conn();
                         <label for="validationCustom03" class="form-label">In Stock?</label>
                         <select class="form-select" required="" name="outofstock" id="stock">
                             <option selected="" value=""></option>
-                            <option value=""><?= $stock == '1' ? 'No' : 'Yes' ?></option>
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
                         </select>
-                    </div>
+                </div>
                     <div class="mb-3">
                         <label for="validationCustom03" class="form-label">Product publish or unpublish?</label>
                         <select class="form-select" required="" id="productStatus" name="publish">
                             <option selected="" value=""></option>
-                            <option value="<?= $status == '1' ? 'unpublish' : 'publish' ?>"><?= $status == '1' ? 'Unpublish' : 'Publish' ?></option>
+                            <option value="0">Unpublish</option>
+                            <option value="1">Publish</option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="validationCustom03" class="form-label">Make product popular?</label>
                         <select class="form-select" required="" id="popular" name="popular">
                             <option selected="" value=""></option>
-                            <option value="<?= $status == '1' ? '0' : '1' ?>"><?= $status == '1' ? 'No' : 'Yes' ?></option>
+                            <option value="0">Unpopular</option>
+                            <option value="1">Popular</option>
                         </select>
                     </div>
                     <div class="mb-3">

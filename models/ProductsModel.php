@@ -13,26 +13,24 @@ class ProductsModel{
         $this->conn = $this->conn->conn();
     }
 
-    public function read($table, $min='', $max=''){
-        if(($min == "") && ($max=="")){
-            $query = "select p.id, p.pname, p.pimg, p.sname, category.catname, subcategory.name, p.pgms, p.pprice, p.stock, p.status, p.psdesc from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id order by id desc";
-        }else{
-            $query = "select p.id, p.pname, p.pimg, p.sname, category.catname, subcategory.name, p.pgms, p.pprice, p.stock, p.status from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id order by id desc limit $min, $max";
-        }
+    public function read($table){
+        $query = "select p.id, p.pname, p.pimg, p.sname, category.catname, subcategory.name, p.pgms, p.pprice, p.stock, p.status, p.psdesc from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id order by id desc";
         $result = $this->conn->query($query);
         $array = [];
         if($result->num_rows > 0){
             while($row = $result->fetch_assoc()){
                 array_push($array, $row);
             }
+            $array = mb_convert_encoding($array, 'UTF-8', 'UTF-8'); 
             return json_encode($array);
         }else{
-            return false;
+            return $this->conn->error;
         }
     }
 
     public function getProductById($table, $id){
-        $id = $this->conn->real_escape_string($id);
+        $table = $this->conn->real_escape_string($table);
+        $id = htmlspecialchars($id);
         $query = "select p.id, p.pname, p.pimg, p.sname, category.catname, subcategory.name, p.pgms, p.pprice, p.stock, p.status, category.id cid, subcategory.id sid, subcategory.name subname, p.popular, p.psdesc, p.discount from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id where p.id = $id";
         $array = [];
         $result = $this->conn->query($query);

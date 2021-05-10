@@ -103,8 +103,17 @@ class ProfileController extends Controller{
                     $verify = md5($row['id']);
                     if($verify === $_GET['verify']){
                         return $this->app->router->renderOnlyView("resetPassword");
+                    }else{
+                        $msg = urlencode("Invalid token for reset password!");
+                        return header("Location: /login?msg=$msg");
                     }
+                }else{
+                    $msg = urlencode("Username not found!");
+                    return header("Location: /login?msg=$msg");
                 }
+            }else{
+                $msg = urlencode("All input fields are required!");
+                return header("Location: /login?msg=$msg");
             }
             $this->DB->close();
         }else if($this->app->request->getMethod() === "post"){
@@ -119,7 +128,13 @@ class ProfileController extends Controller{
                     }else{
                         return $this->app->router->renderOnlyView("resetPassword", json_encode(["msg"=>false]));
                     }
+                }else{
+                    $msg = urlencode("New password and confirm password did not match!");
+                    return header("Location: /login?msg=$msg");
                 }
+            }else{
+                $msg = urlencode("All input fields are required!");
+                return header("Location: /login?msg=$msg");
             }
         }
     }

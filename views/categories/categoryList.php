@@ -24,11 +24,8 @@ $conn = $db->conn();
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                        <div class="spinner-border" role="status" id="loader" >
-                                    <span class="sr-only">Loading...</span>
-                                </div>
                             <div class="table-responsive">
-                                <table class="table table-nowrap table-hover dt-responsive" style="display: none;" id="datatable">
+                                <table class="table table-nowrap table-striped table-hover" style="display: none;" id="datatable">
                                     <thead class="table-light thead-dark">
                                         <tr>
                                             <th scope="col" style="width: 70px;">Sl.no</th>
@@ -39,7 +36,7 @@ $conn = $db->conn();
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    
+
                                         <?php
                                         $i = 1;
                                         foreach ($params as $param) {
@@ -57,7 +54,7 @@ $conn = $db->conn();
                                                     <h5 class="font-size-14 mb-1"><?= $catname; ?></h5>
                                                 </td>
                                                 <td align="center">
-                                                    <img src="<?= $catimg; ?>" class="img-thumbnail" style="max-width:65%" alt="">
+                                                    <img src="<?= $catimg; ?>" class="img-thumbnail" alt="">
                                                 </td>
                                                 <td align="center">
                                                     <div>
@@ -75,6 +72,11 @@ $conn = $db->conn();
                                         ?>
                                     </tbody>
                                 </table>
+                                <div class="text-center">
+                                    <div class="spinner-border" role="status" id="loader">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -93,7 +95,7 @@ $conn = $db->conn();
             <form action="/categorylist/edit" method="Post" id="editCategoryForm" enctype="multipart/form-data">
                 <div class="modal-header">
                     <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                    <h4 class="modal-title">Edit category</h4>
+                    <h4 class="modal-title">Edit Category</h4>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
@@ -123,102 +125,107 @@ $conn = $db->conn();
 <!-- Latest compiled JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
 <script type="text/javascript">
     $("#datatable").DataTable();
 </script>
 
 <script>
-$(document).ready(
-    function(){
-        $(document).on("click", ".editcategory", function(){
-            var categoryid = $(this).attr('id');
-            $("#categoryid").val(categoryid);
+    $(document).ready(
+        function() {
+            $(document).on("click", ".editcategory", function() {
+                var categoryid = $(this).attr('id');
+                $("#categoryid").val(categoryid);
 
-            $.ajax({
-                url: "/api/category?id="+categoryid,
-                method:"GET",
-                data: {},
-                dataType: "json",
-                success: function(data){
-                    $("#editModal").modal("show");
-                    $("#categoryid").val(categoryid);
-                    $("#categoryname").val(data[0].catname)
-                }
-            })
-        })
-
-        $("#editCategoryForm").on("submit", function(){
-        if($("#categoryname").val() == ""){
-            event.preventDefault();
-            $("#editModal").modal("hide");
-            $(".container-fluid").prepend("<div class='alert alert-danger alert-dismissible fade show'>All fields are required <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>");
-        }else{
-            $.ajax({
-                url: "/categorylist/edit",
-                method: "POST",
-                data: $("#editCategoryForm").serialize(),
-                success: function(data){
-                    $("#editModal").modal("hide");
-                    $(".container-fluid").prepend("<div class='alert alert-success alert-dismissible fade show'>Category added successfully <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>")
-                },
-                error: function(xhr, ajaxOptions, thrownError){
-                    alert("something happened");
-                },
-            })
-        }
-    })
-
-    $.ajax({
-            url: "/categorylist",
-            method:"GET",
-            data:{view:""},
-            beforeSend: function(){
-                $("#loader").show();
-            },
-            success: function(data){
-                $("#loader").hide();
-                $("#datatable").show();
-            },
-            error: function(xhr, ajaxOptions, thrownError){
-                    alert(thrownError);
-                },
-        })
-
-    $(document).on("click", ".deletecategory", function(){
-        var id = $(this).attr("id");
-        swal({
-            title: "Are you sure?",
-            text: "Once deleted cannot be retrived.",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true
-        })
-        .then((willDelete)=>{
-            if(willDelete){
                 $.ajax({
-                    url: "/categorylist/delete",
-                    method: "POST",
-                    data: {id: id},
-                    success: function(){
-                        swal("Category deleted successfully!", {
-                            icon: "success",
-                        }).then((value)=>{
-                            location.reload();
-                        })
-                        setTimeout(function(){
-                            location.reload();
-                        }, 1500)
+                    url: "/api/category?id=" + categoryid,
+                    method: "GET",
+                    data: {},
+                    dataType: "json",
+                    success: function(data) {
+                        $("#editModal").modal("show");
+                        $("#categoryid").val(categoryid);
+                        $("#categoryname").val(data[0].catname)
                     }
                 })
-                
-            }else{
-                swal("Your category is safe!");
-            }
-        })
-    })
+            })
 
-    }
-)
+            $("#editCategoryForm").on("submit", function() {
+                if ($("#categoryname").val() == "") {
+                    event.preventDefault();
+                    $("#editModal").modal("hide");
+                    $(".container-fluid").prepend("<div class='alert alert-danger alert-dismissible fade show'>All fields are required <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>");
+                } else {
+                    $.ajax({
+                        url: "/categorylist/edit",
+                        method: "POST",
+                        data: $("#editCategoryForm").serialize(),
+                        success: function(data) {
+                            $("#editModal").modal("hide");
+                            $(".container-fluid").prepend("<div class='alert alert-success alert-dismissible fade show'>Category added successfully <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>")
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            alert("something happened");
+                        },
+                    })
+                }
+            })
+
+            $.ajax({
+                url: "/categorylist",
+                method: "GET",
+                data: {
+                    view: ""
+                },
+                beforeSend: function() {
+                    $("#loader").show();
+                },
+                success: function(data) {
+                    $("#loader").hide();
+                    $("#datatable").show();
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    alert(thrownError);
+                },
+            })
+
+            $(document).on("click", ".deletecategory", function() {
+                var id = $(this).attr("id");
+                swal({
+                        title: "Are you sure?",
+                        text: "Once deleted cannot be retrived.",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            $.ajax({
+                                url: "/categorylist/delete",
+                                method: "POST",
+                                data: {
+                                    id: id
+                                },
+                                success: function() {
+                                    swal("Category deleted successfully!", {
+                                        icon: "success",
+                                    }).then((value) => {
+                                        location.reload();
+                                    })
+                                    setTimeout(function() {
+                                        location.reload();
+                                    }, 1500)
+                                }
+                            })
+
+                        } else {
+                            swal("Your category is safe!");
+                        }
+                    })
+            })
+
+        }
+    )
 </script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css
@@ -232,6 +239,6 @@ $(document).ready(
 <script src="https://cdn.datatables.net/responsive/2.2.7/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.2.7/js/responsive.bootstrap4.min.js"></script>
  -->
- <!-- <style>
+<!-- <style>
  .paginate_button{background-color: #556ee6 !important;}
 </style> -->

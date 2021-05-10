@@ -6,6 +6,8 @@ use app\core\Controller;
 use app\models\TimeSlotsModel;
 use app\core\Application;
 
+use Exception;
+
 session_start();
 
 if(!(isset($_COOKIE['user']) && isset($_SESSION['user']))){
@@ -22,10 +24,15 @@ class TimeSlotsController extends Controller{
     }
     public function read(){
         $json = $this->db->read("timeslot");
-        if($json){
-            return $this->render("timeslots/tslists", $json);
-        }else{
-            return "Something went wrong";
+        try{
+            if($json){
+                return $this->render("timeslots/tslists", $json);
+            }else{
+                throw new Exception("Unable to fetch data. Please try again later!");
+            }
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /timeslots?msg=$msg");
         }
     }
 
@@ -33,11 +40,56 @@ class TimeSlotsController extends Controller{
         if($this->app->request->getMethod() === "get"){
             return $this->render("timeslots/addTimeslots");
         }else if($this->app->request->getMethod() === "post"){
-            if(isset($_POST['categoryName']) && isset($_POST['categoryImage'])){
-                if($this->db->create('category', $_POST['categoryName'], $_POST['categoryImage'])){
-                    return header("Location: /categorylist");
+            if(isset($_POST['minTime']) && isset($_POST['maxTime'])){
+                if($this->db->create('timeslot', $_POST['minTime'], $_POST['maxTime'])){
+                    $msg = urlencode("Added new timeslot!");
+                    return header("Location: /timeslots?msg=$msg");
+                }else{
+                    $msg = urlencode("Unable to add new timeslot!");
+                    return header("Location: /timeslots?msg=$msg");
                 }
+            }else{
+                $msg = urlencode("All fields are required!");
+                return header("Location: /timeslots?msg=$msg");
             }
+        }
+    }
+
+    public function edit(){
+        try{
+            if(isset($_POST['id']) && isset($_POST['minTime']) && isset($_POST['maxTime'])){
+                if($this->db->update("timeslot", $_POST['id'], $_POST['minTime'], $_POST['maxTime'])){
+                    $msg = urlencode("Updated timeslot!");
+                    return header("Location: /timeslots?msg=$msg");
+                }else{
+                    $msg = urlencode("Unable to update timeslot");
+                    return header("Location: /timeslots?msg=$msg");
+                }
+            }else{
+                throw new Exception("All fields are required!");
+            }
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /timeslots?msg=$msg");
+        }
+    }
+
+    public function delete(){
+        try{
+            if(isset($_POST['id'])){
+                if($this->db->delete("timeslot", $_POST['id'])){
+                    $msg = "Deleted Timeslot!";
+                    return header("Location: /timeslots?msg=$msg");
+                }else{
+                    $msg = urlencode("Unable to delete timeslot!");
+                    return header("Location: /timeslots?msg=$msg");
+                }
+            }else{
+                throw new Exception("Invalid ID");
+            }
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /timeslots?msg=$msg");
         }
     }
 }

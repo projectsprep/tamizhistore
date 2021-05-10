@@ -1,3 +1,11 @@
+<?php
+
+use app\models\DB;
+
+$db = new DB();
+$conn = $db->conn();
+
+?>
 <div class="main-content">
 
     <div class="page-content">
@@ -17,16 +25,18 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-nowrap table-hover table-striped" style="display: none;" id="datatable">
+                                <table class="table table-nowrap table-striped table-hover" style="display: none;" id="datatable">
                                     <thead class="table-light thead-dark">
                                         <tr>
                                             <th scope="col" style="width: 70px;">Sl.no</th>
-                                            <th scope="col">Timeslot Min Time</th>
-                                            <th scope="col">Timeslot Max Time</th>
+                                            <th scope="col">Category Name</th>
+                                            <th scope="col">Category Image</th>
+                                            <th scope="col">Total Subcategory</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+
                                         <?php
                                         $i = 1;
                                         foreach ($params as $param) {
@@ -35,20 +45,25 @@
                                             }
                                         ?>
                                             <tr>
-                                                <td>
+                                                <td align="center">
                                                     <span class="">
                                                         <?= $i++; ?>
                                                     </span>
                                                 </td>
-                                                <td>
-                                                    <h5 class="font-size-14 mb-1"><?= date("h:i a", strtotime($mintime)) ?></h5>
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $catname; ?></h5>
                                                 </td>
-                                                <td>
-                                                    <h5 class="font-size-14 mb-1"><?= date("h:i a", strtotime($maxtime)) ?></h5>
+                                                <td align="center">
+                                                    <img src="<?= $catimg; ?>" class="img-thumbnail" alt="">
                                                 </td>
-                                                <td>
-                                                    <a href="#" class="text-danger deleteTime" id="<?= $id ?>"><i class="bx bx-trash-alt"></i></a>
-                                                    <a href="#" id="<?= $id ?>" class="editTime"><i class="bx bx-edit"></i></a>
+                                                <td align="center">
+                                                    <div>
+                                                        <h5 class="font-size-14 mb-1"><?= $conn->query("select * from subcategory where cat_id = $id;")->num_rows; ?></h5>
+                                                    </div>
+                                                </td>
+                                                <td align="center">
+                                                    <a href="#" id=<?= $id ?> class="text-danger deletecategory"><i class="bx bx-trash-alt"></i></a>
+                                                    <a href="#" id=<?= $id ?> class="editcategory"><i class="bx bx-edit"></i></a>
                                                 </td>
 
                                             </tr>
@@ -73,33 +88,27 @@
 
 </div>
 
-<div class="modal fade hide" role="dialog" id="editTimeslot" aria-labelledby="editTimeslotModal" tabindex="-1" aria-hidden="true">
+
+<div class="modal fade hide" role="dialog" id="editModal" aria-labelledby="editModalLabel" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="/timeslots/edit" method="Post" id="editTimeslotForm" enctype="multipart/form-data">
+            <form action="/categorylist/edit" method="Post" id="editCategoryForm" enctype="multipart/form-data">
                 <div class="modal-header">
                     <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                    <h4 class="modal-title">Edit Timeslot</h4>
+                    <h4 class="modal-title">Edit Category</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="productname">Min Time Slot</label>
-                        <input type="time" class="form-control" required name="minTime" id="minTime" />
-                        <div class="invalid-feedback">
-                            Please enter a valid Min time
-                        </div>
+                    <div class="form-group">
+                        <label for="">Category Name</label>
+                        <input type="text" name="categoryName" id="categoryname" class="form-control">
                     </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Max Time Slot</label>
-                        <input type="time" class="form-control" required name="maxTime" id="maxTime" />
-                        <div class="invalid-feedback">
-                            Please enter a valid Max time
-                        </div>
+                    <div class="form-group">
+                        <label for="">Category Image</label>
+                        <input type="file" name="categoryimage" class="form-control">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="hidden" name="id" id="timeslotid">
+                    <input type="hidden" name="id" id="categoryid">
                     <input type="submit" name="submit" class="btn btn-primary waves-effect waves-light">
                     <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                 </div>
@@ -110,56 +119,60 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
 <script type="text/javascript">
     $("#datatable").DataTable();
+</script>
+
+<script>
     $(document).ready(
         function() {
-            $(document).on("click", ".editTime", function() {
-                var timeslotid = $(this).attr('id');
-                console.log(timeslotid);
-                $("#timeslotid").val(timeslotid);
+            $(document).on("click", ".editcategory", function() {
+                var categoryid = $(this).attr('id');
+                $("#categoryid").val(categoryid);
 
                 $.ajax({
-                    url: "/api/timeslot?id=" + timeslotid,
+                    url: "/api/category?id=" + categoryid,
                     method: "GET",
                     data: {},
                     dataType: "json",
                     success: function(data) {
-                        $("#editTimeslot").modal("show");
-                        $("#minTime").val(data[0].mintime);
-                        $("#maxTime").val(data[0].maxtime);
+                        $("#editModal").modal("show");
+                        $("#categoryid").val(categoryid);
+                        $("#categoryname").val(data[0].catname)
                     }
                 })
-
             })
 
-            $("#editProductForm").on("submit", function() {
-                // console.log("something");
-                // if ($("#categoryname").val() == "") {
-                //     event.preventDefault();
-                //     $("#editModal").modal("hide");
-                //     $(".container-fluid").prepend("<div class='alert alert-danger alert-dismissible fade show'>All fields are required <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>");
-                // } else {
-                //     $.ajax({
-                //         url: "/productlist/edit",
-                //         method: "POST",
-                //         data: $("#editProductForm").serialize(),
-                //         success: function(data) {
-                //             $("#editModal").modal("hide");
-                //             $(".container-fluid").prepend("<div class='alert alert-success alert-dismissible fade show'>Category added successfully <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>")
-                //         },
-                //         error: function(xhr, ajaxOptions, thrownError) {
-                //             alert("something happened");
-                //         },
-                //     })
-                // }
+            $("#editCategoryForm").on("submit", function() {
+                if ($("#categoryname").val() == "") {
+                    event.preventDefault();
+                    $("#editModal").modal("hide");
+                    $(".container-fluid").prepend("<div class='alert alert-danger alert-dismissible fade show'>All fields are required <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>");
+                } else {
+                    $.ajax({
+                        url: "/categorylist/edit",
+                        method: "POST",
+                        data: $("#editCategoryForm").serialize(),
+                        success: function(data) {
+                            $("#editModal").modal("hide");
+                            $(".container-fluid").prepend("<div class='alert alert-success alert-dismissible fade show'>Category added successfully <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>")
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            alert("something happened");
+                        },
+                    })
+                }
             })
 
             $.ajax({
-                url: "/paymentlist",
+                url: "/categorylist",
                 method: "GET",
                 data: {
                     view: ""
@@ -176,8 +189,7 @@
                 },
             })
 
-            $(document).on("click", ".deleteTime", function() {
-                console.log("Yes");
+            $(document).on("click", ".deletecategory", function() {
                 var id = $(this).attr("id");
                 swal({
                         title: "Are you sure?",
@@ -189,13 +201,13 @@
                     .then((willDelete) => {
                         if (willDelete) {
                             $.ajax({
-                                url: "/timeslots/delete",
+                                url: "/categorylist/delete",
                                 method: "POST",
                                 data: {
                                     id: id
                                 },
                                 success: function() {
-                                    swal("Area deleted successfully!", {
+                                    swal("Category deleted successfully!", {
                                         icon: "success",
                                     }).then((value) => {
                                         location.reload();
@@ -207,30 +219,12 @@
                             })
 
                         } else {
-                            swal("Your Timeslot is safe!");
+                            swal("Your category is safe!");
                         }
                     })
-            })
-
-            $("#category").on("change", function() {
-                var id = $(this).val();
-                // console.log(id);
-                $.ajax({
-                    url: "api/getsubcategorynames",
-                    method: "POST",
-                    data: {
-                        id: id
-                    },
-                    dataType: "json",
-                    success: function(data) {
-                        $("#subCategory").html(data);
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        alert(thrownError);
-                    },
-                })
             })
 
         }
     )
 </script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>

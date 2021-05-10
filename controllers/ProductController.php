@@ -4,6 +4,7 @@ namespace app\controllers;
 use app\core\Controller;
 use app\models\ProductsModel;
 use app\core\Application;
+use Exception;
 
 session_start();
 
@@ -27,72 +28,94 @@ class ProductController extends Controller{
         if($this->app->request->getMethod() === "get"){
             return $this->render("products/addProduct");
         }else if($this->app->request->getMethod() === "post"){
-            if(isset($_POST["productName"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["outofstock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["range"]) && isset($_POST["price"]) && isset($_POST["discount"]) && isset($_FILES['productimage'])){
-                
-                if($this->validateImage() == true){
-                    if($this->db->create("product", $_POST["productName"], $this->imageDest, $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["unit"], $_POST["price"], $_POST["discount"], $_POST['popular'])){
-                        $msg = urlencode("New product created successfully");
-                        return header("Location: /productlist?msg=$msg");
+            try{
+                if(isset($_POST["productName"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["outofstock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["range"]) && isset($_POST["price"]) && isset($_POST["discount"]) && isset($_FILES['productimage'])){
+                    if($this->validateImage() == true){
+                        if($this->db->create("product", $_POST["productName"], $this->imageDest, $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["unit"], $_POST["price"], $_POST["discount"], $_POST['popular'])){
+                            $msg = urlencode("New product created successfully");
+                            return header("Location: /productlist?msg=$msg");
+                        }else{
+                            return header("Location: /productlist/add");
+                        }
                     }else{
-                        return header("Location: /productlist/add");
+                        echo "something happened";
                     }
                 }else{
-                    echo "something happened";
+                    throw new Exception("All fields are required!");
                 }
-            }else{
-                echo "<pre>";
-                var_dump($_POST);
-                echo "</pre>";
+            }catch(Exception $e){
+                $msg = urlencode($e->getMessage());
+                return header("Location: /productlist?msg=$msg");
             }
         }
     }
 
     public function read(){
         $json = $this->db->read($this->table);
-        if($json){
-            return $this->render("products/productList", $json);
-        }else{
-            return false;
+        try{
+            if($json){
+                return $this->render("products/productList", $json);
+            }else{
+                throw new Exception("Unable to fetch data. Please try again later!");
+            }
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /productlist?msg=$msg");
         }
     }
 
     public function update(){
         if($this->app->request->getMethod() === "get"){
-            if(isset($_GET['id'])){
-                $json = $this->db->edit("product", $_GET['id']);
-                if($json){
-                    return $this->render("products/editProduct", $json);
+            try{
+                if(isset($_GET['id'])){
+                    $json = $this->db->edit("product", $_GET['id']);
+                    if($json){
+                        return $this->render("products/editProduct", $json);
+                    }else{
+                        return "Cannot be updated";
+                    }
                 }else{
-                    return "Cannot be updated";
+                    throw new Exception("Invalid ID");
                 }
+            }catch(Exception $e){
+                    $msg = urlencode($e->getMessage());
+                    return header("Location: /productlist?msg=$msg");
             }
         }else if($this->app->request->getMethod() === "post"){
-            if(isset($_POST["id"]) && isset($_POST["productName"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["outofstock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["range"]) && isset($_POST["price"]) && isset($_POST["discount"])){
-                if($this->db->update("product", $_POST['id'],$_POST["productName"], $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["range"], $_POST["price"], $_POST["discount"], $_POST['popular'])){
-                    $msg = urlencode("Product updated!");
-                    return header("Location: /productlist?msg=$msg");
+            try{
+                if(isset($_POST["id"]) && isset($_POST["productName"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["outofstock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["range"]) && isset($_POST["price"]) && isset($_POST["discount"])){
+                    if($this->db->update("product", $_POST['id'],$_POST["productName"], $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["range"], $_POST["price"], $_POST["discount"], $_POST['popular'])){
+                        $msg = urlencode("Product updated!");
+                        return header("Location: /productlist?msg=$msg");
+                    }else{
+                        echo "<pre>";
+                        var_dump($_POST);
+                        echo "</pre>";
+                    }
                 }else{
-                    echo "<pre>";
-                    var_dump($_POST);
-                    echo "</pre>";
+                    throw new Exception("All fields are required!");
                 }
-            }else{
-                echo "<pre>";
-                var_dump($_POST);
-                echo "</pre>";
+            }catch(Exception $e){
+                $msg = urlencode($e->getMessage());
+                return header("Location: /productlist?msg=$msg");
             }
         }
     }
 
     public function delete(){
-        if(isset($_POST['id'])){
-            if($this->db->delete("product", $_POST['id'])){
-                return header("Location: /productlist?something=something");
+        try{
+            if(isset($_POST['id'])){
+                if($this->db->delete("product", $_POST['id'])){
+                    return header("Location: /productlist?something=something");
+                }else{
+                    throw new Exception("Unable to delete product!");
+                }
             }else{
-                return "content cannot be deleted";
+                throw new Exception("Invalid ID");
             }
-        }else{
-            return "why not";
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /productlist?msg=$msg");
         }
     }
 

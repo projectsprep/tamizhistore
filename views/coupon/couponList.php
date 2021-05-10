@@ -16,11 +16,8 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="spinner-border" role="status" id="loader">
-                                <span class="sr-only">Loading...</span>
-                            </div>
                             <div class="table-responsive">
-                                <table class="table align-middle table-nowrap table-hover" style="display: none;" id="datatable">
+                                <table class="table table-nowrap table-hover table-striped" style="display: none;" id="datatable">
                                     <thead class="table-light thead-dark">
                                         <tr>
                                             <th scope="col" style="width: 70px;">Sl.no</th>
@@ -77,6 +74,11 @@
                                         ?>
                                     </tbody>
                                 </table>
+                                <div class="text-center">
+                                    <div class="spinner-border" role="status" id="loader">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -94,7 +96,7 @@
             <form action="/couponlist/edit" method="Post" id="editCouponFrom" enctype="multipart/form-data">
                 <div class="modal-header">
                     <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                    <h4 class="modal-title">Edit category</h4>
+                    <h4 class="modal-title">Edit Coupon</h4>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
@@ -118,7 +120,7 @@
                     <div class="mb-3">
                         <label class="form-label">Coupon Status</label>
                         <select class="form-select" required name="couponStatus" id="couponstatus">
-                            <option selected="" disabled="" value=""></option>
+                            <option selected="" value=""></option>
                             <option value="publish">Publish</option>
                             <option value="unpublish">Unpublish</option>
                         </select>
@@ -182,61 +184,33 @@
                         $("#code").val(data[0].c_title);
                         $("#title").val(data[0].ctitle);
                         $("#couponstatus").find(":selected").text(data[0].status == 1 ? "Publish" : "Unpublish");
+                        $("#couponstatus").find(":selected").val(data[0].status);
                         $("#minAmt").val(data[0].min_amt);
                         $("#value").val(data[0].c_value);
                     }
                 })
-                $.ajax({
-                    url: "/api/getcategorynames",
-                    method: "GET",
-                    dataType: "json",
-                    success: function(data) {
-                        $("#category").append(data);
-                        // console.log(data);
-                        var id = $("#category").find(":selected").val();
-                        console.log(id);
-                        $.ajax({
-                            url: "/api/getsubcategorynames",
-                            method: "POST",
-                            data: {
-                                id: id
-                            },
-                            dataType: "json",
-                            success: function(data) {
-                                $("#subCategory").append(data);
-                            },
-                            error: function(xhr, ajaxOptions, thrownError) {
-                                alert(id);
-                            },
-                        })
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        alert("something happened");
-                    },
-                })
             })
 
-            $("#editProductForm").on("submit", function() {
-                // console.log("something");
-                // if ($("#categoryname").val() == "") {
-                //     event.preventDefault();
-                //     $("#editModal").modal("hide");
-                //     $(".container-fluid").prepend("<div class='alert alert-danger alert-dismissible fade show'>All fields are required <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>");
-                // } else {
-                //     $.ajax({
-                //         url: "/productlist/edit",
-                //         method: "POST",
-                //         data: $("#editProductForm").serialize(),
-                //         success: function(data) {
-                //             $("#editModal").modal("hide");
-                //             $(".container-fluid").prepend("<div class='alert alert-success alert-dismissible fade show'>Category added successfully <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>")
-                //         },
-                //         error: function(xhr, ajaxOptions, thrownError) {
-                //             alert("something happened");
-                //         },
-                //     })
-                // }
-            })
+            // $("#editCouponFrom").on("submit", function() {
+            //     if ($("#couponCode").val() == "") {
+            //         event.preventDefault();
+            //         $("#editModal").modal("hide");
+            //         $(".container-fluid").prepend("<div class='alert alert-danger alert-dismissible fade show'>All fields are required <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>");
+            //     } else {
+            //         $.ajax({
+            //             url: "/couponlist",
+            //             method: "POST",
+            //             data: $("#editCouponFrom").serialize(),
+            //             success: function(data) {
+            //                 $("#editModal").modal("hide");
+            //                 $(".container-fluid").prepend("<div class='alert alert-success alert-dismissible fade show'>Category added successfully <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>")
+            //             },
+            //             error: function(xhr, ajaxOptions, thrownError) {
+            //                 alert(ajaxOptions);
+            //             },
+            //         })
+            //     }
+            // })
 
             $.ajax({
                 url: "/couponlist",
@@ -254,25 +228,6 @@
                 error: function(xhr, ajaxOptions, thrownError) {
                     alert(thrownError);
                 },
-            })
-
-            $("#category").on("change", function() {
-                var id = $(this).val();
-                // console.log(id);
-                $.ajax({
-                    url: "api/getsubcategorynames",
-                    method: "POST",
-                    data: {
-                        id: id
-                    },
-                    dataType: "json",
-                    success: function(data) {
-                        $("#subCategory").html(data);
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        // alert(thrownError);
-                    },
-                })
             })
 
         }

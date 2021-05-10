@@ -108,7 +108,7 @@ function sendMail($username, $verify, $mail){
                                     sendMail($username, $verify, $email);
                                     ?>
                                     <div class="alert alert-success">
-                                        Reset link sent to your mail
+                                        Reset link sent to your mail. Check your spam folder if not arrived in inbox!
                                     </div>
                                     <?php
                                 }else if($msg == 0){

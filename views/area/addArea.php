@@ -28,8 +28,8 @@
                                     <div class="mb-3">
                                         <label class="form-label">Status</label>
                                         <select class="form-select" required name="status">
-                                            <option selected="" value="publish">Publish</option>
-                                            <option value="unpublish">Unpublish</option>
+                                            <option selected="" value="1">Publish</option>
+                                            <option value="0">Unpublish</option>
                                         </select>
                                         <div class="invalid-feedback">
                                             Please select a valid coupon status.

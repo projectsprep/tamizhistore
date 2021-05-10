@@ -29,7 +29,7 @@ class CategoryModel{
     }
 
     public function getCount(){
-        $tables = ['category', "subcategory", "product", "tbl_coupon", "area_db", "timeslot", "user", "feedback"];
+        $tables = ['category', "subcategory", "product", "tbl_coupon", "area_db", "timeslot", "user", "feedback", "code", "rider", "noti", "rate_order", "orders"];
         $array = [];
         foreach($tables as $table){
             $query = "SELECT COUNT(id) $table FROM $table";
@@ -40,7 +40,17 @@ class CategoryModel{
                 }
             }
         }
-        
+
+        $status = ['pending', 'cancelled'];
+        foreach($status as $stat){
+            $query = "SELECT COUNT(id) $stat FROM orders where status='$stat'";
+            $result = $this->conn->query($query);
+            if($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                    array_push($array, $row);
+                }
+            }
+        }        
         
         return json_encode($array);
     }
@@ -65,7 +75,7 @@ class CategoryModel{
 
     public function getCategoryById($table, $id){
         $table = $this->conn->real_escape_string($table);
-        $id = $this->conn->real_escape_string($id);
+        $id = htmlspecialchars($id);
         $query = "SELECT * FROM $table WHERE id = $id";
         $result = $this->conn->query($query);
         $array=[];

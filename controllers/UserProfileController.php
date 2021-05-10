@@ -32,16 +32,19 @@ class UserProfileController extends Controller{
                     $array = [];
                     if($row = $result->fetch_assoc()){
                         if(($_POST['username'] == $row['username']) && ($_POST['email'] == $row['email'])){
-                            echo "its same";
-                            return header("Refresh: 2; URL=/profile");
+                            $msg = urlencode("No fields are changed to update profile");
+                            return header("Locatin: /profile?msg=$msg");
                         }else{
                             $username = $this->db->real_escape_string($_POST['username']);
                             $email = $this->db->real_escape_string($_POST['email']);
                             $query = $this->db->query("UPDATE admin SET username='$username', email='$email' where username='$uName'");
                             if($query){
-                                echo "Profile updated";
                                 $_SESSION['user'] = $username;
-                                return header("Refresh: 2; URL=/profile");
+                                $msg = urlencode("User Profile updated!");
+                                return header("Location: /profile?msg=$msg");
+                            }else{
+                                $msg = urlencode("Unable to update user profile!");
+                                return header("Location: /profile?msg=$msg");
                             }
                         }
                     }
