@@ -80,7 +80,7 @@ class ProductsModel{
         }
     }
 
-    public function update($table, $id, $productName, $sellerName, $category, $subCategory, $stock, $publish, $description, $range, $price, $discount, $popular){
+    public function update($table, $id, $productName, $sellerName, $category, $subCategory, $stock, $publish, $description, $range, $price, $discount, $popular, $image=""){
         $table = $this->conn->real_escape_string($table);
         $id = $this->conn->real_escape_string($id);
         $productName = $this->conn->real_escape_string($productName);
@@ -94,14 +94,19 @@ class ProductsModel{
         $price = $this->conn->real_escape_string($price);
         $discount = $this->conn->real_escape_string($discount);
         $popular = $this->conn->real_escape_string($popular);
+        $image = $this->conn->real_escape_string($image);
 
-        $query = "UPDATE $table set pname='$productName', sname='$sellerName', cid='$category', sid='$subCategory', stock='$stock', status='$publish', psdesc='$description', pgms='$range', pprice='$price', discount='$discount', popular='$popular' where id=$id";
+        if(isset($image) && $image != ""){
+            $query = "UPDATE $table set pname='$productName', sname='$sellerName', cid='$category', sid='$subCategory', stock='$stock', status='$publish', psdesc='$description', pgms='$range', pprice='$price', discount='$discount', popular='$popular', pimg='$image' where id=$id";
+        }else{
+            $query = "UPDATE $table set pname='$productName', sname='$sellerName', cid='$category', sid='$subCategory', stock='$stock', status='$publish', psdesc='$description', pgms='$range', pprice='$price', discount='$discount', popular='$popular' where id=$id";
+        }
         $result = $this->conn->query($query);
-        if($result){
+        if($this->conn->affected_rows > 0){
             return true;
             // header("Location: /categorylist")
         }else{
-            echo $this->conn->error;
+            return false;
         }
     }
 

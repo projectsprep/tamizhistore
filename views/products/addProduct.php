@@ -51,8 +51,8 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Select Category</label>
-                                        <select class="form-select" required name="category">
-                                            <option selected="" disabled="">Choose...</option>
+                                        <select class="form-select" required name="category" id="category">
+                                            <option disabled="" selected>Choose...</option>
                                             <?php
                                                 if($result->num_rows > 0){
                                                     while($row = $result->fetch_assoc()){    
@@ -69,9 +69,8 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Select Subcategory</label>
-                                        <select class="form-select" required name="subCategory">
-                                            <option selected="" disabled="" value="">Choose...</option>
-                                            <option>...</option>
+                                        <select class="form-select" required name="subCategory" id="subCategory">
+                                            <option disabled="">Choose...</option>
                                         </select>
                                         <div class="invalid-feedback">
                                             Please select a valid Subcategory.
@@ -161,3 +160,23 @@
 
 
     </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+    <script>
+        $(document).ready(function(){
+            $("#category").on("change",function(){
+                var id = $(this).val();
+                // console.log(id);
+                $.ajax({
+                    url: "/api/getsubcategorynames",
+                    method: "POST",
+                    data: {id: id},
+                    dataType: "json",
+                    success: function(data){
+                        $("#subCategory").html(data);
+                    },
+                })
+            })
+        })
+    </script>

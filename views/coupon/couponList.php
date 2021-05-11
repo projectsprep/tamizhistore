@@ -225,9 +225,6 @@
                     $("#loader").hide();
                     $("#datatable").show();
                 },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    alert(thrownError);
-                },
             })
 
         }

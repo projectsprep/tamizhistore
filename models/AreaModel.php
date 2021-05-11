@@ -36,8 +36,7 @@ class AreaModel{
             while($row = $result->fetch_assoc()){
                 array_push($array, $row);
             }
-            // return json_encode($array);
-            return false;
+            return json_encode($array);
         }else{
             return false;
         }

@@ -34,8 +34,8 @@ if($_SESSION['notify'] === true){
     <link href="/assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
     <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
     <link href="/assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
-    <link href="assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css">
-    <link href="assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
     <style>
@@ -314,10 +314,13 @@ if($_SESSION['notify'] === true){
 <script src="/assets/libs/dropzone/min/dropzone.min.js"></script>
 <script>
     $(document).ready(function() {
+        $(".alert").delay(2000).slideUp(300, function() {
+        $(this).alert('close');
+    });
         function loadUnseenNotification(view = "") {
             $.ajax({
                 url: "/api/pushednotifies",
-                method: "GET",
+                method: "POST",
                 data: {
                     view: view
                 },
@@ -333,7 +336,7 @@ if($_SESSION['notify'] === true){
                     }
                 },
                 error: function(xhr, ajaxOptions, thrownError) {
-                    alert('ajaxOptions');
+                    alert(data);
                 },
             })
         }

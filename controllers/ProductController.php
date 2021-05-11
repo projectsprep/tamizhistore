@@ -30,15 +30,18 @@ class ProductController extends Controller{
         }else if($this->app->request->getMethod() === "post"){
             try{
                 if(isset($_POST["productName"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["outofstock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["range"]) && isset($_POST["price"]) && isset($_POST["discount"]) && isset($_FILES['productimage'])){
-                    if($this->validateImage() == true){
+                    $imageResult = $this->validateImage();
+                    if($imageResult == true){
                         if($this->db->create("product", $_POST["productName"], $this->imageDest, $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["unit"], $_POST["price"], $_POST["discount"], $_POST['popular'])){
                             $msg = urlencode("New product created successfully");
                             return header("Location: /productlist?msg=$msg");
                         }else{
-                            return header("Location: /productlist/add");
+                            $msg = urlencode("Unable to add a new product!");
+                            return header("Location: /productlist/add?msg=$msg");
                         }
                     }else{
-                        echo "something happened";
+                        $msg = urlencode($imageResult);
+                        return header("Location: /productlist/add?msg=$msg");
                     }
                 }else{
                     throw new Exception("All fields are required!");
@@ -84,7 +87,12 @@ class ProductController extends Controller{
         }else if($this->app->request->getMethod() === "post"){
             try{
                 if(isset($_POST["id"]) && isset($_POST["productName"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["outofstock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["range"]) && isset($_POST["price"]) && isset($_POST["discount"])){
-                    if($this->db->update("product", $_POST['id'],$_POST["productName"], $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["range"], $_POST["price"], $_POST["discount"], $_POST['popular'])){
+                    $validateImage = NULL;
+                    if(isset($_FILES['productimage']['name']) && $_FILES['productimage']['name'] != ""){
+                        $validateImage = $this->validateImage();
+                    }
+                if($validateImage === true || $validateImage == NULL){
+                    if($this->db->update("product", $_POST['id'],$_POST["productName"], $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["range"], $_POST["price"], $_POST["discount"], $_POST['popular'], $validateImage == true ? $this->imageDest : "")){
                         $msg = urlencode("Product updated!");
                         return header("Location: /productlist?msg=$msg");
                     }else{
@@ -92,6 +100,8 @@ class ProductController extends Controller{
                         var_dump($_POST);
                         echo "</pre>";
                     }
+                }
+
                 }else{
                     throw new Exception("All fields are required!");
                 }
@@ -132,29 +142,29 @@ class ProductController extends Controller{
                 $uploadOk = 1;
             }else{
                 $uploadOk = 0;
-                echo "File is not an image";
+                return "File is not an image";
             }
         }
 
         //check if image file already exist
         if(file_exists($targetFile)){
-            echo "Image file already exist";
+            return "Image file already exist";
             $uploadOk = 0;
         }
 
         // limit the file size
         if($_FILES['productimage']['size'] > 5000000){
             $uploadOk = 0;
-            echo "File size too large";
+            return "File size too large";
         }
 
         if($imageFileType != "jpg" && $imageFileType != 'png' && $imageFileType != "jpeg"){
             $uploadOk = 0;
-            echo "Only jpg, png and jpeg file formats are allowed";
+            return "Only jpg, png and jpeg file formats are allowed";
         }
 
         if ($uploadOk == 0) {
-            echo "Your file didn't uploaded for some reasons";
+            return "Your file didn't uploaded for some reasons";
           // if everything is ok, try to upload file
           } else {
             if (move_uploaded_file($_FILES["productimage"]["tmp_name"], $targetFile)) {

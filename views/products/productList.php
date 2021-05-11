@@ -136,7 +136,10 @@ $db = $db->conn();
                         <label class="form-label">Product Name</label>
                         <input type="text" class="form-control" required name="productName" id="productName" />
                     </div>
-
+                    <div class="form-group">
+                        <label for="">Product Image (optional)</label>
+                        <input type="file" name="productimage" class="form-control">
+                    </div>
                     <div class="mb-3">
                         <label class="form-label">Seller Name / Shop Name</label>
                         <div>
@@ -232,14 +235,15 @@ $db = $db->conn();
     $("#datatable").DataTable();
     $(document).ready(
         function() {
+            
             $(document).on("click", ".editproduct", function() {
                 var productid = $(this).attr('id');
                 $("#productid").val(productid);
 
                 $.ajax({
-                    url: "/api/product?id=" + productid,
-                    method: "GET",
-                    data: {},
+                    url: "/api/product",
+                    method: "POST",
+                    data: {id: productid},
                     dataType: "json",
                     success: function(data) {
                         $("#editModal").modal("show");
@@ -265,7 +269,7 @@ $db = $db->conn();
 
                 $.ajax({
                     url: "/api/getcategorynames",
-                    method: "GET",
+                    method: "POST",
                     dataType: "json",
                     success: function(data){
                         $("#category").append(data);
@@ -280,14 +284,8 @@ $db = $db->conn();
                             success: function(data){
                                 $("#subCategory").append(data);
                             },
-                            error: function(xhr, ajaxOptions, thrownError) {
-                                alert(id);
-                            },
                         })
                     },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                            alert("something happened");
-                        },
                 })
                 
             })
@@ -326,9 +324,6 @@ $db = $db->conn();
                 success: function(data) {
                     $("#loader").hide();
                     $("#datatable").show();
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    alert(thrownError);
                 },
             })
 
@@ -377,9 +372,6 @@ $db = $db->conn();
                     dataType: "json",
                     success: function(data){
                         $("#subCategory").html(data);
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        alert(thrownError);
                     },
                 })
             })

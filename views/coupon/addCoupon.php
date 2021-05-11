@@ -9,7 +9,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">Add Coupon</h4>
-                            <form class="needs-validation" action="" method="post" novalidate>
+                            <form class="needs-validation" action="" method="post" novalidate enctype="multipart/form-data">
                                 <!-- <div class="mb-3">
                                         <label for="couponImage">Image</label>
                                         <div class="card">

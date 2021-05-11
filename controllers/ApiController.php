@@ -51,9 +51,9 @@ class ApiController extends Controller
     public function getCodelist()
     {
         try {
-            if (isset($_GET['id'])) {
-                if ($_GET['id'] !== "") {
-                    return $this->codeDB->getCodeById("code", $_GET['id']);
+            if (isset($_POST['id'])) {
+                if ($_POST['id'] !== "") {
+                    return $this->codeDB->getCodeById("code", $_POST['id']);
                 }else{
                     throw new Exception("Invalid ID");
                 }
@@ -137,9 +137,9 @@ class ApiController extends Controller
     public function getTimeslot()
     {
         try {
-            if (isset($_GET['id'])) {
-                if ($_GET['id'] !== "") {
-                    return $this->tsDB->getTimeslotById("timeslot", $_GET['id']);
+            if (isset($_POST['id'])) {
+                if ($_POST['id'] !== "") {
+                    return $this->tsDB->getTimeslotById("timeslot", $_POST['id']);
                 }else{
                     throw new Exception("Invalid ID");
                 }
@@ -154,9 +154,9 @@ class ApiController extends Controller
     public function getArea()
     {
         try {
-            if (isset($_GET['id'])) {
-                if ($_GET['id'] !== "") {
-                    return $this->areaDB->getAreaById("area_db", $_GET['id']);
+            if (isset($_POST['id'])) {
+                if ($_POST['id'] !== "") {
+                    return $this->areaDB->getAreaById("area_db", $_POST['id']);
                 }else{
                     throw new Exception("Invalid ID");
                 }
@@ -171,9 +171,9 @@ class ApiController extends Controller
     public function getCoupons()
     {
         try{
-            if (isset($_GET['id'])) {
-                if ($_GET['id'] !== "") {
-                    return $this->couponDB->getCouponById("tbl_coupon", $_GET['id']);
+            if (isset($_POST['id'])) {
+                if ($_POST['id'] !== "") {
+                    return $this->couponDB->getCouponById("tbl_coupon", $_POST['id']);
                 }else{
                     throw new Exception("Invalid ID");
                 }
@@ -188,9 +188,9 @@ class ApiController extends Controller
     public function getPayment()
     {
         try{
-            if (isset($_GET['id'])) {
-                if ($_GET['id'] !== "") {
-                    return $this->paymentDB->getPaymentById("payment_list", $_GET['id']);
+            if (isset($_POST['id'])) {
+                if ($_POST['id'] !== "") {
+                    return $this->paymentDB->getPaymentById("payment_list", $_POST['id']);
                 }else{
                     throw new Exception("Invalid ID");
                 }
@@ -243,15 +243,19 @@ class ApiController extends Controller
 
     public function getSubcategoryNames()
     {
-        return $this->pDB->getSubcategoryNames("subcategory", $_POST['id']);
+        if(isset($_POST['id'])){
+            return $this->pDB->getSubcategoryNames("subcategory", $_POST['id']);
+        }else{
+            return json_encode(array("Message"=>"Invalid ID"));
+        }
     }
 
     public function getProducts()
     {
         try{
-            if (isset($_GET['id'])) {
-                if ($_GET['id'] !== "") {
-                    return $this->pDB->getProductById("product", $_GET['id']);
+            if (isset($_POST['id'])) {
+                if ($_POST['id'] !== "") {
+                    return $this->pDB->getProductById("product", $_POST['id']);
                 }else{
                     throw new Exception("Invalid ID");
                 }
@@ -266,9 +270,9 @@ class ApiController extends Controller
     public function getCategories()
     {
         try{
-            if (isset($_GET['id'])) {
-                if ($_GET['id'] !== '') {
-                    return $this->cDB->getCategoryById("category", $_GET['id']);
+            if (isset($_POST['id'])) {
+                if ($_POST['id'] !== '') {
+                    return $this->cDB->getCategoryById("category", $_POST['id']);
                 }else{
                     throw new Exception("Invalid ID");
                 }
@@ -364,8 +368,8 @@ class ApiController extends Controller
     public function getNotifications()
     {
         try{
-            if (isset($_GET['view'])) {
-                if ($_GET['view'] != "") {
+            if (isset($_POST['view'])) {
+                if ($_POST['view'] != "") {
                     $updateQuery = "UPDATE noti SET is_seen=1 WHERE pushed=1";
                     $this->conn->query($updateQuery);
                 }

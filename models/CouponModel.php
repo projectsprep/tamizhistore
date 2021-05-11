@@ -15,8 +15,8 @@ class CouponModel{
         $this->conn = $this->conn->conn();
     }
 
-    public function create($table, $categoryName, $categoryImage){
-        $query = "INSERT INTO $table (catname, catimg) VALUES ('$categoryName', '$categoryImage');";
+    public function create($table, $couponimage, $expiryDate, $couponCode, $couponTitle, $couponStatus, $minAmt, $discount, $description){
+        $query = "INSERT INTO $table (c_img, cdate, c_title, ctitle, `status`, min_amt, c_value, c_desc) VALUES ('$couponimage', '$expiryDate', '$couponCode', '$couponTitle', '$couponStatus', '$minAmt', '$discount', '$description');";
         $result = $this->conn->query($query);
         if($result){
             return true;

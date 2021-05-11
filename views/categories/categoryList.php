@@ -103,7 +103,7 @@ $conn = $db->conn();
                         <input type="text" name="categoryName" id="categoryname" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="">Category Image</label>
+                        <label for="">Category Image (optional)</label>
                         <input type="file" name="categoryimage" class="form-control">
                     </div>
                 </div>
@@ -139,7 +139,7 @@ $conn = $db->conn();
 
                 $.ajax({
                     url: "/api/category?id=" + categoryid,
-                    method: "GET",
+                    method: "POST",
                     data: {},
                     dataType: "json",
                     success: function(data) {

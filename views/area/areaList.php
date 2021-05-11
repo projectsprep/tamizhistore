@@ -139,7 +139,7 @@
 
                 $.ajax({
                     url: "/api/area?id=" + areaid,
-                    method: "GET",
+                    method: "POST",
                     data: {},
                     dataType: "json",
                     success: function(data) {
@@ -187,9 +187,6 @@
                 success: function(data) {
                     $("#loader").hide();
                     $("#datatable").show();
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    alert(thrownError);
                 },
             })
 
@@ -240,9 +237,6 @@
                     dataType: "json",
                     success: function(data) {
                         $("#subCategory").html(data);
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        alert(thrownError);
                     },
                 })
             })

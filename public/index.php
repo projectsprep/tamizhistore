@@ -54,19 +54,19 @@ $app->router->post("/productlist/edit", [ProductController::class, "update"]);
 $app->router->post("/productlist/delete", [ProductController::class, "delete"]);
 
 // /api
-$app->router->get("/api/product", [ApiController::class, "getProducts"]);
-$app->router->get("/api/category", [ApiController::class, "getCategories"]);
+$app->router->post("/api/product", [ApiController::class, "getProducts"]);
+$app->router->post("/api/category", [ApiController::class, "getCategories"]);
 $app->router->post("/api/coupons", [ApiController::class, "getCoupons"]);
-$app->router->get("/api/area", [ApiController::class, "getArea"]);
-$app->router->get("/api/getcategory", [ApiController::class, "getCategory"]);
-$app->router->get("/api/timeslot", [ApiController::class, "getTimeslot"]);
-$app->router->get("/api/payment", [ApiController::class, "getPayment"]);
-$app->router->get("/api/codelist", [ApiController::class, "getCodelist"]);
-$app->router->get("/api/getcategorynames", [ApiController::class, "getCategoryNames"]);
+$app->router->post("/api/area", [ApiController::class, "getArea"]);
+$app->router->post("/api/getcategory", [ApiController::class, "getCategory"]);
+$app->router->post("/api/timeslot", [ApiController::class, "getTimeslot"]);
+$app->router->post("/api/payment", [ApiController::class, "getPayment"]);
+$app->router->post("/api/codelist", [ApiController::class, "getCodelist"]);
+$app->router->post("/api/getcategorynames", [ApiController::class, "getCategoryNames"]);
 $app->router->post("/api/getsubcategorynames", [ApiController::class, "getSubcategoryNames"]);
-$app->router->get("/api/getproduct", [ApiController::class, "getProduct"]);
-$app->router->get("/api/pushednotifies", [ApiController::class, "getNotifications"]);
-$app->router->get("/api/pushednotifiessite", [ApiController::class, "pushedNotifications"]);
+$app->router->post("/api/getproduct", [ApiController::class, "getProduct"]);
+$app->router->post("/api/pushednotifies", [ApiController::class, "getNotifications"]);
+$app->router->post("/api/pushednotifiessite", [ApiController::class, "pushedNotifications"]);
 
 
 // /areaList

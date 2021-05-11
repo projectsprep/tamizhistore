@@ -118,10 +118,13 @@ class CategoryController extends Controller{
                 return header("Location: /categorylist?msg=$msg");
             }
         }else if($this->app->request->getMethod() === "post"){
-            if(isset($_POST['id']) && isset($_POST['categoryName']) && isset($_FILES['categoryimage'])){
-                $validateImage = $this->validateImage();
-                if($validateImage === true){
-                    if($this->db->update("category", $_POST['id'],$_POST["categoryName"], $this->imageDest)){
+            if(isset($_POST['id']) && isset($_POST['categoryName'])){
+                $validateImage = NULL;
+                if(isset($_FILES['categoryimage']['name']) && $_FILES['categoryimage']['name'] != ""){
+                    $validateImage = $this->validateImage();
+                }
+                if($validateImage === true || $validateImage == NULL){
+                    if($this->db->update("category", $_POST['id'],$_POST["categoryName"], $validateImage == true ? $this->imageDest : "")){
                         $msg = urlencode("Category updated successfully!");
                         return header("Location: /categorylist?msg=$msg");
                     }else{

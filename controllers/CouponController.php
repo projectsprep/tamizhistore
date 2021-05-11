@@ -27,13 +27,23 @@ class CouponController extends Controller{
             return $this->render("coupon/addCoupon");
         }else if($this->app->request->getMethod() === "post"){
             try{
-                if(isset($_POST['categoryName']) && isset($_POST['categoryImage'])){
-                    if($this->db->create('category', $_POST['categoryName'], $_POST['categoryImage'])){
-                        $msg = urlencode("Created new coupon successfully!");
-                        return header("Location: /couponlist?msg=$msg");
+                if(isset($_FILES['couponimage']) && ($_FILES['couponimage']['name'] != "") && isset($_POST['expiryDate']) && isset($_POST['couponCode']) && isset($_POST['couponTitle']) && isset($_POST['couponStatus']) && isset($_POST['minAmt']) && isset($_POST['discount']) && isset($_POST['description'])){
+                    $imageResult = $this->validateImage();
+                    if($imageResult == true){
+                        if($this->db->create('tbl_coupon', $this->imageDest, $_POST['expiryDate'], $_POST['couponCode'], $_POST['couponTitle'], $_POST['couponStatus'], $_POST['minAmt'], $_POST['discount'], $_POST['description'])){
+                            $msg = urlencode("Created new coupon successfully!");
+                            return header("Location: /couponlist?msg=$msg");
+                        }else{
+                            throw new Exception("All input fields are required!");
+                        }
                     }else{
-                        throw new Exception("All input fields are required!");
+                        $msg = urlencode($imageResult);
+                        return header("Location: /couponlist/add?msg=$msg");
                     }
+                }else{
+                    echo "<pre>";
+                    var_dump($_POST);
+                    echo "</pre>";
                 }
             }catch(Exception $e){
                 $msg = urlencode($e->getMessage());
@@ -107,5 +117,52 @@ class CouponController extends Controller{
             }
         }
         
+    }
+
+    public function validateImage(){
+        $targetDir = Application::$ROOT_DIR . "/public/assets/images/coupon/";
+        $targetFile = $targetDir . basename($_FILES['couponimage']['name']);
+        $uploadOk = 1;
+        $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+
+        //check if image is an actual image
+        if(isset($_POST['submit'])){
+            $check = getimagesize($_FILES['couponimage']['tmp_name']);
+            if($check !== false){
+                $uploadOk = 1;
+            }else{
+                $uploadOk = 0;
+                return "File is not an image";
+            }
+        }
+
+        //check if image file already exist
+        if(file_exists($targetFile)){
+            return "Image file already exist";
+            $uploadOk = 0;
+        }
+
+        // limit the file size
+        if($_FILES['couponimage']['size'] > 5000000){
+            $uploadOk = 0;
+            return "File size too large";
+        }
+
+        if($imageFileType != "jpg" && $imageFileType != 'png' && $imageFileType != "jpeg"){
+            $uploadOk = 0;
+            return "Only jpg, png and jpeg file formats are allowed";
+        }
+
+        if ($uploadOk == 0) {
+            return "Your file didn't uploaded for some reasons";
+          // if everything is ok, try to upload file
+          } else {
+            if (move_uploaded_file($_FILES["couponimage"]["tmp_name"], $targetFile)) {
+                $this->imageDest = "/assets/images/coupon/".basename($_FILES['couponimage']['name']);
+              return true;
+            } else {
+              return false;
+            }
+          }
     }
 }

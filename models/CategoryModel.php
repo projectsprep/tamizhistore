@@ -91,12 +91,14 @@ class CategoryModel{
 
     }
 
-    public function update($table, $id, $catname, $catimage){
-        $query = "UPDATE $table set catname='$catname', catimg='$catimage' where id=$id";
+    public function update($table, $id, $catname, $catimage=""){
+        if(isset($catimage) && $catimage != ""){
+            $query = "UPDATE $table set catname='$catname', catimg='$catimage' where id=$id";
+        }else{
+            $query = "UPDATE $table set catname='$catname' where id=$id";
+        }
         $result = $this->conn->query($query);
         if($result){
-            
-            
             return true;
         }else{
             

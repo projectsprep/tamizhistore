@@ -200,9 +200,6 @@
                     $("#loader").hide();
                     $("#datatable").show();
                 },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    alert(thrownError);
-                },
             })
 
             $(document).on("click", ".deletenoti", function() {
@@ -251,9 +248,6 @@
                     dataType: "json",
                     success: function(data) {
                         $("#subCategory").html(data);
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        alert(thrownError);
                     },
                 })
             })
