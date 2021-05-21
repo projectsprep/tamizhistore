@@ -1,4 +1,5 @@
 <?php
+header("Access-Control-Allow-Origin: *");
 
 require __DIR__. '/../vendor/autoload.php';
 // error_reporting(0);
@@ -18,6 +19,7 @@ use app\controllers\UserProfileController;
 use app\models\DB;
 use app\controllers\OrdersController;
 use app\controllers\AppController;
+use app\controllers\SubCategoryController;
 
 $app = new Application(dirname(__DIR__));
 $db = new DB();
@@ -45,6 +47,12 @@ $app->router->post("/categorylist/delete", [CategoryController::class, "delete"]
 // $app->router->get("/categorylist/edit", [CategoryController::class, "update"]);
 $app->router->post("/categorylist/edit", [CategoryController::class, "update"]);
 
+
+// /subcategorylist routes
+$app->router->get("/subcategorylist", [SubCategoryController::class, "read"]);
+$app->router->post("/subcategorylist/edit", [SubCategoryController::class, "update"]);
+$app->router->post("/subcategorylist/delete", [SubCategoryController::class, "delete"]);
+
 // /productlist routes
 $app->router->get("/productlist", [ProductController::class, "read"]);
 $app->router->get("/productlist/add", [ProductController::class, "create"]);
@@ -54,17 +62,18 @@ $app->router->post("/productlist/edit", [ProductController::class, "update"]);
 $app->router->post("/productlist/delete", [ProductController::class, "delete"]);
 
 // /api
-$app->router->post("/api/product", [ApiController::class, "getProducts"]);
+$app->router->post("/api/product", [ApiController::class, "getProductWithList"]);
 $app->router->post("/api/category", [ApiController::class, "getCategories"]);
+$app->router->post("/api/subcategory", [ApiController::class, "getSubCategories"]);
 $app->router->post("/api/coupons", [ApiController::class, "getCoupons"]);
 $app->router->post("/api/area", [ApiController::class, "getArea"]);
-$app->router->post("/api/getcategory", [ApiController::class, "getCategory"]);
+$app->router->post("/api/getcategory", [ApiController::class, "getCategoryWithList"]);
 $app->router->post("/api/timeslot", [ApiController::class, "getTimeslot"]);
 $app->router->post("/api/payment", [ApiController::class, "getPayment"]);
 $app->router->post("/api/codelist", [ApiController::class, "getCodelist"]);
-$app->router->post("/api/getcategorynames", [ApiController::class, "getCategoryNames"]);
+$app->router->post("/api/getcategorynames", [ApiController::class, "getCategoryNamesWithList"]);
 $app->router->post("/api/getsubcategorynames", [ApiController::class, "getSubcategoryNames"]);
-$app->router->post("/api/getproduct", [ApiController::class, "getProduct"]);
+$app->router->post("/api/getproduct", [ApiController::class, "getProducts"]);
 $app->router->post("/api/pushednotifies", [ApiController::class, "getNotifications"]);
 $app->router->post("/api/pushednotifiessite", [ApiController::class, "pushedNotifications"]);
 
@@ -114,8 +123,6 @@ $app->router->post("/paymentlist/edit", [PaymentController::class, "update"]);
 $app->router->post("/app/assigndeliveryboy", [AppController::class, "assignDeliveryBoy"]);
 $app->router->post("/app/riderres", [AppController::class, "deliveryBoyNotiRes"]);
 $app->router->post("/app/assignedorders", [AppController::class, "assignedOrders"]);
+// $app->router->post("/", [AppController::class, ""]);
 
 $app->run();
-
-
-//hi sudharshan anna

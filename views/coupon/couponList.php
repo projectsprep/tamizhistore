@@ -175,7 +175,7 @@
                 $.ajax({
                     url: "/api/coupons?id=" + couponid,
                     method: "POST",
-                    data: {},
+                    data: {id: couponid},
                     dataType: "json",
                     success: function(data) {
                         $("#editCoupon").modal("show");

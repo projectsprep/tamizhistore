@@ -194,6 +194,16 @@ if($_SESSION['notify'] === true){
                             <li><a href="/categorylist" key="t-product-detail">Category List</a></li>
                         </ul>
                     </li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="bx bx-list-ul"></i>
+                            <span key="t-ecommerce"><span>Sub Category</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="/categorylist/add" key="t-products">Add SubCategory</a></li>
+                            <li><a href="/subcategorylist" key="t-product-detail">SubCategory List</a></li>
+                        </ul>
+                    </li>
 
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">

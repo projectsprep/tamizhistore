@@ -32,22 +32,22 @@ class AppController{
         if($orders != NULL && count($orders) >= 1){
             if($deliveryBoy != NULL && count($deliveryBoy) >= 1){
                 $success = false;
-            foreach($orders as $order){
-                $query = "UPDATE orders set rid=".$deliveryBoy['id'].", r_status='pending' where oid = '".$order['oid']."'";
-                $result = $this->conn->query($query);
-                if($this->conn->affected_rows > 0){
-                    if($this->deliveryBoyNoti($deliveryBoy['id'], $order['oid'])){
-                        $success = true;
+                foreach($orders as $order){
+                    $query = "UPDATE orders set rid=".$deliveryBoy['id'].", r_status='pending' where oid = '".$order['oid']."'";
+                    $result = $this->conn->query($query);
+                    if($this->conn->affected_rows > 0){
+                        if($this->deliveryBoyNoti($deliveryBoy['id'], $order['oid'])){
+                            $success = true;
+                        }else{
+                            return json_encode(array("Result"=>false, "Message"=>"Unable to place order!"));
+                        }  
                     }else{
                         return json_encode(array("Result"=>false, "Message"=>"Unable to place order!"));
-                    }  
-                }else{
-                    return json_encode(array("Result"=>false, "Message"=>"Unable to place order!"));
+                    }
                 }
-            }
-            if($success == true){
-                return json_encode(array("Result"=>true, "Message"=>"Order placed successfully with rider id ".$deliveryBoy['id']));
-            }
+                if($success == true){
+                    return json_encode(array("Result"=>true, "Message"=>"Order placed successfully with rider id ".$deliveryBoy['id']));
+                }
             }else{
                 return json_encode(array("Result"=>false, "Message"=>"Delivery boys are not available!"));
             }

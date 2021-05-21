@@ -29,7 +29,7 @@ foreach ($params as $param) {
                             <div class="row">
 
                                 <div class="col-12">
-                                    <img src="/assets/images/2153.jpg" alt="" class="img-fluid">
+                                    <img src="/assets/images/adminpage.jpg" alt="" class="img-fluid">
                                 </div>
                             </div>
                         </div>

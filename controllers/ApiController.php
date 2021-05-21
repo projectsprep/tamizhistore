@@ -15,6 +15,7 @@ use app\models\AreaModel;
 use app\models\TimeSlotsModel;
 use app\models\PaymentModel;
 use app\models\CountryCodeModel;
+use app\models\SubCategoryModel;
 use Exception;
 
 session_start();
@@ -33,6 +34,7 @@ class ApiController extends Controller
     private TimeSlotsModel $tsDB;
     private PaymentModel $paymentDB;
     private CountryCodeModel $codeDB;
+    private SubCategoryModel $sDB;
 
     public function __construct()
     {
@@ -46,6 +48,23 @@ class ApiController extends Controller
         $this->tsDB = new TimeSlotsModel();
         $this->paymentDB = new PaymentModel();
         $this->codeDB = new CountryCodeModel();
+        $this->sDB = new SubCategoryModel();
+    }
+
+    public function getSubCategories(){
+        try{
+            if(isset($_POST['id'])){
+                if($_POST['id'] !== ""){
+                    return $this->sDB->getSubCategoryById("subcategory", $_POST['id']);
+                }else{
+                    throw new Exception("Invalid ID!");
+                }
+            }else{
+                return $this->sDB->read("subcategory");
+            }
+        }catch(Exception $e){
+            return $e->getMessage();
+        }
     }
 
     public function getCodelist()
@@ -65,7 +84,7 @@ class ApiController extends Controller
         }
     }
 
-    public function getProduct()
+    public function getProductWithList()
     {
         $query = "select p.id, p.pname, p.pimg, p.sname, category.catname, subcategory.name, p.pgms, p.pprice, p.stock, p.status from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id order by id desc limit 10";
         $result = $this->conn->query($query);
@@ -202,7 +221,7 @@ class ApiController extends Controller
         }
     }
 
-    public function getCategory()
+    public function getCategoryWithList()
     {
         $query = "SELECT * FROM category ORDER BY id DESC";
         $result = $this->conn->query($query);
@@ -284,7 +303,7 @@ class ApiController extends Controller
         }
     }
 
-    public function getCategoryNames()
+    public function getCategoryNamesWithList()
     {
         return $this->pDB->getCategoryNames("category");
     }

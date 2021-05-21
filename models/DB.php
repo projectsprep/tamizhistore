@@ -1,6 +1,8 @@
 <?php
 
 namespace app\models;
+
+use Exception;
 use mysqli;
 
 class DB{
@@ -35,5 +37,16 @@ class DB{
         }else{
             return $this->conn;
         }
+
+        // try{
+        //     $this->conn = new mysqli($this->hostName, $this->username, $this->password, $this->dbName);
+        //     if($this->conn->connect_error){
+        //         throw new Exception("connection error".$this->conn->connect_error);
+        //     }else{
+        //         return $this->conn;
+        //     }
+        // }catch(Exception $exception){
+        //     die($exception->getMessage());
+        // }
     }
 }
