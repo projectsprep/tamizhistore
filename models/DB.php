@@ -7,22 +7,23 @@ use mysqli;
 
 class DB{
 
-    // protected string $hostName = "cloud1.zolahost.net";
-    // protected string $port = "3306";
-    // protected string $dbName = "testtamizhistore";
-    // protected string $username = "projectsprep";
-    // protected string $password = "Prep5@#$";
+    protected string $hostName = "cloud1.zolahost.net";
+    protected string $port = "3306";
+    protected string $dbName = "testtamizhistore";
+    protected string $username = "projectsprep";
+    protected string $password = "Prep5@#$";
 
     // protected string $hostName = "cloud1.zolahost.net";
     // protected string $port = "3306";
     // protected string $dbName = "tamizhistoreapp";
     // protected string $username = "tamizhistoreadmin";
     // protected string $password = "Tamizhistore2020";
-    protected string $hostName = "localhost";
-    protected string $port = "3306";
-    protected string $dbName = "tamizhistoreapp";
-    protected string $username = "root";
-    protected string $password = "dharshan";
+
+    // protected string $hostName = "localhost";
+    // protected string $port = "3306";
+    // protected string $dbName = "tamizhistoreapp";
+    // protected string $username = "root";
+    // protected string $password = "dharshan";
 
     private $conn = null;
 

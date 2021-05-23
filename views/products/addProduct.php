@@ -26,18 +26,6 @@
                                     <div class="mb-3">
                                         <label class="form-label">Product Image</label>
                                         <input type="file" class="form-control" required name="productimage"/>
-                                        <!-- <div class="card">
-                                            <div class="card-body">
-                                                <div action="#" class="dropzone dz-clickable">
-                                                    <div class="dz-message needsclick">
-                                                        <div class="mb-3">
-                                                            <i class="display-4 text-muted bx bxs-cloud-upload"></i>
-                                                        </div>
-                                                        <h4>Drop files here or click to upload.</h4>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div> -->
                                         <div class="invalid-feedback">
                                             Please select a valid product image
                                         </div>

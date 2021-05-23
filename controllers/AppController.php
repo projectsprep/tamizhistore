@@ -90,10 +90,9 @@ class AppController{
                 // set status as accepted in rnoti
                 // set is_available as 0 in rider
                 $result = $this->appDB->deliveryBoyAccept($_POST['uid'], $_POST['rid']);
-                if($result){
+                if($result === true){
                     return json_encode(array("Result"=>true, "Message"=>"Delivery boy with id " . $_POST['rid'] . " accepted the order!"));
-
-                }else{
+                }else if($result === false){
                     return json_encode(array("Result"=>false, "Message"=>"Unable to assign delivery boy!"));
                 }
 
@@ -102,10 +101,10 @@ class AppController{
                 // set status as declined in rnoti
                 // re-assign rider
                 $result = $this->appDB->deliveryBoyDecline($_POST['uid'], $_POST['rid']);
-                if($result){
+                if($result === true){
                     echo json_encode(array("Result"=>false, "Message"=>"Delivery boy with id " . $_POST['rid'] . " declined the order!"));
                     return $this->AssignDeliveryBoy($_POST['uid'], $_POST['rid']);
-                }else{
+                }else if($result === false){
                     return json_encode(array("Result"=>false, "Message"=>"Unable to assign delivery boy!"));
                 }
             }

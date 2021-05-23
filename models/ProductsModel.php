@@ -14,7 +14,7 @@ class ProductsModel{
     }
 
     public function read($table){
-        $query = "select p.id, p.pname, p.pimg, p.sname, category.catname, subcategory.name, p.pgms, p.pprice, p.stock, p.status, p.psdesc from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id order by id desc";
+        $query = "select p.id, p.pname, p.pimg, p.sname, category.catname, subcategory.name, p.pgms, p.pprice, p.stock, p.status, p.psdesc from product p left join category on p.cid = category.id left join subcategory on p.sid=subcategory.id order by id desc";
         $result = $this->conn->query($query);
         $array = [];
         if($result->num_rows > 0){

@@ -68,6 +68,7 @@ class AppModel{
                 if($this->conn->affected_rows > 0){
                     return true;
                 }else{
+                    // echo "here";
                     return false;
                 }
             }else{

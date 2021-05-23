@@ -30,7 +30,7 @@ class AreaController extends Controller{
             }
         }catch(Exception $e){
             $msg = urlencode($e->getMessage());
-            return header("Location: /?msg=$msg");
+            return header("Location: /arealist?msg=$msg");
         }
     }
 
@@ -38,32 +38,39 @@ class AreaController extends Controller{
         if($this->app->request->getMethod() === "get"){
             return $this->render("area/addArea");
         }else if($this->app->request->getMethod() === "post"){
-            if(isset($_POST['areaName']) && isset($_POST['delCharge']) && isset($_POST['status'])){
-                if($this->db->create('area_db', $_POST['areaName'], $_POST['delCharge'], $_POST['status'])){
-                   $msg = "Added a new Area!"; 
-                    return header("Location: /arealist?msg=$msg");
+            try{
+                if(isset($_POST['areaName']) && isset($_POST['delCharge']) && isset($_POST['status'])){
+                    if($this->db->create('area_db', $_POST['areaName'], $_POST['delCharge'], $_POST['status'])){
+                        $msg = urlencode("Added a new Area!"); 
+                        return header("Location: /arealist?msg=$msg");
+                    }else{
+                        throw new Exception("Unable to add new Area");
+                    }
                 }else{
-                    $msg = urlencode("Unable to add new Area");
-                    return header("Location: /arealist?msg=$msg");
+                    throw new Exception("All input fields are required!");
                 }
-            }else{
-                $msg = urlencode("All fields are required");
+            }catch(Exception $e){
+                $msg = urlencode($e->getMessage());
                 return header("Location: /arealist?msg=$msg");
             }
         }
     }
 
     public function edit(){
-        if(isset($_POST['areaName']) && isset($_POST['id']) && isset($_POST['delCharge']) && isset($_POST['status'])){
-            if($this->db->update("area_db", $_POST['id'], $_POST['areaName'], $_POST['delCharge'], $_POST['status'])){
-                $msg = urlencode("Area updated!");
-                return header("Location: /arealist?msg=$msg");
+        try{
+            if(isset($_POST['areaName']) && isset($_POST['id']) && isset($_POST['delCharge']) && isset($_POST['status'])){
+                if($this->db->update("area_db", $_POST['id'], $_POST['areaName'], $_POST['delCharge'], $_POST['status'])){
+                    $msg = urlencode("Area updated!");
+                    return header("Location: /arealist?msg=$msg");
+                }else{
+                    throw new Exception("Unable to update Area!");
+                }
             }else{
-                $msg = urlencode("Unable to update Area");
-                return header("Location: /arealist?msg=$msg");
+                throw new Exception("All input fields are required!");
             }
-        }else{
-            return "All fields are required";
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /arealist?msg=$msg");
         }
     }
 
@@ -73,9 +80,11 @@ class AreaController extends Controller{
                 if($this->db->delete("area_db", $_POST['id'])){
                     $msg = urlencode("Area deleted");
                     return header("Location: /arealist?msg=$msg");
+                }else{
+                    throw new Exception("Unable to delete Area!");
                 }
             }else{
-                throw new Exception("Invalid ID");
+                throw new Exception("Invalid ID!");
             }
         }catch(Exception $e){
             $msg = urlencode($e->getMessage());

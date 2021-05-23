@@ -41,11 +41,10 @@ class PaymentController extends Controller{
                     $msg = urlencode("Updated Paymentlist!");
                     return header("Location: /paymentlist?msg=$msg");
                 }else{
-                    $msg = urlencode("Unable to update paymentlist");
-                    return header("Location: /paymentlist?msg=$msg");
+                    throw new Exception("Unable to update paymentlist!");
                 }
             }else{
-                throw new Exception("All fields are required!");
+                throw new Exception("All input fields are required!");
             }
         }catch(Exception $e){
             $msg = urlencode($e->getMessage());

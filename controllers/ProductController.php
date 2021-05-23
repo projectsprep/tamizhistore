@@ -33,22 +33,20 @@ class ProductController extends Controller{
                     $imageResult = $this->validateImage();
                     if($imageResult == true){
                         if($this->db->create("product", $_POST["productName"], $this->imageDest, $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["unit"], $_POST["price"], $_POST["discount"], $_POST['popular'])){
-                            $msg = urlencode("New product created successfully");
+                            $msg = urlencode("New product created successfully!");
                             return header("Location: /productlist?msg=$msg");
                         }else{
-                            $msg = urlencode("Unable to add a new product!");
-                            return header("Location: /productlist/add?msg=$msg");
+                            throw new Exception("Unable to add a new product!");
                         }
                     }else{
-                        $msg = urlencode($imageResult);
-                        return header("Location: /productlist/add?msg=$msg");
+                        throw new Exception($imageResult);
                     }
                 }else{
-                    throw new Exception("All fields are required!");
+                    throw new Exception("All input fields are required!");
                 }
             }catch(Exception $e){
                 $msg = urlencode($e->getMessage());
-                return header("Location: /productlist?msg=$msg");
+                return header("Location: /productlist/add?msg=$msg");
             }
         }
     }
@@ -68,8 +66,8 @@ class ProductController extends Controller{
     }
 
     public function update(){
-        if($this->app->request->getMethod() === "get"){
-            try{
+        try{
+            if($this->app->request->getMethod() === "get"){
                 if(isset($_GET['id'])){
                     $json = $this->db->edit("product", $_GET['id']);
                     if($json){
@@ -80,35 +78,27 @@ class ProductController extends Controller{
                 }else{
                     throw new Exception("Invalid ID");
                 }
-            }catch(Exception $e){
-                    $msg = urlencode($e->getMessage());
-                    return header("Location: /productlist?msg=$msg");
-            }
-        }else if($this->app->request->getMethod() === "post"){
-            try{
+            }else if($this->app->request->getMethod() === "post"){
                 if(isset($_POST["id"]) && isset($_POST["productName"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["outofstock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["range"]) && isset($_POST["price"]) && isset($_POST["discount"])){
                     $validateImage = NULL;
                     if(isset($_FILES['productimage']['name']) && $_FILES['productimage']['name'] != ""){
                         $validateImage = $this->validateImage();
                     }
-                if($validateImage === true || $validateImage == NULL){
-                    if($this->db->update("product", $_POST['id'],$_POST["productName"], $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["range"], $_POST["price"], $_POST["discount"], $_POST['popular'], $validateImage == true ? $this->imageDest : "")){
-                        $msg = urlencode("Product updated!");
-                        return header("Location: /productlist?msg=$msg");
-                    }else{
-                        echo "<pre>";
-                        var_dump($_POST);
-                        echo "</pre>";
+                    if($validateImage === true || $validateImage == NULL){
+                        if($this->db->update("product", $_POST['id'],$_POST["productName"], $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["range"], $_POST["price"], $_POST["discount"], $_POST['popular'], $validateImage == true ? $this->imageDest : "")){
+                            $msg = urlencode("Product updated successfully!");
+                            return header("Location: /productlist?msg=$msg");
+                        }else{
+                            throw new Exception("Unable to update product!");
+                        }
                     }
-                }
-
                 }else{
-                    throw new Exception("All fields are required!");
+                    throw new Exception("Invalid Arguments!");
                 }
-            }catch(Exception $e){
-                $msg = urlencode($e->getMessage());
-                return header("Location: /productlist?msg=$msg");
             }
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /productlist?msg=$msg");
         }
     }
 

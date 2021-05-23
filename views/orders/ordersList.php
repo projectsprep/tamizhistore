@@ -20,19 +20,36 @@ $conn = $db->conn();
             <?php
             }
             ?>
-            <div class="row">
+            <div class="loadingio-eclipse" id="loader">
+                <div class="ldio-rpinwye8j0b">
+                    <div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="display: none;" id="display">
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-nowrap table-striped table-hover" style="display: none;" id="datatable">
+                                <table class="table table-nowrap table-striped table-hover" id="datatable">
                                     <thead class="table-light thead-dark">
                                         <tr>
                                             <th scope="col" style="width: 70px;">Sl.no</th>
-                                            <th scope="col">Category Name</th>
-                                            <th scope="col">Category Image</th>
-                                            <th scope="col">Total Subcategory</th>
-                                            <th scope="col">Action</th>
+                                            <th scope="col">Order ID</th>
+                                            <th scope="col">User ID</th>
+                                            <th scope="col">Product Name</th>
+                                            <th scope="col">Product Price</th>
+                                            <th scope="col">Order Date</th>
+                                            <th scope="col">Delivery Date</th>
+                                            <th scope="col">Delivery Status</th>
+                                            <th scope="col">Quantity</th>
+                                            <th scope="col">Rider Status</th>
+                                            <th scope="col">Rider Name</th>
+                                            <th scope="col">Tax</th>
+                                            <th scope="col">Address</th>
+                                            <th scope="col">Coupon</th>
+                                            <th scope="col">Coupon Amount</th>
+                                            <th scope="col">Total Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -51,32 +68,56 @@ $conn = $db->conn();
                                                     </span>
                                                 </td>
                                                 <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $catname; ?></h5>
+                                                    <h5 class="font-size-14 mb-1"><?= $oid; ?></h5>
                                                 </td>
                                                 <td align="center">
-                                                    <img src="<?= $catimg; ?>" class="img-thumbnail" alt="">
+                                                    <h5 class="font-size-14 mb-1"><?= $uid; ?></h5>
                                                 </td>
                                                 <td align="center">
-                                                    <div>
-                                                        <h5 class="font-size-14 mb-1"><?= $conn->query("select * from subcategory where cat_id = $id;")->num_rows; ?></h5>
-                                                    </div>
+                                                    <h5 class="font-size-14 mb-1"><?= $pname; ?></h5>
                                                 </td>
                                                 <td align="center">
-                                                    <a href="#" id=<?= $id ?> class="text-danger deletecategory"><i class="bx bx-trash-alt"></i></a>
-                                                    <a href="#" id=<?= $id ?> class="editcategory"><i class="bx bx-edit"></i></a>
+                                                    <h5 class="font-size-14 mb-1"><?= $pprice; ?></h5>
                                                 </td>
-
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $order_date; ?></h5>
+                                                </td>
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $ddate; ?></h5>
+                                                </td>
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $status; ?></h5>
+                                                </td>
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $qty; ?></h5>
+                                                </td>
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $r_status; ?></h5>
+                                                </td>
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $rider; ?></h5>
+                                                </td>
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $tax; ?></h5>
+                                                </td>
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $address; ?></h5>
+                                                </td>
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $coupon_id; ?></h5>
+                                                </td>
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $cou_amt; ?></h5>
+                                                </td>
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $wal_amt; ?></h5>
+                                                </td>
                                             </tr>
                                         <?php
                                         }
                                         ?>
                                     </tbody>
                                 </table>
-                                <div class="text-center">
-                                    <div class="spinner-border" role="status" id="loader">
-                                        <span class="sr-only">Loading...</span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -87,35 +128,41 @@ $conn = $db->conn();
     <!-- End Page-content -->
 
 </div>
-
-
-<div class="modal fade hide" role="dialog" id="editModal" aria-labelledby="editModalLabel" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="/categorylist/edit" method="Post" id="editCategoryForm" enctype="multipart/form-data">
-                <div class="modal-header">
-                    <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                    <h4 class="modal-title">Edit Category</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="">Category Name</label>
-                        <input type="text" name="categoryName" id="categoryname" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="">Category Image</label>
-                        <input type="file" name="categoryimage" class="form-control">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="hidden" name="id" id="categoryid">
-                    <input type="submit" name="submit" class="btn btn-primary waves-effect waves-light">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+<style>
+    @keyframes ldio-rpinwye8j0b {
+  0% { transform: rotate(0deg) }
+  50% { transform: rotate(180deg) }
+  100% { transform: rotate(360deg) }
+}
+.ldio-rpinwye8j0b div {
+  position: absolute;
+  animation: ldio-rpinwye8j0b 1s linear infinite;
+  width: 160px;
+  height: 160px;
+  top: 20px;
+  left: 20px;
+  border-radius: 50%;
+  box-shadow: 0 4px 0 0 #2a3042;
+  transform-origin: 80px 82px;
+}
+.loadingio-eclipse {
+    margin: auto;
+    margin-top: 18%;
+    margin-bottom: auto;
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+}
+.ldio-rpinwye8j0b {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform: translateZ(0) scale(1);
+  backface-visibility: hidden;
+  transform-origin: 0 0; /* see note above */
+}
+.ldio-rpinwye8j0b div { box-sizing: content-box; }
+</style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -133,46 +180,9 @@ $conn = $db->conn();
 <script>
     $(document).ready(
         function() {
-            $(document).on("click", ".editcategory", function() {
-                var categoryid = $(this).attr('id');
-                $("#categoryid").val(categoryid);
-
-                $.ajax({
-                    url: "/api/category?id=" + categoryid,
-                    method: "GET",
-                    data: {},
-                    dataType: "json",
-                    success: function(data) {
-                        $("#editModal").modal("show");
-                        $("#categoryid").val(categoryid);
-                        $("#categoryname").val(data[0].catname)
-                    }
-                })
-            })
-
-            $("#editCategoryForm").on("submit", function() {
-                if ($("#categoryname").val() == "") {
-                    event.preventDefault();
-                    $("#editModal").modal("hide");
-                    $(".container-fluid").prepend("<div class='alert alert-danger alert-dismissible fade show'>All fields are required <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>");
-                } else {
-                    $.ajax({
-                        url: "/categorylist/edit",
-                        method: "POST",
-                        data: $("#editCategoryForm").serialize(),
-                        success: function(data) {
-                            $("#editModal").modal("hide");
-                            $(".container-fluid").prepend("<div class='alert alert-success alert-dismissible fade show'>Category added successfully <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>")
-                        },
-                        error: function(xhr, ajaxOptions, thrownError) {
-                            alert("something happened");
-                        },
-                    })
-                }
-            })
 
             $.ajax({
-                url: "/categorylist",
+                url: "/orders",
                 method: "GET",
                 data: {
                     view: ""
@@ -182,48 +192,9 @@ $conn = $db->conn();
                 },
                 success: function(data) {
                     $("#loader").hide();
-                    $("#datatable").show();
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    alert(thrownError);
+                    $("#display").show();
                 },
             })
-
-            $(document).on("click", ".deletecategory", function() {
-                var id = $(this).attr("id");
-                swal({
-                        title: "Are you sure?",
-                        text: "Once deleted cannot be retrived.",
-                        icon: "warning",
-                        buttons: true,
-                        dangerMode: true
-                    })
-                    .then((willDelete) => {
-                        if (willDelete) {
-                            $.ajax({
-                                url: "/categorylist/delete",
-                                method: "POST",
-                                data: {
-                                    id: id
-                                },
-                                success: function() {
-                                    swal("Category deleted successfully!", {
-                                        icon: "success",
-                                    }).then((value) => {
-                                        location.reload();
-                                    })
-                                    setTimeout(function() {
-                                        location.reload();
-                                    }, 1500)
-                                }
-                            })
-
-                        } else {
-                            swal("Your category is safe!");
-                        }
-                    })
-            })
-
         }
     )
 </script>

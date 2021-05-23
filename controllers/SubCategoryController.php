@@ -28,26 +28,29 @@ class SubCategoryController extends Controller{
         $this->app = new Application(dirname(__DIR__));
     }
 
-    public function add(){
+    public function create(){
         if($this->app->request->getMethod() === "get"){
-            return $this->render("categories/addCategory");
+            return $this->render("subcategories/addSubcategory");
         }else if($this->app->request->getMethod() === "post"){
-            if(isset($_POST['categoryName']) && isset($_FILES['categoryimage']['name']) && $_FILES['categoryimage']['name'] != ""){
-                $validateImage = $this->validateImage();
-                if($validateImage === true){
-                    if($this->db->create("category", $_POST["categoryName"], $this->imageDest)){
-                        return header("Refresh: 1; URL=/categorylist");
+            try{
+                if(isset($_POST['subcategoryname']) && ($_POST['subcategoryname'] !== "") && isset($_POST['category']) && ($_POST['category'] !== "")  && isset($_FILES['subcategoryimage']['name']) && $_FILES['subcategoryimage']['name'] != ""){
+                    $validateImage = $this->validateImage();
+                    if($validateImage === true){
+                        if($this->db->create("subcategory", $_POST["subcategoryname"], $this->imageDest, $_POST['category'])){
+                            $msg = urlencode("Added subcategory successfully!");
+                            return header("Location: /subcategorylist?msg=$msg");    
+                        }else{
+                            throw new Exception("Unable to add new subcategory!");
+                        }
                     }else{
-                        $msg=urlencode("Unable to add new category");
-                        return header("Location: /categorylist?msg=".$msg);    
+                        throw new Exception($validateImage);
                     }
                 }else{
-                    $msg=urlencode($validateImage);
-                    return header("Location: /categorylist?msg=".$msg);
+                    throw new Exception("All input fields are required!");
                 }
-            }else{
-                $msg=urlencode("All input fields are required!");
-                return header("Location: /categorylist/add?msg=".$msg);
+            }catch(Exception $e){
+                $msg = urlencode($e->getMessage());
+                return header("Location: /subcategorylist/add?msg=$msg");
             }
         }
     }
@@ -56,9 +59,9 @@ class SubCategoryController extends Controller{
         $json = $this->db->read("subcategory");
         try{
             if($json){
-                return $this->render("subcategories/subcategoryList", $json);
+                return $this->render("subcategories/subCategoryList", $json);
             }else{
-                throw new Exception("Unable to fetch data. Please try again later");
+                throw new Exception("Unable to fetch data. Please try again later!");
             }
         }catch(Exception $e){
             $msg = urlencode($e->getMessage());
@@ -69,25 +72,25 @@ class SubCategoryController extends Controller{
     public function delete(){
         try{
             if(isset($_POST['id'])){
-                if($this->db->delete("category", $_POST['id'])){
-                    return header("Location: /categorylist");
+                if($this->db->delete("subcategory", $_POST['id'])){
+                    return header("Location: /subcategorylist");
                 }else{
                     $msg = urlencode("Unable to delete a category.");
-                    return header("Location: /categorylist?msg=$msg");
+                    return header("Location: /subcategorylist?msg=$msg");
                 }
             }else{
-                throw new Exception("Unable to delete a category.");
+                throw new Exception("Invalid Arguments!");
             }
         }catch(Exception $e){
             $msg = urlencode($e->getMessage());
-            return header("Location: /categorylist?msg=$msg");
+            return header("Location: /subcategorylist?msg=$msg");
         }
     }
 
     public function update(){
         $json = $this->db->read("category");
-        if($this->app->request->getMethod() === "get"){
-            try{
+        try{
+            if($this->app->request->getMethod() === "get"){
                 if($json){
                     if(isset($_GET['id']) && $_GET['id']!=""){
                         $json = $this->db->edit("category", $_GET['id']);
@@ -95,53 +98,48 @@ class SubCategoryController extends Controller{
                     }else{
                         $msg = urlencode("Invalid ID");
                         return header("Location: /categorylist?msg=$msg");
+                        throw new Exception("Invalid Arguments!");
                     }
                 }else{
                     throw new Exception("Unable to fetch data. Please try again later!");
                 }
-            }catch(Exception $e){
-                $msg = urlencode($e->getMessage());
-                return header("Location: /categorylist?msg=$msg");
-            }
-        }else if($this->app->request->getMethod() === "post"){
-            if(isset($_POST['id']) && isset($_POST['subcategoryName']) && isset($_POST['category'])){
-                $validateImage = NULL;
-                if(isset($_FILES['categoryimage']['name']) && $_FILES['categoryimage']['name'] != ""){
-                    $validateImage = $this->validateImage();
-                }
-                if($validateImage === true || $validateImage == NULL){
-                    if($this->db->update("subcategory", $_POST['id'], $_POST['category'], $_POST['subcategoryName'], $validateImage == true ? $this->imageDest : "")){
-                        $msg = urlencode("SubCategory updated successfully!");
-                        return header("Location: /subcategorylist?msg=$msg");
+            }else if($this->app->request->getMethod() === "post"){
+                if(isset($_POST['id']) && isset($_POST['subcategoryName']) && isset($_POST['category'])){
+                    $validateImage = NULL;
+                    if(isset($_FILES['subcategoryimage']['name']) && $_FILES['subcategoryimage']['name'] != ""){
+                        $validateImage = $this->validateImage();
+                    }
+                    if($validateImage === true || $validateImage == NULL){
+                        if($this->db->update("subcategory", $_POST['id'], $_POST['category'], $_POST['subcategoryName'], $validateImage == true ? $this->imageDest : "")){
+                            $msg = urlencode("SubCategory updated successfully!");
+                            return header("Location: /subcategorylist?msg=$msg");
+                        }else{
+                            throw new Exception("Unable to update SubCategory!");
+                        }        
                     }else{
-                        $msg = urlencode("Unable to update SubCategory!");
-                        return header("Location: /subcategorylist?msg=$msg");
-                    }        
+                        throw new Exception($validateImage);
+                        // return $this->render("categories/temp", $json, json_encode(["msg"=>$validateImage]));
+                    }
                 }else{
-                    $msg = urlencode("$validateImage");
-                    return header("Location: /subcategorylist?msg=$msg");
-
-                    // return $this->render("categories/temp", $json, json_encode(["msg"=>$validateImage]));
+                    throw new Exception("Unable to update SubCategory!");
+                    // return $this->render("categories/categoryList", $json, json_encode(["msg"=>"Unable to add new category. Check if all values are set"]));
                 }
-            }else{
-                $msg = urlencode("Unable to update SubCategory!");
-                return header("Location: /subcategorylist?msg=$msg");
-
-                // return $this->render("categories/categoryList", $json, json_encode(["msg"=>"Unable to add new category. Check if all values are set"]));
             }
-        }
-        
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /subcategorylist?msg=$msg");
+        }        
     }
 
     public function validateImage(){
         $targetDir = Application::$ROOT_DIR . "/public/assets/images/category/";
-        $targetFile = $targetDir . basename($_FILES['categoryimage']['name']);
+        $targetFile = $targetDir . basename($_FILES['subcategoryimage']['name']);
         $uploadOk = 1;
         $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
         //check if image is an actual image
         if(isset($_POST['submit'])){
-            $check = getimagesize($_FILES['categoryimage']['tmp_name']);
+            $check = getimagesize($_FILES['subcategoryimage']['tmp_name']);
             if($check !== false){
                 $uploadOk = 1;
             }else{
@@ -152,12 +150,12 @@ class SubCategoryController extends Controller{
 
         //check if image file already exist
         if(file_exists($targetFile)){
-            return "Image file already exist";
             $uploadOk = 0;
+            return "Image file already exist";
         }
 
         // limit the file size
-        if($_FILES['categoryimage']['size'] > 5000000){
+        if($_FILES['subcategoryimage']['size'] > 5000000){
             $uploadOk = 0;
             return "File size too large";
         }
@@ -171,8 +169,8 @@ class SubCategoryController extends Controller{
             return "Your file didn't uploaded for some reasons";
           // if everything is ok, try to upload file
           } else {
-            if (move_uploaded_file($_FILES["categoryimage"]["tmp_name"], $targetFile)) {
-                $this->imageDest = "/assets/images/category/".basename($_FILES['categoryimage']['name']);
+            if (move_uploaded_file($_FILES["subcategoryimage"]["tmp_name"], $targetFile)) {
+                $this->imageDest = "/assets/images/category/".basename($_FILES['subcategoryimage']['name']);
               return true;
             } else {
               return false;

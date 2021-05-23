@@ -25,7 +25,7 @@ class CountryCodeController extends Controller{
             if($json){
                 return $this->render("countrycode/codeList", $json);
             }else{
-                throw new Exception("Something went wrong");
+                throw new Exception("Something went wrong!");
             }
         }catch(Exception $e){
             $msg = urlencode("Unable to fetch data. Please try again later!");
@@ -44,15 +44,14 @@ class CountryCodeController extends Controller{
                         $msg = urlencode("CountryCode added successfully!");
                         return header("Location: /countrycode?msg=$msg");
                     }else{
-                        $msg = urlencode("Unable to add new country code!");
-                        return header("Location: /countrycode?msg=$msg");
+                        throw new Exception("Unable to add new country code!");
                     }
                 }else{
                     throw new Exception("All input fields are required!");
                 }
             }catch(Exception $e){
                 $msg = urlencode($e->getMessage());
-                return header("Location: /countrycode?msg=$msg");
+                return header("Location: /countrycode/code?msg=$msg");
             }
         }
     }
@@ -64,8 +63,7 @@ class CountryCodeController extends Controller{
                     $msg = urlencode("Updated CountryCode!");
                     return header("Location: /countrycode?msg=$msg");
                 }else{
-                    $msg = urlencode("Unable to update country code!");
-                    return header("Location: /countrycode?msg=$msg");
+                    throw new Exception("Unable to update country code!");
                 }
             }else{
                 throw new Exception("All input fields are required!");
@@ -83,11 +81,10 @@ class CountryCodeController extends Controller{
                     $msg = "Deleted CountryCode!";
                     return header("Location: /countrycode?msg=$msg");
                 }else{
-                    $msg = "Unable to delete country code!";
-                    return header("Location: /countrycode?msg=$msg");
+                    throw new Exception("Unable to delete country code!");
                 }
             }else{
-                throw new Exception("Invalid ID");
+                throw new Exception("Invalid Arguments!");
             }
         }catch(Exception $e){
             $msg = urlencode($e->getMessage());

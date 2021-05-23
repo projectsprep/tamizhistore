@@ -41,22 +41,21 @@ class NotificationsController extends Controller{
         }else if($this->app->request->getMethod() === "post"){
             try{
                 if((isset($_POST['title']) && isset($_POST['message'])) || isset($_FILES['image'])){
-                    // if($this->db->create('category', $_POST['categoryName'], $_POST['categoryImage'])){
-                    //     return header("Location: /categorylist");
-                    // }else{
-                    //     $msg = urlencode("Unable to create a new notification!");
-                    //     return header("Location: /notifications?msg=$msg");
-                    // }
-                    echo "<pre>";
-                    var_dump($_POST);
-                    var_dump($_FILES);
-                    echo "</pre>";
+                    if($this->db->create('category', $_POST['categoryName'], $_POST['categoryImage'])){
+                        return header("Location: /categorylist");
+                    }else{
+                        throw new Exception("Unable to create a new notification!");
+                    }
+                    // echo "<pre>";
+                    // var_dump($_POST);
+                    // var_dump($_FILES);
+                    // echo "</pre>";
                 }else{
                     throw new Exception("All input fields are required!");
                 }
             }catch(Exception $e){
                 $msg = urlencode($e->getMessage());
-                return header("Location: /notifications?msg=$msg");
+                return header("Location: /notifications/add?msg=$msg");
             }
         }
     }
@@ -70,7 +69,7 @@ class NotificationsController extends Controller{
                     return false;
                 }
             }else{
-                throw new Exception("Invalid ID");
+                throw new Exception("Invalid Arguments!");
             }
         }catch(Exception $e){
             $msg = urlencode($e->getMessage());
@@ -81,17 +80,14 @@ class NotificationsController extends Controller{
     public function push(){
         try{
             if(isset($_POST['id'])){
-                $result = $this->db->push("noti", $_POST['id']);
-                return $result;
-                // if(!($this->db->push("noti", $_POST['id']))){
-                //     $msg = urlencode("Notification not pushed!");
-                //     return header("Location: /notifications?msg=$msg");
-                // }else{
-                //     $msg = urlencode("Notification pushed!");
-                //     return header("Location: /notifications?msg=$msg");
-                // }
+                if($this->db->push("noti", $_POST['id'])){
+                    $msg = urlencode("Notification pushed!");
+                    return header("Location: /notifications?msg=$msg");
+                }else{
+                    throw new Exception("Unable to push notification!");
+                }
             }else{
-                throw new Exception("Invalid ID");
+                throw new Exception("Invalid Arguments!");
             }
         }catch(Exception $e){
             $msg = urlencode($e->getMessage());

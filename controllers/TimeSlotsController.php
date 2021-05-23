@@ -40,17 +40,20 @@ class TimeSlotsController extends Controller{
         if($this->app->request->getMethod() === "get"){
             return $this->render("timeslots/addTimeslots");
         }else if($this->app->request->getMethod() === "post"){
-            if(isset($_POST['minTime']) && isset($_POST['maxTime'])){
-                if($this->db->create('timeslot', $_POST['minTime'], $_POST['maxTime'])){
-                    $msg = urlencode("Added new timeslot!");
-                    return header("Location: /timeslots?msg=$msg");
+            try{
+                if(isset($_POST['minTime']) && isset($_POST['maxTime'])){
+                    if($this->db->create('timeslot', $_POST['minTime'], $_POST['maxTime'])){
+                        $msg = urlencode("Added new timeslot!");
+                        return header("Location: /timeslots?msg=$msg");
+                    }else{
+                        throw new Exception("Unable to add new timeslot!");
+                    }
                 }else{
-                    $msg = urlencode("Unable to add new timeslot!");
-                    return header("Location: /timeslots?msg=$msg");
+                    throw new Exception("All input fields are required!");
                 }
-            }else{
-                $msg = urlencode("All fields are required!");
-                return header("Location: /timeslots?msg=$msg");
+            }catch(Exception $e){
+                $msg = urlencode($e->getMessage());
+                return header("Location: /timeslots/add?msg=$msg");
             }
         }
     }
@@ -62,8 +65,7 @@ class TimeSlotsController extends Controller{
                     $msg = urlencode("Updated timeslot!");
                     return header("Location: /timeslots?msg=$msg");
                 }else{
-                    $msg = urlencode("Unable to update timeslot");
-                    return header("Location: /timeslots?msg=$msg");
+                    throw new Exception("Unable to update timeslot!");
                 }
             }else{
                 throw new Exception("All fields are required!");

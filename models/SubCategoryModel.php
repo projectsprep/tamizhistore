@@ -15,16 +15,14 @@ class SubCategoryModel{
         $this->conn = $this->conn->conn();
     }
 
-    public function create($table, $categoryName, $categoryImage){
-        $query = "INSERT INTO $table (catname, catimg) VALUES ('$categoryName', '$categoryImage');";
+    public function create($table, $subcategoryName, $subcategoryImage, $category){
+        $query = "INSERT INTO $table (`name`, img, cat_id) VALUES ('$subcategoryName', '$subcategoryImage', $category);";
         $result = $this->conn->query($query);
         if($result){
-            
-            
             return true;
         }else{
-            
-            return false;
+            echo $query;
+            // return false;
         }
     }
 
@@ -71,7 +69,7 @@ class SubCategoryModel{
     }
 
     public function read($table){
-        $query = "Select s.id, s.cat_id, s.name, s.img, category.catname from $table s inner join category on s.cat_id = category.id ORDER BY s.id DESC";
+        $query = "Select s.id, s.cat_id, s.name, s.img, category.catname from $table s left join category on s.cat_id = category.id ORDER BY s.id DESC";
         $result = $this->conn->query($query);
         $array = [];
         if($result->num_rows > 0){
@@ -141,7 +139,6 @@ class SubCategoryModel{
         $query = "DELETE FROM $table where id=$id";
         $result = $this->conn->query($query);
         if($result == 1){
-            
             return true;
         }else{
             

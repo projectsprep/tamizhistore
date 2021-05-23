@@ -19,12 +19,18 @@ $db = $db->conn();
             <?php
             }
             ?>
-            <div class="row">
+            <div class="loadingio-eclipse" id="loader">
+                <div class="ldio-rpinwye8j0b">
+                    <div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="display: none;" id="display">
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-nowrap table-hover table-striped" style="display: none;" id="datatable">
+                                <table class="table table-nowrap table-hover table-striped" id="datatable">
                                     <thead class="table-light thead-dark">
                                         <tr>
                                             <th scope="col" style="width: 70px;">Sl.no</th>
@@ -107,11 +113,6 @@ $db = $db->conn();
                                         ?>
                                     </tbody>
                                 </table>
-                                <div class="text-center">
-                                    <div class="spinner-border" role="status" id="loader">
-                                        <span class="sr-only">Loading...</span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -226,6 +227,42 @@ $db = $db->conn();
         </div>
     </div>
 </div>
+
+<style>
+    @keyframes ldio-rpinwye8j0b {
+  0% { transform: rotate(0deg) }
+  50% { transform: rotate(180deg) }
+  100% { transform: rotate(360deg) }
+}
+.ldio-rpinwye8j0b div {
+  position: absolute;
+  animation: ldio-rpinwye8j0b 1s linear infinite;
+  width: 160px;
+  height: 160px;
+  top: 20px;
+  left: 20px;
+  border-radius: 50%;
+  box-shadow: 0 4px 0 0 #2a3042;
+  transform-origin: 80px 82px;
+}
+.loadingio-eclipse {
+    margin: auto;
+    margin-top: 18%;
+    margin-bottom: auto;
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+}
+.ldio-rpinwye8j0b {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform: translateZ(0) scale(1);
+  backface-visibility: hidden;
+  transform-origin: 0 0; /* see note above */
+}
+.ldio-rpinwye8j0b div { box-sizing: content-box; }
+</style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -290,28 +327,6 @@ $db = $db->conn();
                 
             })
 
-            $("#editProductForm").on("submit", function() {
-                // console.log("something");
-                // if ($("#categoryname").val() == "") {
-                //     event.preventDefault();
-                //     $("#editModal").modal("hide");
-                //     $(".container-fluid").prepend("<div class='alert alert-danger alert-dismissible fade show'>All fields are required <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>");
-                // } else {
-                //     $.ajax({
-                //         url: "/productlist/edit",
-                //         method: "POST",
-                //         data: $("#editProductForm").serialize(),
-                //         success: function(data) {
-                //             $("#editModal").modal("hide");
-                //             $(".container-fluid").prepend("<div class='alert alert-success alert-dismissible fade show'>Category added successfully <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>")
-                //         },
-                //         error: function(xhr, ajaxOptions, thrownError) {
-                //             alert("something happened");
-                //         },
-                //     })
-                // }
-            })
-
             $.ajax({
                 url: "/productlist",
                 method: "GET",
@@ -323,7 +338,7 @@ $db = $db->conn();
                 },
                 success: function(data) {
                     $("#loader").hide();
-                    $("#datatable").show();
+                    $("#display").show();
                 },
             })
 

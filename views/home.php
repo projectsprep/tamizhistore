@@ -4,11 +4,7 @@ foreach ($params as $param) {
         $$key = $value;
     }
 }
-
 ?>
-<!-- ============================================================== -->
-<!-- Start right Content here -->
-<!-- ============================================================== -->
 <div class="main-content">
 
     <div class="page-content">
@@ -91,7 +87,7 @@ foreach ($params as $param) {
                     <div class="row">
                         <div class="col-md-4">
                             <div class="card mini-stats-wid shadow">
-                                <div class="card-body">
+                                <a href="/categorylist"><div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
                                             <p class="text-muted fw-medium">Category</p>
@@ -104,11 +100,12 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div>
+                                </div></a>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="card mini-stats-wid shadow">
+                                <a href="/subcategorylist">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -122,11 +119,12 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div>
+                                </div></a>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="card mini-stats-wid shadow">
+                                <a href="/productlist">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -140,7 +138,7 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div>
+                                </div></a>
                             </div>
                         </div>
                     </div>
@@ -148,6 +146,7 @@ foreach ($params as $param) {
                     <div class="row">
                         <div class="col-md-4">
                             <div class="card mini-stats-wid shadow">
+                                <a href="/couponlist">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -160,12 +159,13 @@ foreach ($params as $param) {
                                                 <i class="bx bx-gift font-size-24"></i>
                                             </span>
                                         </div>
-                                    </div>
+                                    </div></a>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="card mini-stats-wid shadow">
+                                <a href="/arealist">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -179,11 +179,12 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div>
+                                </div></a>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="card mini-stats-wid shadow">
+                                <a href="/timeslots">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -197,7 +198,7 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div>
+                                </div></a>
                             </div>
                         </div>
                     </div>
@@ -205,6 +206,7 @@ foreach ($params as $param) {
                     <div class="row">
                         <div class="col-md-4">
                             <div class="card mini-stats-wid shadow">
+                                <a href="/customers/feedback">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -218,11 +220,12 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div>
+                                </div></a>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="card mini-stats-wid shadow">
+                                <a href="/countrycode">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -236,11 +239,12 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div>
+                                </div></a>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="card mini-stats-wid shadow">
+                                <a href="/customers">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -254,7 +258,7 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div>
+                                </div></a>
                             </div>
                         </div>
                     </div>
@@ -319,6 +323,7 @@ foreach ($params as $param) {
                     <div class="row">
                         <div class="col-md-4">
                             <div class="card mini-stats-wid shadow">
+                                <a href="/orders">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -332,12 +337,13 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div>
+                                </div></a>
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="card mini-stats-wid shadow">
+                                <a href="/orders">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -351,12 +357,13 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div>
+                                </div></a>
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="card mini-stats-wid shadow">
+                                <a href="/orders">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -370,13 +377,14 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div>
+                                </div></a>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="card mini-stats-wid shadow">
+                                <a href="/notifications">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -390,11 +398,12 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div>
+                                </div></a>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="card mini-stats-wid shadow">
+                                <a href="/customers/feedback">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -408,7 +417,7 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div>
+                                </div></a>
                             </div>
                         </div>
                         <div class="col-md-4">

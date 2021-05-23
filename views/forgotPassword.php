@@ -100,15 +100,46 @@ function sendMail($username, $verify, $mail){
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6 col-xl-5">
                     <div class="card overflow-hidden">
-                        
-                        <div class="card-body">
+                        <div class="bg-primary bg-soft">
+                            <div class="row">
+                                <div class="col-7">
+                                    <div class="text-primary p-4">
+                                        <h5 class="text-primary">Forgot password</h5>
+                                        <p>Enter your username to get password reset link!</p>
+                                    </div>
+                                </div>
+                                <div class="col-5 align-self-end">
+                                    <img src="/assets/images/profile-img.png" alt="" class="img-fluid">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body pt-0">
+                            <div class="auth-logo">
+                                <a href="/" class="auth-logo-light">
+                                    <div class="avatar-md profile-user-wid mb-4">
+                                        <span class="avatar-title rounded-circle bg-light">
+                                            <img src="/assets/images/firsticon.png" alt="" class="rounded-circle" height="50">
+                                        </span>
+                                    </div>
+                                </a>
+
+                                <a href="/" class="auth-logo-dark">
+                                    <div class="avatar-md profile-user-wid mb-4">
+                                        <span class="avatar-title rounded-circle bg-light">
+                                            <img src="/assets/images/firsticon.png" alt="" class="rounded-circle" height="70">
+                                        </span>
+                                    </div>
+                                </a>
+                            </div>
+
                         <?php
                             if(isset($_POST['username'])){
                                 if($msg == 1){
                                     sendMail($username, $verify, $email);
                                     ?>
                                     <div class="alert alert-success">
-                                        Reset link sent to your mail. Check your spam folder if not arrived in inbox!
+                                        Reset link sent to your mail. Check your spam folder or your inbox!
                                     </div>
                                     <?php
                                 }else if($msg == 0){
@@ -129,7 +160,7 @@ function sendMail($username, $verify, $mail){
                                     </div>
 
                                     <div class="mt-3 d-grid">
-                                        <button class="btn btn-primary waves-effect waves-light" type="submit">Log In</button>
+                                        <button class="btn btn-primary waves-effect waves-light" type="submit">Send Reset Link</button>
                                     </div>
                                 </form>
 

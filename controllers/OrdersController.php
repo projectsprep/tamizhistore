@@ -20,10 +20,38 @@ class OrdersController extends Controller{
         $this->db = new OrdersModel();
     }
     public function read(){
-        $json = $this->db->read("orders");
+        $json = $this->db->read();
         try{
             if($json){
                 return $this->render("orders/ordersList", $json);
+            }else{
+                throw new Exception("Unable to fetch data. Please try again later!");
+            }
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /orders?msg=$msg");
+        }
+    }
+
+    public function readPending(){
+        $json = $this->db->readPending();
+        try{
+            if($json){
+                return $this->render("orders/pendingOrderList", $json);
+            }else{
+                throw new Exception("Unable to fetch pending orders data. Please try again later!");
+            }
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /orders?msg=$msg");
+        }
+    }
+
+    public function exportOrders(){
+        $json = $this->db->read();
+        try{
+            if($json){
+                return $this->render("orders/exportOrders", $json);
             }else{
                 throw new Exception("Unable to fetch data. Please try again later!");
             }

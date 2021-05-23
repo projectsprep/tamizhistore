@@ -34,20 +34,17 @@ class CouponController extends Controller{
                             $msg = urlencode("Created new coupon successfully!");
                             return header("Location: /couponlist?msg=$msg");
                         }else{
-                            throw new Exception("All input fields are required!");
+                            throw new Exception("Unable to add new Coupon!");
                         }
                     }else{
-                        $msg = urlencode($imageResult);
-                        return header("Location: /couponlist/add?msg=$msg");
+                        throw new Exception($imageResult);
                     }
                 }else{
-                    echo "<pre>";
-                    var_dump($_POST);
-                    echo "</pre>";
+                    throw new Exception("All input fields are required!");
                 }
             }catch(Exception $e){
                 $msg = urlencode($e->getMessage());
-                return header("Location: /couponlist?msg=$msg");
+                return header("Location: /couponlist/add?msg=$msg");
             }
         }
     }
@@ -73,11 +70,10 @@ class CouponController extends Controller{
                     $msg = urlencode("Coupon deleted successfully!");
                     return header("Location: /couponlist?msg=$msg");
                 }else{
-                    $msg = urlencode("Unable to delete coupon!");
-                    return header("Location: /couponlist?msg=$msg");
+                    throw new Exception("Unable to delete coupon!");
                 }
             }else{
-                throw new Exception("Invalid ID");
+                throw new Exception("Invalid Arguments!");
             }
         }catch(Exception $e){
             $msg = urlencode($e->getMessage());
@@ -86,37 +82,30 @@ class CouponController extends Controller{
     }
 
     public function edit(){
-        if($this->app->request->getMethod() === "get"){
-            try{
+        try{
+            if($this->app->request->getMethod() === "get"){
                 if(isset($_GET['id'])){
                     $json = $this->db->edit("category", $_GET['id']);
                     return $this->render("categories/editCategory", $json);
                 }else{
-                    throw new Exception("Invalid ID");
+                    throw new Exception("Invalid Arguments!");
                 }
-            }catch(Exception $e){
-                $msg = urlencode($e->getMessage());
-                return header("Location: /couponlist?msg=$msg");
-            }
-        }else if($this->app->request->getMethod() === "post"){
-            try{
+            }else if($this->app->request->getMethod() === "post"){
                 if(isset($_POST['id']) && isset($_POST['expiryDate']) && isset($_POST['couponCode']) && isset($_POST['couponTitle']) && isset($_POST['couponStatus']) && isset($_POST['minAmt']) && isset($_POST['discount']) && isset($_POST['description'])){
                     if($this->db->update("tbl_coupon", $_POST['id'], $_POST['expiryDate'], $_POST['couponCode'], $_POST['couponTitle'], $_POST['couponStatus'], $_POST['minAmt'], $_POST['discount'], $_POST['description'])){
                         $msg = urlencode("Coupon updated successfully!");
                         return header("Location: /couponlist?msg=$msg");
                     }else{
-                        $msg = urlencode("Unable to update coupon!");
-                        return header("Location: /couponlist?msg=$msg");
+                        throw new Exception("Unable to update coupon!");
                     }
                 }else{
-                    throw new Exception("Invalid ID");
+                    throw new Exception("All input fields are required!");
                 }
-            }catch(Exception $e){
-                $msg = urlencode($e->getMessage());
-                return header("Location: /couponlist?msg=$msg");
             }
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /couponlist?msg=$msg");
         }
-        
     }
 
     public function validateImage(){

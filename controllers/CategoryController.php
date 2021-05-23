@@ -32,22 +32,25 @@ class CategoryController extends Controller{
         if($this->app->request->getMethod() === "get"){
             return $this->render("categories/addCategory");
         }else if($this->app->request->getMethod() === "post"){
-            if(isset($_POST['categoryName']) && isset($_FILES['categoryimage']['name']) && $_FILES['categoryimage']['name'] != ""){
-                $validateImage = $this->validateImage();
-                if($validateImage === true){
-                    if($this->db->create("category", $_POST["categoryName"], $this->imageDest)){
-                        return header("Refresh: 1; URL=/categorylist");
+            try{
+                if(isset($_POST['categoryName']) && isset($_FILES['categoryimage']['name']) && $_FILES['categoryimage']['name'] != ""){
+                    $validateImage = $this->validateImage();
+                    if($validateImage === true){
+                        if($this->db->create("category", $_POST["categoryName"], $this->imageDest)){
+                            $msg=urlencode("Added new Category!");
+                            return header("Location: /categorylist?msg=$msg");    
+                        }else{
+                            throw new Exception("Unable to add new category!");  
+                        }
                     }else{
-                        $msg=urlencode("Unable to add new category");
-                        return header("Location: /categorylist?msg=".$msg);    
+                        throw new Exception($validateImage);
                     }
                 }else{
-                    $msg=urlencode($validateImage);
-                    return header("Location: /categorylist?msg=".$msg);
+                    throw new Exception("All input fields are required!");
                 }
-            }else{
-                $msg=urlencode("All input fields are required!");
-                return header("Location: /categorylist/add?msg=".$msg);
+            }catch(Exception $e){
+                $msg = urlencode($e->getMessage());
+                return header("Location: /categorylist/add?msg=$msg");
             }
         }
     }
@@ -58,7 +61,7 @@ class CategoryController extends Controller{
             if($json){
                 return $this->render('home', $json);
             }else{
-                throw new Exception("Unable to fetch data. Please try again later.");
+                throw new Exception("Unable to fetch data. Please try again later!");
             }
         }catch(Exception $e){
             $msg = urlencode($e->getMessage());
@@ -72,7 +75,7 @@ class CategoryController extends Controller{
             if($json){
                 return $this->render("categories/categoryList", $json);
             }else{
-                throw new Exception("Unable to fetch data. Please try again later");
+                throw new Exception("Unable to fetch data. Please try again later!");
             }
         }catch(Exception $e){
             $msg = urlencode($e->getMessage());
@@ -90,7 +93,7 @@ class CategoryController extends Controller{
                     return header("Location: /categorylist?msg=$msg");
                 }
             }else{
-                throw new Exception("Unable to delete a category.");
+                throw new Exception("Unable to delete a category!");
             }
         }catch(Exception $e){
             $msg = urlencode($e->getMessage());
@@ -100,51 +103,46 @@ class CategoryController extends Controller{
 
     public function update(){
         $json = $this->db->read("category");
+        try{
         if($this->app->request->getMethod() === "get"){
-            try{
-                if($json){
-                    if(isset($_GET['id']) && $_GET['id']!=""){
-                        $json = $this->db->edit("category", $_GET['id']);
-                        return $this->render("categories/editCategory", $json);
-                    }else{
-                        $msg = urlencode("Invalid ID");
-                        return header("Location: /categorylist?msg=$msg");
-                    }
+            if($json){
+                if(isset($_GET['id']) && $_GET['id']!=""){
+                    $json = $this->db->edit("category", $_GET['id']);
+                    return $this->render("categories/editCategory", $json);
                 }else{
-                    throw new Exception("Unable to fetch data. Please try again later!");
-                }
-            }catch(Exception $e){
-                $msg = urlencode($e->getMessage());
-                return header("Location: /categorylist?msg=$msg");
-            }
-        }else if($this->app->request->getMethod() === "post"){
-            if(isset($_POST['id']) && isset($_POST['categoryName'])){
-                $validateImage = NULL;
-                if(isset($_FILES['categoryimage']['name']) && $_FILES['categoryimage']['name'] != ""){
-                    $validateImage = $this->validateImage();
-                }
-                if($validateImage === true || $validateImage == NULL){
-                    if($this->db->update("category", $_POST['id'],$_POST["categoryName"], $validateImage == true ? $this->imageDest : "")){
-                        $msg = urlencode("Category updated successfully!");
-                        return header("Location: /categorylist?msg=$msg");
-                    }else{
-                        $msg = urlencode("Unable to update category");
-                        return header("Location: /categorylist?msg=$msg");
-                    }
-                }else{
-                    $msg = urlencode("$validateImage");
-                    return header("Location: /categorylist?msg=$msg");
-
-                    // return $this->render("categories/temp", $json, json_encode(["msg"=>$validateImage]));
+                    throw new Exception("Invalid ID!");
                 }
             }else{
-                $msg = urlencode("Unable to update category");
-                return header("Location: /categorylist?msg=$msg");
-
-                // return $this->render("categories/categoryList", $json, json_encode(["msg"=>"Unable to add new category. Check if all values are set"]));
+                throw new Exception("Unable to fetch data. Please try again later!");
             }
+            }else if($this->app->request->getMethod() === "post"){
+                if(isset($_POST['id']) && isset($_POST['categoryName'])){
+                    $validateImage = NULL;
+                    if(isset($_FILES['categoryimage']['name']) && $_FILES['categoryimage']['name'] != ""){
+                        $validateImage = $this->validateImage();
+                    }
+                    if($validateImage === true || $validateImage == NULL){
+                        if($this->db->update("category", $_POST['id'],$_POST["categoryName"], $validateImage == true ? $this->imageDest : "")){
+                            $msg = urlencode("Category updated successfully!");
+                            return header("Location: /categorylist?msg=$msg");
+                        }else{
+                            $msg = urlencode("Unable to update category");
+                            return header("Location: /categorylist?msg=$msg");
+                            throw new Exception("Unable to update category!");
+                        }
+                    }else{
+                        throw new Exception($validateImage);
+                        // return $this->render("categories/temp", $json, json_encode(["msg"=>$validateImage]));
+                    }
+                }else{
+                    throw new Exception("All input fields are required!");
+                    // return $this->render("categories/categoryList", $json, json_encode(["msg"=>"Unable to add new category. Check if all values are set"]));
+                }
+            }
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /categorylist?msg=$msg");
         }
-        
     }
 
     public function validateImage(){

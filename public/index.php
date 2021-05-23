@@ -20,6 +20,8 @@ use app\models\DB;
 use app\controllers\OrdersController;
 use app\controllers\AppController;
 use app\controllers\SubCategoryController;
+use app\controllers\CustomersController;
+use app\controllers\DeliveryBoysController;
 
 $app = new Application(dirname(__DIR__));
 $db = new DB();
@@ -50,6 +52,8 @@ $app->router->post("/categorylist/edit", [CategoryController::class, "update"]);
 
 // /subcategorylist routes
 $app->router->get("/subcategorylist", [SubCategoryController::class, "read"]);
+$app->router->get("/subcategorylist/add", [SubCategoryController::class, "create"]);
+$app->router->post("/subcategorylist/add", [SubCategoryController::class, "create"]);
 $app->router->post("/subcategorylist/edit", [SubCategoryController::class, "update"]);
 $app->router->post("/subcategorylist/delete", [SubCategoryController::class, "delete"]);
 
@@ -114,6 +118,8 @@ $app->router->post("/countrycode/delete", [CountryCodeController::class, "delete
 
 // /orders
 $app->router->get("/orders", [OrdersController::class, "read"]);
+$app->router->get("/orders/pending", [OrdersController::class, "readPending"]);
+$app->router->get("/orders/export", [OrdersController::class, 'exportOrders']);
 
 // /paymentlist
 $app->router->get("/paymentlist", [PaymentController::class, "read"]);
@@ -123,6 +129,16 @@ $app->router->post("/paymentlist/edit", [PaymentController::class, "update"]);
 $app->router->post("/app/assigndeliveryboy", [AppController::class, "assignDeliveryBoy"]);
 $app->router->post("/app/riderres", [AppController::class, "deliveryBoyNotiRes"]);
 $app->router->post("/app/assignedorders", [AppController::class, "assignedOrders"]);
-// $app->router->post("/", [AppController::class, ""]);
+
+// /customers
+$app->router->get("/customers", [CustomersController::class, 'readCustomers']);
+$app->router->get("/customers/feedback", [CustomersController::class, 'readFeedback']);
+
+// /deliveryboys
+$app->router->get("/deliveryboys/add", [DeliveryBoysController::class, "create"]);
+$app->router->post("/deliveryboys/add", [DeliveryBoysController::class, "create"]);
+$app->router->get("/deliveryboys", [DeliveryBoysController::class, "read"]);
+$app->router->post("/deliveryboys/delete", [DeliveryBoysController::class, "delete"]);
+$app->router->post("/deliveryboys/update", [DeliveryBoysController::class, "update"]);
 
 $app->run();

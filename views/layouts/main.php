@@ -1,5 +1,4 @@
 <?php
-
 use app\models\NotificationsModel;
 
 $uriTitle = $_SERVER['REQUEST_URI'] == "/" ? "Dashboard" : ucwords(ltrim($_SERVER['REQUEST_URI'], "/"));
@@ -7,13 +6,6 @@ $uriTitle = $_SERVER['REQUEST_URI'] == "/" ? "Dashboard" : ucwords(ltrim($_SERVE
 $notify = new NotificationsModel();
 $json = $notify->pushedNotifies("noti");
 $array = json_decode($json, true);
-$_SESSION['notify'] = false;
-
-if($_SESSION['notify'] === true){
-    ?>
-    <script>$("audio")[0].play();</script>
-    <?php
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,7 +17,8 @@ if($_SESSION['notify'] === true){
     <title><?= $uriTitle ?> - Admin & <?= $uriTitle ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" /> -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+    <!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css"> -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.0/css/buttons.dataTables.min.css">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
@@ -58,7 +51,7 @@ if($_SESSION['notify'] === true){
         }
 
         .img-thumbnail{
-            height: 94px;
+            max-width: 100px;
         }
     </style>
 </head>
@@ -89,13 +82,6 @@ if($_SESSION['notify'] === true){
                     <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect" id="vertical-menu-btn">
                         <i class="fa fa-fw fa-bars"></i>
                     </button>
-
-                    <form class="app-search d-none d-lg-block">
-                        <div class="position-relative">
-                            <input type="text" class="form-control" placeholder="Search...">
-                            <span class="bx bx-search-alt"></span>
-                        </div>
-                    </form>
 
                 </div>
                 <div class="d-flex">
@@ -142,6 +128,7 @@ if($_SESSION['notify'] === true){
                                     <source src="/assets/notification.mp3" type="audio/mp3">
                                     Your browser does not support audio element
                                 </audio>
+                                <!-- <audio src="/assets/notification.mp3"></audio> -->
                                 <div data-simplebar style="max-height: 230px;">
                                     <div id="notify"></div>
                                 </div>
@@ -186,7 +173,7 @@ if($_SESSION['notify'] === true){
 
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="bx bx-list-ul"></i>
+                            <i class="bx bxs-grid-alt"></i>
                             <span key="t-ecommerce"><span>Category</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
@@ -196,11 +183,11 @@ if($_SESSION['notify'] === true){
                     </li>
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="bx bx-list-ul"></i>
+                            <i class="bx bxs-grid"></i>
                             <span key="t-ecommerce"><span>Sub Category</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
-                            <li><a href="/categorylist/add" key="t-products">Add SubCategory</a></li>
+                            <li><a href="/subcategorylist/add" key="t-products">Add SubCategory</a></li>
                             <li><a href="/subcategorylist" key="t-product-detail">SubCategory List</a></li>
                         </ul>
                     </li>
@@ -225,6 +212,17 @@ if($_SESSION['notify'] === true){
                         <ul class="sub-menu" aria-expanded="false">
                             <li><a href="/couponlist/add" key="t-products">Add Coupon</a></li>
                             <li><a href="/couponlist" key="t-product-detail">Coupon List</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="bx bx-run"></i>
+                            <span key="t-ecommerce"><span>Delivery Boys</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="/deliveryboys/add" key="t-products">Add Delivery boy</a></li>
+                            <li><a href="/deliveryboys" key="t-orders">Delivery Boys list</a></li>
                         </ul>
                     </li>
 
@@ -269,7 +267,7 @@ if($_SESSION['notify'] === true){
                         <ul class="sub-menu" aria-expanded="false">
                             <li><a href="/orders" key="t-product-detail">Total Order</a></li>
                             <li><a href="/orders/pending" key="t-products">Pending Order</a></li>
-                            <li><a href="ecommerce-orders.html" key="t-orders">Export Order</a></li>
+                            <li><a href="/orders/export" key="t-orders">Export Order</a></li>
                         </ul>
                     </li>
 
@@ -279,15 +277,14 @@ if($_SESSION['notify'] === true){
                             <span key="t-ecommerce"><span>Customer Section</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
-                            <li><a href="ecommerce-products.html" key="t-products">Customers</a></li>
-                            <li><a href="ecommerce-product-detail.html" key="t-product-detail">Customer Rating</a></li>
-                            <li><a href="ecommerce-orders.html" key="t-orders">Feedback</a></li>
+                            <li><a href="/customers" key="t-products">Customers</a></li>
+                            <li><a href="/customers/feedback" key="t-product-detail">Feedback</a></li>
                         </ul>
                     </li>
 
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="bx bx-bell"></i>
+                            <i class="bx bxs-flag"></i>
                             <span key="t-ecommerce"><span>Country Code</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
@@ -327,7 +324,7 @@ if($_SESSION['notify'] === true){
         $(".alert").delay(2000).slideUp(300, function() {
         $(this).alert('close');
     });
-        function loadUnseenNotification(view = "") {
+        function loadUnseenNotification(view = "", notify="") {
             $.ajax({
                 url: "/api/pushednotifies",
                 method: "POST",
@@ -340,14 +337,22 @@ if($_SESSION['notify'] === true){
                     if (data.unseenNotification > 0) {
                         // $("audio")[0].muted = false;
                         <?php
-                            $_SESSION['notify'] = true;
+                            if($_SESSION['notify'] === true){
+                                ?>
+                                $("audio")[0].play();
+                                <?php
+                                $_SESSION['notify'] = false;
+                            }
                         ?>
+                        if(notify == true){
+                            $("audio")[0].play();
+                        }
                         $(".badge").html(data.unseenNotification);
                     }
                 },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    alert(data);
-                },
+                // error: function(xhr, ajaxOptions, thrownError) {
+                //     alert(data);
+                // },
             })
         }
 
@@ -356,8 +361,8 @@ if($_SESSION['notify'] === true){
             $(".badge").html('');
             loadUnseenNotification("yes");
         });
-        setInterval(function() {
-            loadUnseenNotification();
-        }, 1000 * 60 * 2);
+        setInterval(()=>{
+             loadUnseenNotification('',true);
+        }, 1000 * 60 * 1);
     })
 </script>

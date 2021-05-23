@@ -5,6 +5,7 @@ use app\core\Controller;
 use app\models\ProfileModel;
 use app\core\Application;
 use app\models\DB;
+use Exception;
 session_start();
 
 if(isset($_COOKIE['user']) && isset($_SESSION['user']))
@@ -54,7 +55,8 @@ class ProfileController extends Controller{
         //     echo $this->conn->error;
         session_regenerate_id(true);
         $_SESSION['user'] = $username;
-            return setcookie("user", $token, time() + 1000, "/");
+        $_SESSION['notify'] = true;
+        return setcookie("user", $token, time() + 1000, "/");
         // }else{
             // echo $this->conn->error;
             // return header("Location: /login");
@@ -94,48 +96,50 @@ class ProfileController extends Controller{
     }
 
     public function resetPassword(){
-        if($this->app->request->getMethod() === "get"){
-            if(isset($_GET['username']) && isset($_GET['verify'])){
-                $username = $this->DB->real_escape_string($_GET['username']);
-                $result = $this->DB->query("SELECT id FROM admin where username='$username'");
-                if($result->num_rows > 0){
-                    $row = $result->fetch_assoc();
-                    $verify = md5($row['id']);
-                    if($verify === $_GET['verify']){
-                        return $this->app->router->renderOnlyView("resetPassword");
+        try{
+            if($this->app->request->getMethod() === "get"){
+                if(isset($_GET['username']) && isset($_GET['verify'])){
+                    $username = $this->DB->real_escape_string($_GET['username']);
+                    $result = $this->DB->query("SELECT id FROM admin where username='$username'");
+                    if($result->num_rows > 0){
+                        $row = $result->fetch_assoc();
+                        $verify = md5($row['id']);
+                        if($verify === $_GET['verify']){
+                            return $this->app->router->renderOnlyView("resetPassword");
+                        }else{
+                            throw new Exception("Invalid token for resetting password!");
+                        }
                     }else{
-                        $msg = urlencode("Invalid token for reset password!");
-                        return header("Location: /login?msg=$msg");
+                        throw new Exception("Username not found!");
                     }
                 }else{
-                    $msg = urlencode("Username not found!");
+                    $msg = urlencode("All input fields are required!");
                     return header("Location: /login?msg=$msg");
+                    throw new Exception("All input fields are required!");
                 }
-            }else{
-                $msg = urlencode("All input fields are required!");
-                return header("Location: /login?msg=$msg");
-            }
-            $this->DB->close();
-        }else if($this->app->request->getMethod() === "post"){
-            if(isset($_POST['newpassword']) && isset($_POST['confirmpassword']) && isset($_POST['username'])){
-                if(strcmp($_POST['newpassword'], $_POST['confirmpassword']) == 0){
-                    $newPassword = $this->DB->real_escape_string($_POST['newpassword']);
-                    $username = $this->DB->real_escape_string($_POST['username']);
-                    $result = $this->DB->query("UPDATE admin SET password='$newPassword' WHERE username='$username'");
-                    echo $result;
-                    if($result == 1){
-                        return $this->app->router->renderOnlyView("resetPassword", json_encode(["msg"=>true]));
+                $this->DB->close();
+            }else if($this->app->request->getMethod() === "post"){
+                if(isset($_POST['newpassword']) && isset($_POST['confirmpassword']) && isset($_POST['username'])){
+                    if(strcmp($_POST['newpassword'], $_POST['confirmpassword']) == 0){
+                        $newPassword = $this->DB->real_escape_string($_POST['newpassword']);
+                        $username = $this->DB->real_escape_string($_POST['username']);
+                        $result = $this->DB->query("UPDATE admin SET password='$newPassword' WHERE username='$username'");
+                        echo $result;
+                        if($result == 1){
+                            return $this->app->router->renderOnlyView("resetPassword", json_encode(["msg"=>true]));
+                        }else{
+                            return $this->app->router->renderOnlyView("resetPassword", json_encode(["msg"=>false]));
+                        }
                     }else{
-                        return $this->app->router->renderOnlyView("resetPassword", json_encode(["msg"=>false]));
+                        throw new Exception("New password and Confirm password did not match!");
                     }
                 }else{
-                    $msg = urlencode("New password and confirm password did not match!");
-                    return header("Location: /login?msg=$msg");
+                    throw new Exception("All input fields are required!");
                 }
-            }else{
-                $msg = urlencode("All input fields are required!");
-                return header("Location: /login?msg=$msg");
-            }
+            }   
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /login?msg=$msg");
         }
     }
 

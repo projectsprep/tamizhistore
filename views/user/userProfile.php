@@ -19,11 +19,22 @@
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
+        <?php
+            if (isset($_GET['msg'])) {
+            ?>
+                <div class="alert alert-primary alert-dismissible fade show">
+                    <?php echo $_GET['msg']; ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php
+            }
+            ?>
             <div class="card mt-4 p-4">
                 <div class="cardbody">
-                    <div class="row overflow-hidden" style="height: 200px">
+                    <div class="row overflow-hidden" style="width: '100%'; padding-top: '75%'">
+                    <!-- style="height: 200px" -->
                         <div class="col-12">
-                            <img src="/assets/images/2153.jpg" alt="" class="img-fluid">
+                            <img src="/assets/images/adminpage.jpg" alt="" class="img-fluid">
                         </div>
                     </div>
                     <div class="row">
@@ -55,9 +66,12 @@
                                             </div>
                                         </div>
                                         <div class="row mb-3">
-                                            <label class="form-label col-sm-3 col-form-label">Is Admin</label>
+                                            <label class="form-label col-sm-3 col-form-label">Password</label>
                                             <div class="col-sm-9">
-                                                <input type="text" class="form-control" disabled required value="<?= $is_admin ? 'True' : 'False'?>"/>
+                                                <div class="input-group auth-pass-inputgroup">
+                                                    <input name="pass" type="password" class="form-control" required value="<?=$password?>"/>
+                                                    <button class="btn btn-light " type="button" id="password-addon"><i class="mdi mdi-eye-outline"></i></button>
+                                                </div>
                                             </div>
                                         </div>
                                     <div class="d-flex flex-wrap gap-2">

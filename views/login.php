@@ -97,13 +97,13 @@ foreach ($params as $key => $value) {
 
                                     <div class="mb-3">
                                         <label for="username" class="form-label">Username</label>
-                                        <input type="text" class="form-control" id="username" placeholder="Enter username" name="username" required>
+                                        <input type="text" class="form-control" id="username" placeholder="Enter username" name="username" value="<?=isset($_POST['username']) ? $_POST['username'] : ""?>" required>
                                     </div>
 
                                     <div class="mb-3">
                                         <label class="form-label">Password</label>
                                         <div class="input-group auth-pass-inputgroup">
-                                            <input type="password" class="form-control" placeholder="Enter password" aria-label="Password" aria-describedby="password-addon" required name="pass">
+                                            <input type="password" name="pass" class="form-control" placeholder="Enter password" aria-label="Password" aria-describedby="password-addon" value="<?=isset($_POST['pass']) ? $_POST['pass'] : ""?>" required>
                                             <button class="btn btn-light " type="button" id="password-addon"><i class="mdi mdi-eye-outline"></i></button>
                                         </div>
                                     </div>
