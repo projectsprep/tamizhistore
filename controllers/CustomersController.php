@@ -1,11 +1,19 @@
 <?php
 
 namespace app\controllers;
+
 use app\core\Controller;
 use app\models\CustomersModel;
 use Exception;
 
-class CustomersController extends Controller{
+session_start();
+
+if (!(isset($_COOKIE['user']) && isset($_SESSION['user']))) {
+    header("Location: /login");
+}
+
+class CustomersController extends Controller
+{
     private $db;
     private $app;
     public function __construct()
@@ -13,30 +21,31 @@ class CustomersController extends Controller{
         $this->db = new CustomersModel();
     }
 
-    public function readCustomers(){
+    public function readCustomers()
+    {
         $json = $this->db->read();
-        try{
-            if($json){
+        try {
+            if ($json) {
                 return $this->render("customers/customersList", $json);
-            }else{
+            } else {
                 throw new Exception("Unable to fetch data. Please try again later!");
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             $msg = urlencode($e->getMessage());
             return header("Location: /customers?msg=$msg");
         }
-
     }
 
-    public function readFeedback(){
+    public function readFeedback()
+    {
         $json = $this->db->readFeedback();
-        try{
-            if($json){
+        try {
+            if ($json) {
                 return $this->render("customers/customerFeedback", $json);
-            }else{
+            } else {
                 throw new Exception("Unable to fetch data. Please try again later!");
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             $msg = urlencode($e->getMessage());
             return header("Location: /customers/rating?msg=$msg");
         }

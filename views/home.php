@@ -61,84 +61,88 @@ foreach ($params as $param) {
                         </div>
                     </div>
                     <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="card-title mb-4">Monthly Earning</h4>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <p class="text-muted">This month</p>
-                                                <h3>$34,252</h3>
-                                                <p class="text-muted"><span class="text-success me-2"> 12% <i class="mdi mdi-arrow-up"></i> </span> From previous period</p>
+                        <div class="card-body">
+                            <h4 class="card-title mb-4">Monthly Earning</h4>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p class="text-muted">This month</p>
+                                    <h3>$34,252</h3>
+                                    <p class="text-muted"><span class="text-success me-2"> 12% <i class="mdi mdi-arrow-up"></i> </span> From previous period</p>
 
-                                                <div class="mt-4">
-                                                    <a href="#" class="btn btn-primary waves-effect waves-light btn-sm">View More <i class="mdi mdi-arrow-right ms-1"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <div class="mt-4 mt-sm-0">
-                                                    <div id="radialBar-chart" class="apex-charts"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <p class="text-muted mb-0">We craft digital, graphic and dimensional thinking.</p>
+                                    <div class="mt-4">
+                                        <a href="#" class="btn btn-primary waves-effect waves-light btn-sm">View More <i class="mdi mdi-arrow-right ms-1"></i></a>
                                     </div>
                                 </div>
+                                <div class="col-sm-6">
+                                    <div class="mt-4 mt-sm-0">
+                                        <div id="radialBar-chart" class="apex-charts"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-muted mb-0">We craft digital, graphic and dimensional thinking.</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-xl-8">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="card mini-stats-wid shadow">
-                                <a href="/categorylist"><div class="card-body">
-                                    <div class="media">
-                                        <div class="media-body">
-                                            <p class="text-muted fw-medium">Category</p>
-                                            <h4 class="mb-0"><?= $category ?></h4>
-                                        </div>
+                                <a href="/categorylist">
+                                    <div class="card-body">
+                                        <div class="media">
+                                            <div class="media-body">
+                                                <p class="text-muted fw-medium">Category</p>
+                                                <h4 class="mb-0"><?= $category ?></h4>
+                                            </div>
 
-                                        <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
-                                            <span class="avatar-title">
-                                                <i class="bx bx-list-ol font-size-24"></i>
-                                            </span>
+                                            <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
+                                                <span class="avatar-title">
+                                                    <i class="bx bx-list-ol font-size-24"></i>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div></a>
+                                </a>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="card mini-stats-wid shadow">
                                 <a href="/subcategorylist">
-                                <div class="card-body">
-                                    <div class="media">
-                                        <div class="media-body">
-                                            <p class="text-muted fw-medium">Subcategory</p>
-                                            <h4 class="mb-0"><?= $subcategory ?></h4>
-                                        </div>
+                                    <div class="card-body">
+                                        <div class="media">
+                                            <div class="media-body">
+                                                <p class="text-muted fw-medium">Subcategory</p>
+                                                <h4 class="mb-0"><?= $subcategory ?></h4>
+                                            </div>
 
-                                        <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                                            <span class="avatar-title rounded-circle bg-primary">
-                                                <i class="bx bx-list-ul font-size-24"></i>
-                                            </span>
+                                            <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
+                                                <span class="avatar-title rounded-circle bg-primary">
+                                                    <i class="bx bx-list-ul font-size-24"></i>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div></a>
+                                </a>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="card mini-stats-wid shadow">
                                 <a href="/productlist">
-                                <div class="card-body">
-                                    <div class="media">
-                                        <div class="media-body">
-                                            <p class="text-muted fw-medium">Product</p>
-                                            <h4 class="mb-0"><?= $product ?></h4>
-                                        </div>
+                                    <div class="card-body">
+                                        <div class="media">
+                                            <div class="media-body">
+                                                <p class="text-muted fw-medium">Product</p>
+                                                <h4 class="mb-0"><?= $product ?></h4>
+                                            </div>
 
-                                        <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                                            <span class="avatar-title rounded-circle bg-primary">
-                                                <i class="bx bx-cube font-size-24"></i>
-                                            </span>
+                                            <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
+                                                <span class="avatar-title rounded-circle bg-primary">
+                                                    <i class="bx bx-cube font-size-24"></i>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div></a>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -147,25 +151,26 @@ foreach ($params as $param) {
                         <div class="col-md-4">
                             <div class="card mini-stats-wid shadow">
                                 <a href="/couponlist">
-                                <div class="card-body">
-                                    <div class="media">
-                                        <div class="media-body">
-                                            <p class="text-muted fw-medium">Coupon</p>
-                                            <h4 class="mb-0"><?= $tbl_coupon ?></h4>
-                                        </div>
+                                    <div class="card-body">
+                                        <div class="media">
+                                            <div class="media-body">
+                                                <p class="text-muted fw-medium">Coupon</p>
+                                                <h4 class="mb-0"><?= $tbl_coupon ?></h4>
+                                            </div>
 
-                                        <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
-                                            <span class="avatar-title">
-                                                <i class="bx bx-gift font-size-24"></i>
-                                            </span>
+                                            <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
+                                                <span class="avatar-title">
+                                                    <i class="bx bx-gift font-size-24"></i>
+                                                </span>
+                                            </div>
                                         </div>
-                                    </div></a>
-                                </div>
+                                </a>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card mini-stats-wid shadow">
-                                <a href="/arealist">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mini-stats-wid shadow">
+                            <a href="/arealist">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -179,12 +184,13 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div></a>
-                            </div>
+                                </div>
+                            </a>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card mini-stats-wid shadow">
-                                <a href="/timeslots">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mini-stats-wid shadow">
+                            <a href="/timeslots">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -198,15 +204,16 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div></a>
-                            </div>
+                                </div>
+                            </a>
                         </div>
                     </div>
+                </div>
 
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="card mini-stats-wid shadow">
-                                <a href="/customers/feedback">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card mini-stats-wid shadow">
+                            <a href="/customers/feedback">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -220,12 +227,13 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div></a>
-                            </div>
+                                </div>
+                            </a>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card mini-stats-wid shadow">
-                                <a href="/countrycode">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mini-stats-wid shadow">
+                            <a href="/countrycode">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -239,12 +247,13 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div></a>
-                            </div>
+                                </div>
+                            </a>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card mini-stats-wid shadow">
-                                <a href="/customers">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mini-stats-wid shadow">
+                            <a href="/customers">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -258,12 +267,13 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div></a>
-                            </div>
+                                </div>
+                            </a>
                         </div>
                     </div>
+                </div>
 
-                    <!-- <div class="row">
+                <!-- <div class="row">
                                     <div class="col-md-4">
                                         <div class="card mini-stats-wid shadow">
                                             <div class="card-body">
@@ -320,10 +330,10 @@ foreach ($params as $param) {
                                     </div>
                                 </div> -->
 
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="card mini-stats-wid shadow">
-                                <a href="/orders">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card mini-stats-wid shadow">
+                            <a href="/orders">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -337,13 +347,14 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div></a>
-                            </div>
+                                </div>
+                            </a>
                         </div>
+                    </div>
 
-                        <div class="col-md-4">
-                            <div class="card mini-stats-wid shadow">
-                                <a href="/orders">
+                    <div class="col-md-4">
+                        <div class="card mini-stats-wid shadow">
+                            <a href="/orders">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -357,13 +368,14 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div></a>
-                            </div>
+                                </div>
+                            </a>
                         </div>
+                    </div>
 
-                        <div class="col-md-4">
-                            <div class="card mini-stats-wid shadow">
-                                <a href="/orders">
+                    <div class="col-md-4">
+                        <div class="card mini-stats-wid shadow">
+                            <a href="/orders">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -377,14 +389,15 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div></a>
-                            </div>
+                                </div>
+                            </a>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="card mini-stats-wid shadow">
-                                <a href="/notifications">
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card mini-stats-wid shadow">
+                            <a href="/notifications">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -398,12 +411,13 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div></a>
-                            </div>
+                                </div>
+                            </a>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card mini-stats-wid shadow">
-                                <a href="/customers/feedback">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mini-stats-wid shadow">
+                            <a href="/customers/feedback">
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="media-body">
@@ -417,23 +431,23 @@ foreach ($params as $param) {
                                             </span>
                                         </div>
                                     </div>
-                                </div></a>
-                            </div>
+                                </div>
+                            </a>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card mini-stats-wid shadow">
-                                <div class="card-body">
-                                    <div class="media">
-                                        <div class="media-body">
-                                            <p class="text-muted fw-medium">Delivery Boys</p>
-                                            <h4 class="mb-0"><?= $rider ?></h4>
-                                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mini-stats-wid shadow">
+                            <div class="card-body">
+                                <div class="media">
+                                    <div class="media-body">
+                                        <p class="text-muted fw-medium">Delivery Boys</p>
+                                        <h4 class="mb-0"><?= $rider ?></h4>
+                                    </div>
 
-                                        <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
-                                            <span class="avatar-title">
-                                                <i class="bx bx-list-ol font-size-24"></i>
-                                            </span>
-                                        </div>
+                                    <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
+                                        <span class="avatar-title">
+                                            <i class="bx bx-list-ol font-size-24"></i>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -441,13 +455,14 @@ foreach ($params as $param) {
                     </div>
                 </div>
             </div>
-
         </div>
 
     </div>
-    <div class="rightbar-overlay"></div>
 
-    </body>
+</div>
+<div class="rightbar-overlay"></div>
+
+</body>
 
 
-    </html>
+</html>

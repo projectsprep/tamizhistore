@@ -9,44 +9,48 @@ use Exception;
 
 session_start();
 
-if(!(isset($_COOKIE['user']) && isset($_SESSION['user']))){
+if (!(isset($_COOKIE['user']) && isset($_SESSION['user']))) {
     header("Location: /login");
 }
 
-class PaymentController extends Controller{
+class PaymentController extends Controller
+{
     private $db;
     private $app;
-    public function __construct(){
+    public function __construct()
+    {
         $this->db = new PaymentModel();
         $this->app = new Application(dirname(__DIR__));
     }
-    public function read(){
+    public function read()
+    {
         $json = $this->db->read("payment_list");
-        try{
-            if($json){
+        try {
+            if ($json) {
                 return $this->render("payment/paymentList", $json);
-            }else{
+            } else {
                 throw new Exception("Unable to fetch data. Please try again later!");
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             $msg = urlencode($e->getMessage());
             return header("Location: /paymentlist?msg=$msg");
         }
     }
 
-    public function update(){
-        try{
-            if(isset($_POST['id']) && isset($_POST['gateway']) && isset($_POST['title']) && isset($_POST['value']) && isset($_POST['status'])){
-                if($this->db->update("payment_list", $_POST['id'], $_POST['gateway'], $_POST['title'], $_POST['value'], $_POST['status'])){
+    public function update()
+    {
+        try {
+            if (isset($_POST['id']) && isset($_POST['gateway']) && isset($_POST['title']) && isset($_POST['value']) && isset($_POST['status'])) {
+                if ($this->db->update("payment_list", $_POST['id'], $_POST['gateway'], $_POST['title'], $_POST['value'], $_POST['status'])) {
                     $msg = urlencode("Updated Paymentlist!");
                     return header("Location: /paymentlist?msg=$msg");
-                }else{
+                } else {
                     throw new Exception("Unable to update paymentlist!");
                 }
-            }else{
+            } else {
                 throw new Exception("All input fields are required!");
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             $msg = urlencode($e->getMessage());
             return header("Location: /paymentlist?msg=$msg");
         }

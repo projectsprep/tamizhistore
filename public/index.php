@@ -1,6 +1,4 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-
 require __DIR__. '/../vendor/autoload.php';
 // error_reporting(0);
 
@@ -66,9 +64,13 @@ $app->router->post("/productlist/edit", [ProductController::class, "update"]);
 $app->router->post("/productlist/delete", [ProductController::class, "delete"]);
 
 // /api
+$app->router->get("/api/banner", [ApiController::class, "getBanner"]);
 $app->router->post("/api/product", [ApiController::class, "getProductWithList"]);
-$app->router->post("/api/category", [ApiController::class, "getCategories"]);
-$app->router->post("/api/subcategory", [ApiController::class, "getSubCategories"]);
+$app->router->get("/api/getsearchproduct", [ApiController::class, "getSearchProduct"]);
+$app->router->get("/api/category", [ApiController::class, "getCategories"]);
+$app->router->get("/api/category/random", [ApiController::class, "getRandomCategories"]);
+$app->router->get("/api/subcategory", [ApiController::class, "getSubCategories"]);
+$app->router->get("/api/subcategory/random", [ApiController::class, "getRandomSubCategories"]);
 $app->router->post("/api/coupons", [ApiController::class, "getCoupons"]);
 $app->router->post("/api/area", [ApiController::class, "getArea"]);
 $app->router->post("/api/getcategory", [ApiController::class, "getCategoryWithList"]);
@@ -77,9 +79,13 @@ $app->router->post("/api/payment", [ApiController::class, "getPayment"]);
 $app->router->post("/api/codelist", [ApiController::class, "getCodelist"]);
 $app->router->post("/api/getcategorynames", [ApiController::class, "getCategoryNamesWithList"]);
 $app->router->post("/api/getsubcategorynames", [ApiController::class, "getSubcategoryNames"]);
-$app->router->post("/api/getproduct", [ApiController::class, "getProducts"]);
+$app->router->get("/api/getproduct", [ApiController::class, "getProducts"]);
+$app->router->post("/api/getfood", [ApiController::class, "getFoodItems"]);
+$app->router->get("/api/getfooditems/random", [ApiController::class, "getRandomFoodItems"]);
+$app->router->post("/api/getproduct/random", [ApiController::class, "getRandomProducts"]);
 $app->router->post("/api/pushednotifies", [ApiController::class, "getNotifications"]);
 $app->router->post("/api/pushednotifiessite", [ApiController::class, "pushedNotifications"]);
+$app->router->post("/api/expotoken", [ApiController::class, "expoNotifications"]);
 
 
 // /areaList

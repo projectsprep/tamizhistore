@@ -55,7 +55,7 @@
                                                 </td>
                                                 <td>
                                                     <div>
-                                                        <img src="/assets/images/<?=$img?>" class="img-thumbnail">
+                                                        <img src="/assets/images/<?= $img ?>" class="img-thumbnail">
                                                     </div>
                                                 </td>
                                                 <td>
@@ -125,38 +125,53 @@
 </div>
 <style>
     @keyframes ldio-rpinwye8j0b {
-  0% { transform: rotate(0deg) }
-  50% { transform: rotate(180deg) }
-  100% { transform: rotate(360deg) }
-}
-.ldio-rpinwye8j0b div {
-  position: absolute;
-  animation: ldio-rpinwye8j0b 1s linear infinite;
-  width: 160px;
-  height: 160px;
-  top: 20px;
-  left: 20px;
-  border-radius: 50%;
-  box-shadow: 0 4px 0 0 #2a3042;
-  transform-origin: 80px 82px;
-}
-.loadingio-eclipse {
-    margin: auto;
-    margin-top: 18%;
-    margin-bottom: auto;
-  width: 200px;
-  height: 200px;
-  overflow: hidden;
-}
-.ldio-rpinwye8j0b {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  transform: translateZ(0) scale(1);
-  backface-visibility: hidden;
-  transform-origin: 0 0; /* see note above */
-}
-.ldio-rpinwye8j0b div { box-sizing: content-box; }
+        0% {
+            transform: rotate(0deg)
+        }
+
+        50% {
+            transform: rotate(180deg)
+        }
+
+        100% {
+            transform: rotate(360deg)
+        }
+    }
+
+    .ldio-rpinwye8j0b div {
+        position: absolute;
+        animation: ldio-rpinwye8j0b 1s linear infinite;
+        width: 160px;
+        height: 160px;
+        top: 20px;
+        left: 20px;
+        border-radius: 50%;
+        box-shadow: 0 4px 0 0 #2a3042;
+        transform-origin: 80px 82px;
+    }
+
+    .loadingio-eclipse {
+        margin: auto;
+        margin-top: 18%;
+        margin-bottom: auto;
+        width: 200px;
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .ldio-rpinwye8j0b {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform: translateZ(0) scale(1);
+        backface-visibility: hidden;
+        transform-origin: 0 0;
+        /* see note above */
+    }
+
+    .ldio-rpinwye8j0b div {
+        box-sizing: content-box;
+    }
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -174,15 +189,17 @@
                 $.ajax({
                     url: "/notifications",
                     method: "POST",
-                    data: {id: notiid},
+                    data: {
+                        id: notiid
+                    },
                     // dataType: "json",
                     success: function(data) {
                         $(".container-fluid").prepend("<div class='alert alert-success alert-dismissible fade show'>Notification pushed successfully!<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>");
-                        setTimeout(function(){
+                        setTimeout(function() {
                             location.reload();
                         }, 1400);
                     },
-                    error: function(thrownError, ajaxOptions){
+                    error: function(thrownError, ajaxOptions) {
                         $(".container-fluid").prepend("<div class='alert alert-danger alert-dismissible fade show'>Unable to push Notification!<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>");
                         alert(ajaxOptions)
                     }

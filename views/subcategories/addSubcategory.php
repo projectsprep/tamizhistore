@@ -1,13 +1,15 @@
 <?php
-    use app\models\DB;
-    $db = new DB();
-    $conn = $db->conn();
-    $result = $conn->query("select id, catname from category");
+
+use app\models\DB;
+
+$db = new DB();
+$conn = $db->conn();
+$result = $conn->query("select id, catname from category");
 ?>
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
-        <?php
+            <?php
             if (isset($_GET['msg'])) {
             ?>
                 <div class="alert alert-primary alert-dismissible fade show">
@@ -44,23 +46,23 @@
                                     </div>
                                 </div> -->
                                 <div class="mb-3">
-                                        <label class="form-label">Select Category</label>
-                                        <select class="form-select" required name="category" id="category">
-                                            <option disabled="" selected>Choose...</option>
-                                            <?php
-                                                if($result->num_rows > 0){
-                                                    while($row = $result->fetch_assoc()){    
-                                                    ?>
-                                                    <option value="<?= $row['id']?>"><?= $row['catname']?></option>
-                                                    <?php
-                                                    }
-                                                }
-                                            ?>
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            Please select a valid Category.
-                                        </div>
+                                    <label class="form-label">Select Category</label>
+                                    <select class="form-select" required name="category" id="category">
+                                        <option disabled="" selected>Choose...</option>
+                                        <?php
+                                        if ($result->num_rows > 0) {
+                                            while ($row = $result->fetch_assoc()) {
+                                        ?>
+                                                <option value="<?= $row['id'] ?>"><?= $row['catname'] ?></option>
+                                        <?php
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select a valid Category.
                                     </div>
+                                </div>
                                 <div class="mb-3">
                                     <label class="form-label">SubCategory Image</label>
                                     <input type="file" class="form-control" required name="subcategoryimage" />

@@ -1,19 +1,22 @@
 <?php
+
 use app\models\DB;
+
 $db = new DB();
 $db = $db->conn();
 
-foreach($params as $param){
-    foreach($param as $key=>$value){
+foreach ($params as $param) {
+    foreach ($param as $key => $value) {
         $$key = $value;
     }
 }
 
-if(isset($id)){
+if (isset($id)) {
     $verify = md5($id);
 }
 
-function sendMail($username, $verify, $mail){
+function sendMail($username, $verify, $mail)
+{
     header("content-type: text/html");
     $subject = "Password Reset";
     $message = <<<EOD
@@ -65,8 +68,8 @@ function sendMail($username, $verify, $mail){
     EOD;
     $headers = "From: Tamizhistore <tamizhis@tamizhistore.com>" . "\r\n";
     $headers .= "MIME-Version: 1.0" . "\r\n";
-    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n"; 
-    $headers .= "Cc: Tamizhistore <tamizhis@tamizhistore.com>\r\n"; 
+    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+    $headers .= "Cc: Tamizhistore <tamizhis@tamizhistore.com>\r\n";
     $headers .= "X-Sender: Tamizhistore <tamizhis@tamizhistore.com>\r\n";
     $headers .= "Return-Path: Tamizhistore <tamizhis@tamizhistore.com>\r\n";
     return mail($mail, $subject, $message, $headers);
@@ -76,22 +79,23 @@ function sendMail($username, $verify, $mail){
 <!doctype html>
 <html lang="en">
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
 <head>
 
-<meta charset="utf-8" />
-<title>Login | Admin & Dashboard Template</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
-<meta content="Themesbrand" name="author" />
-<!-- App favicon -->
-<link rel="shortcut icon" href="/assets/images/favicon.ico">
+    <meta charset="utf-8" />
+    <title>Login | Admin & Dashboard Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+    <meta content="Themesbrand" name="author" />
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
 
     <!-- Bootstrap Css -->
-<link href="/assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
-<!-- Icons Css -->
-<link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
-<!-- App Css-->
-<link href="/assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
+    <link href="/assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
+    <!-- Icons Css -->
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <!-- App Css-->
+    <link href="/assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -133,25 +137,25 @@ function sendMail($username, $verify, $mail){
                                 </a>
                             </div>
 
-                        <?php
-                            if(isset($_POST['username'])){
-                                if($msg == 1){
+                            <?php
+                            if (isset($_POST['username'])) {
+                                if ($msg == 1) {
                                     sendMail($username, $verify, $email);
-                                    ?>
+                            ?>
                                     <div class="alert alert-success">
                                         Reset link sent to your mail. Check your spam folder or your inbox!
                                     </div>
-                                    <?php
-                                }else if($msg == 0){
-                                    ?>
+                                <?php
+                                } else if ($msg == 0) {
+                                ?>
                                     <div class="alert alert-danger">
                                         Username not found
                                     </div>
-                                    <?php
+                            <?php
                                 }
                             }
 
-                        ?>
+                            ?>
                             <div class="p-2">
                                 <form class="form-horizontal" action="" method="post">
                                     <div class="mb-3">
@@ -165,7 +169,7 @@ function sendMail($username, $verify, $mail){
                                 </form>
 
                                 <div class="mt-3 text-center">
-                                        <a href="/login"><span>Sign in</span></a>
+                                    <a href="/login"><span>Sign in</span></a>
                                 </div>
                             </div>
 
@@ -178,11 +182,11 @@ function sendMail($username, $verify, $mail){
     <!-- end account-pages -->
 
     <!-- JAVASCRIPT -->
-<script src="/assets/libs/jquery/jquery.min.js"></script>
-<script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="/assets/libs/metismenu/metisMenu.min.js"></script>
-<script src="/assets/libs/simplebar/simplebar.min.js"></script>
-<script src="/assets/libs/node-waves/waves.min.js"></script>
+    <script src="/assets/libs/jquery/jquery.min.js"></script>
+    <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/libs/metismenu/metisMenu.min.js"></script>
+    <script src="/assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="/assets/libs/node-waves/waves.min.js"></script>
     <!-- App js -->
     <script src="/assets/js/app.js"></script>
 </body>
@@ -190,4 +194,3 @@ function sendMail($username, $verify, $mail){
 </html>
 
 <?php
-

@@ -4,7 +4,8 @@ namespace App\core;
 
 use app\core\{Request, Router, Response};
 
-class Application{
+class Application
+{
     public Router $router;
     public Response $response;
     public static $ROOT_DIR;
@@ -19,7 +20,8 @@ class Application{
         self::$app = $this;
     }
 
-    public function run(){
+    public function run()
+    {
         echo $this->router->resolve();
     }
 }

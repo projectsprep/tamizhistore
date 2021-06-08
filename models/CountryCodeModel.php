@@ -4,40 +4,51 @@ namespace App\models;
 
 use app\models\DB;
 
-class CountryCodeModel{
-    
+class CountryCodeModel
+{
+
     private $conn = null;
 
-    public function __construct(){
-            $this->conn = new DB();
-            $this->conn = $this->conn->conn();
+    public function __construct()
+    {
+        $this->conn = new DB();
+        $this->conn = $this->conn->conn();
     }
 
-    public function create($table, $ccode, $status){
+    public function create($table, $ccode, $status)
+    {
+        $table = $this->conn->real_escape_string($table);
+        $ccode = $this->conn->real_escape_string($ccode);
+        $status = $this->conn->real_escape_string($status);
+
         $query = "INSERT INTO $table (ccode, status) VALUES ('$ccode', '$status');";
         $result = $this->conn->query($query);
-        if($result){
+        if ($result) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
-    public function read($table){
+    public function read($table)
+    {
+        $table = $this->conn->real_escape_string($table);
+
         $query = "Select * from $table";
         $result = $this->conn->query($query);
         $array = [];
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
                 array_push($array, $row);
             }
             return json_encode($array);
-        }else{
+        } else {
             return false;
         }
     }
 
-    public function getCodeById($table, $id){
+    public function getCodeById($table, $id)
+    {
         $table = $this->conn->real_escape_string($table);
         $id = htmlspecialchars($id);
 
@@ -45,17 +56,18 @@ class CountryCodeModel{
         $result = $this->conn->query($query);
         $array = [];
 
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
                 array_push($array, $row);
             }
             return json_encode($array);
-        }else{
+        } else {
             return false;
         }
     }
 
-    public function update($table, $id, $ccode, $status){
+    public function update($table, $id, $ccode, $status)
+    {
         $table = $this->conn->real_escape_string($table);
         $ccode = $this->conn->real_escape_string($ccode);
         $status = $this->conn->real_escape_string($status);
@@ -63,36 +75,41 @@ class CountryCodeModel{
 
         $query = "UPDATE $table set ccode='$ccode', `status`='$status' where id=$id";
         $result = $this->conn->query($query);
-        if($result){
+        if ($result) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
-    public function edit($table, $id){
+    public function edit($table, $id)
+    {
+        $table = $this->conn->real_escape_string($table);
+        $id = $this->conn->real_escape_string($id);
+
         $query = "SELECT * FROM $table where id=$id";
         $result = $this->conn->query($query);
         $array = [];
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
                 array_push($array, $row);
             }
             return json_encode($array);
-        }else{
+        } else {
             return false;
         }
     }
 
-    public function delete($table, $id){
+    public function delete($table, $id)
+    {
         $table = $this->conn->real_escape_string($table);
         $id = htmlspecialchars($id);
-        
+
         $query = "DELETE FROM $table where id=$id";
         $result = $this->conn->query($query);
-        if($result){
+        if ($result) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }

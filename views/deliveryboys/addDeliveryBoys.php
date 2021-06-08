@@ -1,7 +1,7 @@
 <div class="main-content">
     <div class="page-content">
         <div class="container-fluid">
-        <?php
+            <?php
             if (isset($_GET['msg'])) {
             ?>
                 <div class="alert alert-primary alert-dismissible fade show">

@@ -2,14 +2,14 @@
 
 namespace app\controllers;
 
-header("Content-type: application/json");
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json");
 
 use app\core\Controller;
 use app\models\ProductsModel;
 use app\models\CategoryModel;
 use app\models\NotificationsModel;
 use app\models\DB;
-use app\core\Application;
 use app\models\CouponModel;
 use app\models\AreaModel;
 use app\models\TimeSlotsModel;
@@ -19,9 +19,9 @@ use app\models\SubCategoryModel;
 use Exception;
 
 session_start();
-if (!(isset($_COOKIE['user']) && isset($_SESSION['user']))) {
-    header("Location: /login");
-}
+// if (!(isset($_COOKIE['user']) && isset($_SESSION['user']))) {
+//     header("Location: /login");
+// }
 
 class ApiController extends Controller
 {
@@ -51,18 +51,81 @@ class ApiController extends Controller
         $this->sDB = new SubCategoryModel();
     }
 
-    public function getSubCategories(){
+    public function getBanner(){
+        $query = "SELECT * FROM banner";
+        $result = $this->conn->query($query);
+        $array = [];
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                array_push($array, $row);
+            }
+
+            return json_encode($array);
+        }else{
+            return json_encode(array("searchResult"=>"No Results found!"));
+        }
+    }
+
+    public function getRandomCategories(){
         try{
-            if(isset($_POST['id'])){
-                if($_POST['id'] !== ""){
-                    return $this->sDB->getSubCategoryById("subcategory", $_POST['id']);
-                }else{
-                    throw new Exception("Invalid ID!");
-                }
+            if(isset($_GET['rows']) && ($_GET['rows']!="")){
+                $json = $this->cDB->read("category");
+                $array = json_decode($json);
+                shuffle($array);
+                $array = array_slice($array, 0, $_GET['rows']);
+                $json = json_encode($array);
+                return $json;
             }else{
-                return $this->sDB->read("subcategory");
+                throw new Exception("Not enough argument found!");
             }
         }catch(Exception $e){
+            return json_encode($e->getMessage());
+        }
+    }
+
+    public function getSearchProduct(){
+        if((isset($_GET['query'])) && ($_GET['query'] != "")){
+            $json = $this->pDB->getSearchProduct("product", $_GET['query']);
+            if($json){
+                return json_encode(["searchResult"=>true, "data"=>$json, "isMore"=>false]);
+            }else{
+                return json_encode(["searchResult"=>false]);
+            }
+        }else{
+            return json_encode("Invalid arguments!");
+        }
+    }
+
+    public function getRandomSubCategories(){
+        try{
+            if(isset($_GET['rows']) && ($_GET['rows']!="")){
+                $json = $this->sDB->read("subcategory");
+                $array = json_decode($json);
+                shuffle($array);
+                $array = array_slice($array, 0, $_GET['rows']);
+                $json = json_encode($array);
+                return $json;
+            }else{
+                throw new Exception("Not enough argument found!");
+            }
+        }catch(Exception $e){
+            return json_encode($e->getMessage());
+        }
+    }
+
+    public function getSubCategories()
+    {
+        try {
+            if (isset($_GET['id'])) {
+                if ($_GET['id'] !== "") {
+                    return $this->sDB->getSubCategoryById("subcategory", $_GET['id']);
+                } else {
+                    throw new Exception("Invalid ID!");
+                }
+            } else {
+                return $this->sDB->read("subcategory");
+            }
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
@@ -73,7 +136,7 @@ class ApiController extends Controller
             if (isset($_POST['id'])) {
                 if ($_POST['id'] !== "") {
                     return $this->codeDB->getCodeById("code", $_POST['id']);
-                }else{
+                } else {
                     throw new Exception("Invalid ID");
                 }
             } else {
@@ -159,7 +222,7 @@ class ApiController extends Controller
             if (isset($_POST['id'])) {
                 if ($_POST['id'] !== "") {
                     return $this->tsDB->getTimeslotById("timeslot", $_POST['id']);
-                }else{
+                } else {
                     throw new Exception("Invalid ID");
                 }
             } else {
@@ -176,7 +239,7 @@ class ApiController extends Controller
             if (isset($_POST['id'])) {
                 if ($_POST['id'] !== "") {
                     return $this->areaDB->getAreaById("area_db", $_POST['id']);
-                }else{
+                } else {
                     throw new Exception("Invalid ID");
                 }
             } else {
@@ -189,34 +252,34 @@ class ApiController extends Controller
 
     public function getCoupons()
     {
-        try{
+        try {
             if (isset($_POST['id'])) {
                 if ($_POST['id'] !== "") {
                     return $this->couponDB->getCouponById("tbl_coupon", $_POST['id']);
-                }else{
+                } else {
                     throw new Exception("Invalid ID");
                 }
             } else {
                 return $this->couponDB->read("tbl_coupon");
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
 
     public function getPayment()
     {
-        try{
+        try {
             if (isset($_POST['id'])) {
                 if ($_POST['id'] !== "") {
                     return $this->paymentDB->getPaymentById("payment_list", $_POST['id']);
-                }else{
+                } else {
                     throw new Exception("Invalid ID");
                 }
             } else {
                 return $this->paymentDB->read("payment_list");
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
@@ -262,24 +325,62 @@ class ApiController extends Controller
 
     public function getSubcategoryNames()
     {
-        if(isset($_POST['id'])){
+        if (isset($_POST['id'])) {
             return $this->pDB->getSubcategoryNames("subcategory", $_POST['id']);
-        }else{
-            return json_encode(array("Message"=>"Invalid ID"));
+        } else {
+            return json_encode(array("Message" => "Invalid ID"));
         }
     }
 
     public function getProducts()
     {
-        try{
-            if (isset($_POST['id'])) {
-                if ($_POST['id'] !== "") {
-                    return $this->pDB->getProductById("product", $_POST['id']);
-                }else{
+        try {
+            if (isset($_GET['id'])) {
+                if ($_GET['id'] !== "") {
+                    return $this->pDB->getProductById("product", $_GET['id']);
+                } else {
                     throw new Exception("Invalid ID");
                 }
             } else {
                 return $this->pDB->read('product');
+            }
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function getFoodItems(){
+        return $this->pDB->getFoodItems();
+    }
+
+    public function getRandomFoodItems(){
+        try{
+            if(isset($_GET['rows']) && ($_GET['rows']!="")){
+                $json = $this->pDB->getFoodItems();
+                $array = json_decode($json);
+                shuffle($array);
+                $array = array_slice($array, 0, $_GET['rows']);
+                $json = json_encode($array);
+                return $json;
+            }else{
+                throw new Exception("Not enough arguments found");
+            }
+        }catch(Exception $e){
+            return $e->getMessage();
+        }
+    }
+
+    public function getRandomProducts(){
+        try{
+            if(isset($_POST['rows']) && $_POST['rows']!=""){
+                $json = $this->pDB->read('product');
+                $array = json_decode($json);
+                shuffle($array);
+                $array = array_slice($array, 0, $_POST['rows']);
+                $json = json_encode($array);
+                return $json;
+            }else{
+                throw new Exception("Not enough arguments found");
             }
         }catch(Exception $e){
             return $e->getMessage();
@@ -288,17 +389,17 @@ class ApiController extends Controller
 
     public function getCategories()
     {
-        try{
-            if (isset($_POST['id'])) {
-                if ($_POST['id'] !== '') {
-                    return $this->cDB->getCategoryById("category", $_POST['id']);
-                }else{
+        try {
+            if (isset($_GET['id'])) {
+                if ($_GET['id'] !== '') {
+                    return $this->cDB->getCategoryById("category", $_GET['id']);
+                } else {
                     throw new Exception("Invalid ID");
                 }
             } else {
                 return $this->cDB->read("category");
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
@@ -381,12 +482,11 @@ class ApiController extends Controller
                 return $pushedTime;
             }
         }
-
     }
 
     public function getNotifications()
     {
-        try{
+        try {
             if (isset($_POST['view'])) {
                 if ($_POST['view'] != "") {
                     $updateQuery = "UPDATE noti SET is_seen=1 WHERE pushed=1";
@@ -395,7 +495,7 @@ class ApiController extends Controller
                 $query = "SELECT * FROM noti where pushed=1 order by duration desc LIMIT 5";
                 $result = $this->conn->query($query);
                 $output = "";
-    
+
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
                         $output .= "<a href='#' class='text-reset notification-item'>
@@ -421,16 +521,16 @@ class ApiController extends Controller
                 $query1 = "SELECT * FROM noti WHERE pushed=1 and is_seen=0";
                 $result1 = $this->conn->query($query1);
                 $count = $result1->num_rows;
-    
+
                 $data = array(
                     "notification" => $output,
                     "unseenNotification" => $count
                 );
                 return json_encode($data);
-            }else{
+            } else {
                 throw new Exception("Invalid Request");
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }

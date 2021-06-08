@@ -1,6 +1,6 @@
 <?php
 
-foreach($params as $key=>$value){
+foreach ($params as $key => $value) {
     $$key = $value;
 }
 ?>
@@ -8,22 +8,23 @@ foreach($params as $key=>$value){
 <!doctype html>
 <html lang="en">
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
 <head>
 
-<meta charset="utf-8" />
-<title>Login | Admin & Dashboard Template</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
-<meta content="Themesbrand" name="author" />
-<!-- App favicon -->
-<link rel="shortcut icon" href="/assets/images/favicon.ico">
+    <meta charset="utf-8" />
+    <title>Login | Admin & Dashboard Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+    <meta content="Themesbrand" name="author" />
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
 
     <!-- Bootstrap Css -->
-<link href="/assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
-<!-- Icons Css -->
-<link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
-<!-- App Css-->
-<link href="/assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
+    <link href="/assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
+    <!-- Icons Css -->
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <!-- App Css-->
+    <link href="/assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -64,24 +65,24 @@ foreach($params as $key=>$value){
                             </div>
 
                             <?php
-                                    if(isset($_POST['newpassword']) && isset($_POST['confirmpassword'])){
-                                        if($msg == false){
-                                    ?>
-                                            <div class="alert alert-danger">
-                                                Unable to reset password. Please try again later
-                                            </div>
-                                            <?php
-                                        }else if($msg == true){
-                                            ?>
-                                            <div class="alert alert-success">
-                                                New password updated
-                                            </div>
-                                            <?php
-                                            return header("Refresh: 2; URL=/login");
-                                        }
-                                    }
-
+                            if (isset($_POST['newpassword']) && isset($_POST['confirmpassword'])) {
+                                if ($msg == false) {
+                            ?>
+                                    <div class="alert alert-danger">
+                                        Unable to reset password. Please try again later
+                                    </div>
+                                <?php
+                                } else if ($msg == true) {
                                 ?>
+                                    <div class="alert alert-success">
+                                        New password updated
+                                    </div>
+                            <?php
+                                    return header("Refresh: 2; URL=/login");
+                                }
+                            }
+
+                            ?>
                             <div class="p-2">
                                 <form class="custom-validation" action="" method="post" novalidate>
                                     <div class="mb-3">
@@ -98,7 +99,7 @@ foreach($params as $key=>$value){
                                         </div>
                                     </div>
 
-                                    <input type="hidden" class="form-control" required name="username" value="<?=$_GET['username']?>">
+                                    <input type="hidden" class="form-control" required name="username" value="<?= $_GET['username'] ?>">
 
                                     <div class="mt-3 d-grid">
                                         <button class="btn btn-primary waves-effect waves-light" type="submit">Log In</button>
@@ -119,13 +120,13 @@ foreach($params as $key=>$value){
     <!-- end account-pages -->
 
     <!-- JAVASCRIPT -->
-<script src="/assets/libs/jquery/jquery.min.js"></script>
-<script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="/assets/libs/metismenu/metisMenu.min.js"></script>
-<script src="/assets/libs/simplebar/simplebar.min.js"></script>
-<script src="/assets/libs/node-waves/waves.min.js"></script>
-<script src="assets/libs/parsleyjs/parsley.min.js"></script>
-<script src="assets/js/pages/form-validation.init.js"></script>
+    <script src="/assets/libs/jquery/jquery.min.js"></script>
+    <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/libs/metismenu/metisMenu.min.js"></script>
+    <script src="/assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="/assets/libs/node-waves/waves.min.js"></script>
+    <script src="assets/libs/parsleyjs/parsley.min.js"></script>
+    <script src="assets/js/pages/form-validation.init.js"></script>
     <!-- App js -->
     <script src="/assets/js/app.js"></script>
 </body>

@@ -1,4 +1,5 @@
 <?php
+
 use app\models\NotificationsModel;
 
 $uriTitle = $_SERVER['REQUEST_URI'] == "/" ? "Dashboard" : ucwords(ltrim($_SERVER['REQUEST_URI'], "/"));
@@ -50,7 +51,7 @@ $array = json_decode($json, true);
             background-image: none !important;
         }
 
-        .img-thumbnail{
+        .img-thumbnail {
             max-width: 100px;
         }
     </style>
@@ -112,45 +113,45 @@ $array = json_decode($json, true);
                     </div>
 
                     <div class="dropdown d-inline-block notifydropdown">
-                            <button type="button" class="btn header-item noti-icon waves-effect" id="dropdown" data-bs-toggle="dropdown" aria-expanded="false" onclick="clicked()">
-                                <i class="bx bx-bell bx-tada"></i>
-                                <span class="badge bg-danger rounded-pill"></span>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="dropdown">
-                                <div class="p-3">
-                                    <div class="row align-items-center">
-                                        <div class="col">
-                                            <h6 class="m-0" key="t-notifications"> Notifications </h6>
-                                        </div>
+                        <button type="button" class="btn header-item noti-icon waves-effect" id="dropdown" data-bs-toggle="dropdown" aria-expanded="false" onclick="clicked()">
+                            <i class="bx bx-bell bx-tada"></i>
+                            <span class="badge bg-danger rounded-pill"></span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="dropdown">
+                            <div class="p-3">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h6 class="m-0" key="t-notifications"> Notifications </h6>
                                     </div>
                                 </div>
-                                <audio id="notifyaudio">
-                                    <source src="/assets/notification.mp3" type="audio/mp3">
-                                    Your browser does not support audio element
-                                </audio>
-                                <!-- <audio src="/assets/notification.mp3"></audio> -->
-                                <div data-simplebar style="max-height: 230px;">
-                                    <div id="notify"></div>
-                                </div>
-                                <div class="p-2 border-top d-grid">
-                                    <a class="btn btn-sm btn-link font-size-14 text-center" href="/notifications">
-                                        <i class="mdi mdi-arrow-right-circle me-1"></i> <span key="t-view-more">View More..</span>
-                                    </a>
-                                </div>
                             </div>
+                            <audio id="notifyaudio">
+                                <source src="/assets/notification.mp3" type="audio/mp3">
+                                Your browser does not support audio element
+                            </audio>
+                            <!-- <audio src="/assets/notification.mp3"></audio> -->
+                            <div data-simplebar style="max-height: 230px;">
+                                <div id="notify"></div>
+                            </div>
+                            <div class="p-2 border-top d-grid">
+                                <a class="btn btn-sm btn-link font-size-14 text-center" href="/notifications">
+                                    <i class="mdi mdi-arrow-right-circle me-1"></i> <span key="t-view-more">View More..</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     <div class="dropdown d-inline-block">
-                    <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img class="rounded-circle header-profile-user" src="/assets/images/firsticon.png" alt="Header Avatar">
-                        <span class="d-none d-xl-inline-block ms-1" key="t-henry">Tamizhistore</span>
-                        <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-end">
-                        <a class="dropdown-item" href="/profile"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">Profile</span></a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-danger" href="/logout"><i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> <span key="t-logout">Logout</span></a>
+                        <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img class="rounded-circle header-profile-user" src="/assets/images/firsticon.png" alt="Header Avatar">
+                            <span class="d-none d-xl-inline-block ms-1" key="t-henry">Tamizhistore</span>
+                            <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item" href="/profile"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">Profile</span></a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-danger" href="/logout"><i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> <span key="t-logout">Logout</span></a>
+                        </div>
                     </div>
-                </div>
                 </div>
 
             </div>
@@ -317,14 +318,14 @@ $array = json_decode($json, true);
 <script src="/assets/libs/apexcharts/apexcharts.min.js"></script>
 <script src="/assets/js/pages/dashboard.init.js"></script>
 <script src="/assets/js/app.js"></script>
-<!-- <script src="/assets/js/notify.php"></script> -->
 <script src="/assets/libs/dropzone/min/dropzone.min.js"></script>
 <script>
     $(document).ready(function() {
         $(".alert").delay(2000).slideUp(300, function() {
-        $(this).alert('close');
-    });
-        function loadUnseenNotification(view = "", notify="") {
+            $(this).alert('close');
+        });
+
+        function loadUnseenNotification(view = "", notify = "") {
             $.ajax({
                 url: "/api/pushednotifies",
                 method: "POST",
@@ -335,16 +336,15 @@ $array = json_decode($json, true);
                 success: function(data) {
                     $("#notify").html(data.notification);
                     if (data.unseenNotification > 0) {
-                        // $("audio")[0].muted = false;
                         <?php
-                            if($_SESSION['notify'] === true){
-                                ?>
-                                $("audio")[0].play();
-                                <?php
-                                $_SESSION['notify'] = false;
-                            }
+                        if ($_SESSION['notify'] === true) {
                         ?>
-                        if(notify == true){
+                            $("audio")[0].play();
+                        <?php
+                            $_SESSION['notify'] = false;
+                        }
+                        ?>
+                        if (notify == true) {
                             $("audio")[0].play();
                         }
                         $(".badge").html(data.unseenNotification);
@@ -361,8 +361,8 @@ $array = json_decode($json, true);
             $(".badge").html('');
             loadUnseenNotification("yes");
         });
-        setInterval(()=>{
-             loadUnseenNotification('',true);
+        setInterval(() => {
+            loadUnseenNotification('', true);
         }, 1000 * 60 * 1);
     })
 </script>

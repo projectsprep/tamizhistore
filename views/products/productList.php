@@ -65,7 +65,7 @@ $db = $db->conn();
                                                     <h5 class="font-size-14 mb-1"><?= $pname; ?></h5>
                                                 </td>
                                                 <td>
-                                                    <!-- <img src="<?= $pimg; ?>" class="img-thumbnail rounded" alt=""> -->
+                                                    <img src="<?= $pimg; ?>" class="img-thumbnail rounded" alt="">
                                                 </td>
                                                 <td>
                                                     <div>
@@ -178,7 +178,7 @@ $db = $db->conn();
                             <option value="1">Yes</option>
                             <option value="0">No</option>
                         </select>
-                </div>
+                    </div>
                     <div class="mb-3">
                         <label for="validationCustom03" class="form-label">Product publish or unpublish?</label>
                         <select class="form-select" required="" id="productStatus" name="publish">
@@ -211,7 +211,7 @@ $db = $db->conn();
                     <div class="mb-3">
                         <label class="form-label">Product Discount (in digits)</label>
                         <div>
-                            <input type="number" class="form-control" id="discount" name="discount" min='0' max="100"/>
+                            <input type="number" class="form-control" id="discount" name="discount" min='0' max="100" />
                         </div>
                         <div class="invalid-feedback">
                             Please enter a valid Product Discount.
@@ -230,38 +230,53 @@ $db = $db->conn();
 
 <style>
     @keyframes ldio-rpinwye8j0b {
-  0% { transform: rotate(0deg) }
-  50% { transform: rotate(180deg) }
-  100% { transform: rotate(360deg) }
-}
-.ldio-rpinwye8j0b div {
-  position: absolute;
-  animation: ldio-rpinwye8j0b 1s linear infinite;
-  width: 160px;
-  height: 160px;
-  top: 20px;
-  left: 20px;
-  border-radius: 50%;
-  box-shadow: 0 4px 0 0 #2a3042;
-  transform-origin: 80px 82px;
-}
-.loadingio-eclipse {
-    margin: auto;
-    margin-top: 18%;
-    margin-bottom: auto;
-  width: 200px;
-  height: 200px;
-  overflow: hidden;
-}
-.ldio-rpinwye8j0b {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  transform: translateZ(0) scale(1);
-  backface-visibility: hidden;
-  transform-origin: 0 0; /* see note above */
-}
-.ldio-rpinwye8j0b div { box-sizing: content-box; }
+        0% {
+            transform: rotate(0deg)
+        }
+
+        50% {
+            transform: rotate(180deg)
+        }
+
+        100% {
+            transform: rotate(360deg)
+        }
+    }
+
+    .ldio-rpinwye8j0b div {
+        position: absolute;
+        animation: ldio-rpinwye8j0b 1s linear infinite;
+        width: 160px;
+        height: 160px;
+        top: 20px;
+        left: 20px;
+        border-radius: 50%;
+        box-shadow: 0 4px 0 0 #2a3042;
+        transform-origin: 80px 82px;
+    }
+
+    .loadingio-eclipse {
+        margin: auto;
+        margin-top: 18%;
+        margin-bottom: auto;
+        width: 200px;
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .ldio-rpinwye8j0b {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform: translateZ(0) scale(1);
+        backface-visibility: hidden;
+        transform-origin: 0 0;
+        /* see note above */
+    }
+
+    .ldio-rpinwye8j0b div {
+        box-sizing: content-box;
+    }
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -272,15 +287,17 @@ $db = $db->conn();
     $("#datatable").DataTable();
     $(document).ready(
         function() {
-            
+
             $(document).on("click", ".editproduct", function() {
                 var productid = $(this).attr('id');
                 $("#productid").val(productid);
 
                 $.ajax({
-                    url: "/api/product",
+                    url: "/api/getproduct",
                     method: "POST",
-                    data: {id: productid},
+                    data: {
+                        id: productid
+                    },
                     dataType: "json",
                     success: function(data) {
                         $("#editModal").modal("show");
@@ -308,23 +325,25 @@ $db = $db->conn();
                     url: "/api/getcategorynames",
                     method: "POST",
                     dataType: "json",
-                    success: function(data){
+                    success: function(data) {
                         $("#category").append(data);
                         // console.log(data);
                         var id = $("#category").find(":selected").val();
-                        console.log(id);
+                        // console.log(id);
                         $.ajax({
                             url: "/api/getsubcategorynames",
                             method: "POST",
-                            data: {id: id},
+                            data: {
+                                id: id
+                            },
                             dataType: "json",
-                            success: function(data){
+                            success: function(data) {
                                 $("#subCategory").append(data);
                             },
                         })
                     },
                 })
-                
+
             })
 
             $.ajax({
@@ -377,15 +396,17 @@ $db = $db->conn();
                     })
             })
 
-            $("#category").on("change",function(){
+            $("#category").on("change", function() {
                 var id = $(this).val();
                 // console.log(id);
                 $.ajax({
                     url: "api/getsubcategorynames",
                     method: "POST",
-                    data: {id: id},
+                    data: {
+                        id: id
+                    },
                     dataType: "json",
-                    success: function(data){
+                    success: function(data) {
                         $("#subCategory").html(data);
                     },
                 })

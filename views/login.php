@@ -17,14 +17,9 @@ foreach ($params as $key => $value) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
-    <!-- App favicon -->
     <link rel="shortcut icon" href="/assets/images/favicon.ico">
-
-    <!-- Bootstrap Css -->
     <link href="/assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
-    <!-- Icons Css -->
     <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
-    <!-- App Css-->
     <link href="/assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
 </head>
 
@@ -97,13 +92,13 @@ foreach ($params as $key => $value) {
 
                                     <div class="mb-3">
                                         <label for="username" class="form-label">Username</label>
-                                        <input type="text" class="form-control" id="username" placeholder="Enter username" name="username" value="<?=isset($_POST['username']) ? $_POST['username'] : ""?>" required>
+                                        <input type="text" class="form-control" id="username" placeholder="Enter username" name="username" value="<?= isset($_POST['username']) ? $_POST['username'] : "" ?>" required>
                                     </div>
 
                                     <div class="mb-3">
                                         <label class="form-label">Password</label>
                                         <div class="input-group auth-pass-inputgroup">
-                                            <input type="password" name="pass" class="form-control" placeholder="Enter password" aria-label="Password" aria-describedby="password-addon" value="<?=isset($_POST['pass']) ? $_POST['pass'] : ""?>" required>
+                                            <input type="password" name="pass" class="form-control" placeholder="Enter password" aria-label="Password" aria-describedby="password-addon" value="<?= isset($_POST['pass']) ? $_POST['pass'] : "" ?>" required>
                                             <button class="btn btn-light " type="button" id="password-addon"><i class="mdi mdi-eye-outline"></i></button>
                                         </div>
                                     </div>
@@ -124,15 +119,12 @@ foreach ($params as $key => $value) {
             </div>
         </div>
     </div>
-    <!-- end account-pages -->
 
-    <!-- JAVASCRIPT -->
     <script src="/assets/libs/jquery/jquery.min.js"></script>
     <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="/assets/libs/metismenu/metisMenu.min.js"></script>
     <script src="/assets/libs/simplebar/simplebar.min.js"></script>
     <script src="/assets/libs/node-waves/waves.min.js"></script>
-    <!-- App js -->
     <script src="/assets/js/app.js"></script>
 </body>
 
