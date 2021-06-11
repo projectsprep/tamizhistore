@@ -1,6 +1,8 @@
 <?php
 require __DIR__. '/../vendor/autoload.php';
-// error_reporting(0);
+error_reporting(0);
+
+$expo = \ExponentPhpSDK\Expo::normalSetup();
 
 use app\core\Application;
 use app\controllers\CategoryController;
@@ -20,6 +22,7 @@ use app\controllers\AppController;
 use app\controllers\SubCategoryController;
 use app\controllers\CustomersController;
 use app\controllers\DeliveryBoysController;
+use app\controllers\LoginController;
 
 $app = new Application(dirname(__DIR__));
 $db = new DB();
@@ -86,6 +89,12 @@ $app->router->post("/api/getproduct/random", [ApiController::class, "getRandomPr
 $app->router->post("/api/pushednotifies", [ApiController::class, "getNotifications"]);
 $app->router->post("/api/pushednotifiessite", [ApiController::class, "pushedNotifications"]);
 $app->router->post("/api/expotoken", [ApiController::class, "expoNotifications"]);
+$app->router->post("/api/cart", [ApiController::class, "cart"]);
+$app->router->get("/api/cart", [ApiController::class, "cart"]);
+$app->router->post("/api/cart/inc", [ApiController::class, "cartInc"]);
+$app->router->post("/api/cart/dec", [ApiController::class, "cartDec"]);
+$app->router->post("/api/login", [LoginController::class, "login"]);
+$app->router->post("/api/cart/remove", [ApiController::class, "removeCart"]);
 
 
 // /areaList

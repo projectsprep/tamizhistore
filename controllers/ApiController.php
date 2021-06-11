@@ -6,6 +6,7 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
 use app\core\Controller;
+use app\core\Application;
 use app\models\ProductsModel;
 use app\models\CategoryModel;
 use app\models\NotificationsModel;
@@ -16,12 +17,17 @@ use app\models\TimeSlotsModel;
 use app\models\PaymentModel;
 use app\models\CountryCodeModel;
 use app\models\SubCategoryModel;
+use app\models\CartModel;
+
+use \Firebase\JWT\JWT;
+
+
 use Exception;
 
-session_start();
-// if (!(isset($_COOKIE['user']) && isset($_SESSION['user']))) {
-//     header("Location: /login");
-// }
+// session_start();
+// // if (!(isset($_COOKIE['user']) && isset($_SESSION['user']))) {
+// //     header("Location: /login");
+// // }
 
 class ApiController extends Controller
 {
@@ -35,6 +41,8 @@ class ApiController extends Controller
     private PaymentModel $paymentDB;
     private CountryCodeModel $codeDB;
     private SubCategoryModel $sDB;
+    private Application $app;
+    private CartModel $cartDB;
 
     public function __construct()
     {
@@ -49,6 +57,122 @@ class ApiController extends Controller
         $this->paymentDB = new PaymentModel();
         $this->codeDB = new CountryCodeModel();
         $this->sDB = new SubCategoryModel();
+        $this->cartDB = new CartModel();
+        $this->app = new Application(dirname(__DIR__));
+
+        $headers = getallheaders();
+
+        if(isset($headers['Authorization']) && ($headers['Authorization'] != "")){
+            try{
+                $secretKey = "tamizhiowt";
+        
+                $token = $headers['Authorization'];
+                $decodedData = JWT::decode($token, $secretKey, array("HS256"));
+            }catch(Exception $e){
+                http_response_code(403);
+                echo json_encode(array("result"=>false, "message"=>$e->getMessage()));
+                exit();
+            }
+        }else{
+            http_response_code(401);
+            echo json_encode(array("result"=>false, "message"=>"User not Authorized"));
+            exit();
+        }
+    }
+
+    public function cartInc(){
+        $data = json_decode(file_get_contents("php://input"));
+        if((isset($data->id)) && ($data->id != "")){
+            $result = $this->cartDB->increment($data->id);
+            if($result == true){
+                return json_encode(array("result"=>true));
+            }else{
+                http_response_code(400);
+                return json_encode(array("result"=>false, "message"=>"Unable to update the data!"));
+            }
+        }else{
+            http_response_code(400);
+            return json_encode(array("result"=>false, "message"=>"Invalid arguments!"));
+        }
+    }
+
+    public function cartDec(){
+        $data = json_decode(file_get_contents("php://input"));
+        if((isset($data->id)) && ($data->id != "")){
+            $result = $this->cartDB->decrement($data->id);
+            if($result == true){
+                return json_encode(array("result"=>true));
+            }else{
+                http_response_code(400);
+                return json_encode(array("result"=>false, "message"=>"Unable to update the data!"));
+            }
+        }else{
+            http_response_code(400);
+            return json_encode(array("result"=>false, "message"=>"Invalid arguments!"));
+        }
+    }
+
+    public function removeCart(){
+        $data = json_decode(file_get_contents("php://input"));
+        if(isset($data->id) && ($data->id != "")){
+            $result = $this->cartDB->delete($data->id);
+            if($result == true){
+                return json_encode(array("result"=>true));
+            }else{
+                http_response_code(400);
+                return json_encode(array("result"=>false, "message"=>"Unable to delete product from cart"));
+            }
+        }else{
+            http_response_code(400);
+            return json_encode(array("result"=>false, "message"=>"Invalid arguments!"));
+        }
+    }
+
+    public function cart(){
+        if($this->app->request->getMethod() == "get"){
+            if(isset($_GET['uid']) && ($_GET['uid'] != "")){
+                $json = $this->cartDB->read($_GET['uid']);
+                if($json){
+                    return json_encode(["searchResult"=>true, "data"=>$json, "isMore"=>false]);
+                }else{
+                    return json_encode(array("searchResult"=>false, "message"=>"No products found!"));
+                }
+            }else{
+                http_response_code(400);
+                return json_encode(array('result'=>false, "message"=>"Invalid arguments"));
+            }
+        }else if($this->app->request->getMethod() == "post"){
+            $data = json_decode(file_get_contents("php://input"));
+            if(isset($data->uid) && isset($data->pid) && ($data->uid != "") && ($data->pid != "")){
+                $result = $this->cartDB->add($data->uid, $data->pid);
+                if($result == true){
+                    return json_encode(array("result"=>true));
+                }else{
+                    http_response_code(400);
+                    return json_encode(array("result"=>false, "message"=>"Unable to add to cart!"));
+                }
+            }else{
+                http_response_code(400);
+                return json_encode(array('result'=>false, "message"=>"Invalid arguments"));
+            }
+        }
+    }
+
+    public function expoNotifications(){
+        $channelName = "default";
+        try{
+            if(isset($_POST['token']) && ($_POST['token'] != "")){
+                $unique = $_POST['token'];
+                $recipant = "ExponentPushToken[$unique]";
+                $notification = ['body' => 'This is a noti from php expo script', 'data'=> json_encode(array('someData' => 'goes here'))];
+                $this->app->expo->subscribe($channelName, $recipant);
+                $this->app->expo->notify([$channelName], $notification);
+            }else{
+                throw new Exception("Invalid token");
+            }
+        }catch(Exception $e){
+            return json_encode($e->getMessage());
+        }
     }
 
     public function getBanner(){
@@ -59,10 +183,10 @@ class ApiController extends Controller
             while($row = $result->fetch_assoc()){
                 array_push($array, $row);
             }
-
             return json_encode($array);
         }else{
-            return json_encode(array("searchResult"=>"No Results found!"));
+            http_response_code(400);
+            return json_encode(array("searchResult"=>false, "message"=>"No Results found!"));
         }
     }
 
@@ -79,6 +203,7 @@ class ApiController extends Controller
                 throw new Exception("Not enough argument found!");
             }
         }catch(Exception $e){
+            http_response_code(400);
             return json_encode($e->getMessage());
         }
     }
@@ -89,9 +214,11 @@ class ApiController extends Controller
             if($json){
                 return json_encode(["searchResult"=>true, "data"=>$json, "isMore"=>false]);
             }else{
-                return json_encode(["searchResult"=>false]);
+                http_response_code(400);
+                return json_encode(["searchResult"=>false, "message"=>"No products found!"]);
             }
         }else{
+            http_response_code(400);
             return json_encode("Invalid arguments!");
         }
     }
@@ -109,6 +236,7 @@ class ApiController extends Controller
                 throw new Exception("Not enough argument found!");
             }
         }catch(Exception $e){
+            http_response_code(400);
             return json_encode($e->getMessage());
         }
     }
@@ -126,7 +254,8 @@ class ApiController extends Controller
                 return $this->sDB->read("subcategory");
             }
         } catch (Exception $e) {
-            return $e->getMessage();
+            http_response_code(400);
+            return json_encode($e->getMessage());
         }
     }
 
@@ -143,7 +272,8 @@ class ApiController extends Controller
                 return $this->codeDB->read("code");
             }
         } catch (Exception $e) {
-            return $e->getMessage();
+            http_response_code(400);
+            return json_encode($e->getMessage());
         }
     }
 
@@ -229,7 +359,8 @@ class ApiController extends Controller
                 return $this->tsDB->read("timeslot");
             }
         } catch (Exception $e) {
-            return $e->getMessage();
+            http_response_code(400);
+            return json_encode($e->getMessage());
         }
     }
 
@@ -246,7 +377,8 @@ class ApiController extends Controller
                 return $this->areaDB->read("area_db");
             }
         } catch (Exception $e) {
-            return $e->getMessage();
+            http_response_code(400);
+            return json_encode($e->getMessage());
         }
     }
 
@@ -263,7 +395,8 @@ class ApiController extends Controller
                 return $this->couponDB->read("tbl_coupon");
             }
         } catch (Exception $e) {
-            return $e->getMessage();
+            http_response_code(400);
+            return json_encode($e->getMessage());
         }
     }
 
@@ -280,7 +413,8 @@ class ApiController extends Controller
                 return $this->paymentDB->read("payment_list");
             }
         } catch (Exception $e) {
-            return $e->getMessage();
+            http_response_code(400);
+            return json_encode($e->getMessage());
         }
     }
 
@@ -328,6 +462,7 @@ class ApiController extends Controller
         if (isset($_POST['id'])) {
             return $this->pDB->getSubcategoryNames("subcategory", $_POST['id']);
         } else {
+            http_response_code(400);
             return json_encode(array("Message" => "Invalid ID"));
         }
     }
@@ -345,7 +480,8 @@ class ApiController extends Controller
                 return $this->pDB->read('product');
             }
         } catch (Exception $e) {
-            return $e->getMessage();
+            http_response_code(400);
+            return json_encode($e->getMessage());
         }
     }
 
@@ -366,7 +502,8 @@ class ApiController extends Controller
                 throw new Exception("Not enough arguments found");
             }
         }catch(Exception $e){
-            return $e->getMessage();
+            http_response_code(400);
+            return json_encode($e->getMessage());
         }
     }
 
@@ -383,7 +520,8 @@ class ApiController extends Controller
                 throw new Exception("Not enough arguments found");
             }
         }catch(Exception $e){
-            return $e->getMessage();
+            http_response_code(400);
+            return json_encode($e->getMessage());
         }
     }
 
@@ -400,7 +538,8 @@ class ApiController extends Controller
                 return $this->cDB->read("category");
             }
         } catch (Exception $e) {
-            return $e->getMessage();
+            http_response_code(400);
+            return json_encode($e->getMessage());
         }
     }
 
@@ -531,7 +670,8 @@ class ApiController extends Controller
                 throw new Exception("Invalid Request");
             }
         } catch (Exception $e) {
-            return $e->getMessage();
+            http_response_code(400);
+            return json_encode($e->getMessage());
         }
     }
 

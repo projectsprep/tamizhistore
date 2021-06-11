@@ -7,4 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'app\\' => array($baseDir . '/'),
+    'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
+    'ExponentPhpSDK\\' => array($vendorDir . '/alymosul/exponent-server-sdk-php/lib'),
 );

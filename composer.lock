@@ -1,9 +1,14 @@
 {
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "a509f144ec21ce74378eebea018ea944",
     "packages": [
         {
             "name": "alymosul/exponent-server-sdk-php",
             "version": "1.2.0",
-            "version_normalized": "1.2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Alymosul/exponent-server-sdk-php.git",
@@ -18,9 +23,7 @@
             "require": {
                 "php": ">=7.0"
             },
-            "time": "2019-12-11T11:19:40+00:00",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "ExponentPhpSDK\\": "lib"
@@ -47,12 +50,11 @@
                 "issues": "https://github.com/Alymosul/exponent-server-sdk-php/issues",
                 "source": "https://github.com/Alymosul/exponent-server-sdk-php/tree/master"
             },
-            "install-path": "../alymosul/exponent-server-sdk-php"
+            "time": "2019-12-11T11:19:40+00:00"
         },
         {
             "name": "firebase/php-jwt",
             "version": "v5.3.0",
-            "version_normalized": "5.3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
@@ -70,9 +72,7 @@
             "require-dev": {
                 "phpunit/phpunit": ">=4.8 <=9"
             },
-            "time": "2021-05-20T17:37:02+00:00",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Firebase\\JWT\\": "src"
@@ -104,9 +104,16 @@
                 "issues": "https://github.com/firebase/php-jwt/issues",
                 "source": "https://github.com/firebase/php-jwt/tree/v5.3.0"
             },
-            "install-path": "../firebase/php-jwt"
+            "time": "2021-05-20T17:37:02+00:00"
         }
     ],
-    "dev": true,
-    "dev-package-names": []
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
 }

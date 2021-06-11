@@ -11,6 +11,14 @@ class ComposerStaticInit9d4d96eb3883b0fd3874d4e0bfe8be4e
         array (
             'app\\' => 4,
         ),
+        'F' => 
+        array (
+            'Firebase\\JWT\\' => 13,
+        ),
+        'E' => 
+        array (
+            'ExponentPhpSDK\\' => 15,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -18,6 +26,18 @@ class ComposerStaticInit9d4d96eb3883b0fd3874d4e0bfe8be4e
         array (
             0 => __DIR__ . '/../..' . '/',
         ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
+        'ExponentPhpSDK\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/alymosul/exponent-server-sdk-php/lib',
+        ),
+    );
+
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
@@ -25,6 +45,7 @@ class ComposerStaticInit9d4d96eb3883b0fd3874d4e0bfe8be4e
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit9d4d96eb3883b0fd3874d4e0bfe8be4e::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit9d4d96eb3883b0fd3874d4e0bfe8be4e::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit9d4d96eb3883b0fd3874d4e0bfe8be4e::$classMap;
 
         }, null, ClassLoader::class);
     }
