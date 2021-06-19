@@ -32,7 +32,7 @@ class CustomersController extends Controller
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());
-            return header("Location: /customers?msg=$msg");
+            return header("Location: /?msg=$msg");
         }
     }
 
@@ -47,7 +47,7 @@ class CustomersController extends Controller
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());
-            return header("Location: /customers/rating?msg=$msg");
+            return header("Location: /?msg=$msg");
         }
     }
 }

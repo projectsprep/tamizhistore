@@ -62,7 +62,7 @@ class CategoryController extends Controller
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());
-            return header("Location: /categorylist?msg=$msg");
+            return header("Location: /?msg=$msg");
         }
     }
 
@@ -73,11 +73,11 @@ class CategoryController extends Controller
             if ($json) {
                 return $this->render("categories/categoryList", $json);
             } else {
-                throw new Exception("Unable to fetch data. Please try again later!");
+                throw new Exception("No categories found. Try adding a new item into list!");
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());
-            return header("Location: /cateorylist?msg=$msg");
+            return header("Location: /?msg=$msg");
         }
     }
 

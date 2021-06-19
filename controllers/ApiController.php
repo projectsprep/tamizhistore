@@ -275,7 +275,8 @@ class ApiController extends Controller
                 $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
                 $result = $this->cartDB->add($decodedData->data->id, $data->pid);
                 if($result == true){
-                    return json_encode(array("result"=>true));
+                    $json = $this->cartDB->read($decodedData->data->id);
+                    return json_encode(array("result"=>true, "data"=>$json));
                 }else{
                     http_response_code(400);
                     return json_encode(array("result"=>false, "message"=>"Unable to add to cart!"));

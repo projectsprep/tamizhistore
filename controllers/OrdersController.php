@@ -28,11 +28,11 @@ class OrdersController extends Controller
             if ($json) {
                 return $this->render("orders/ordersList", $json);
             } else {
-                throw new Exception("Unable to fetch data. Please try again later!");
+                throw new Exception("No orders found. Try adding a new item into list!");
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());
-            return header("Location: /orders?msg=$msg");
+            return header("Location: /?msg=$msg");
         }
     }
 

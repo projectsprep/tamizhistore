@@ -59,11 +59,11 @@ class SubCategoryController extends Controller
             if ($json) {
                 return $this->render("subcategories/subCategoryList", $json);
             } else {
-                throw new Exception("Unable to fetch data. Please try again later!");
+                throw new Exception("No subcategories found. Try adding a new item into list!");
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());
-            return header("Location: /subcateorylist?msg=$msg");
+            return header("Location: /?msg=$msg");
         }
     }
 

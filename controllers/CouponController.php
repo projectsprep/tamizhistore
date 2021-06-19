@@ -58,11 +58,11 @@ class CouponController extends Controller
             if ($json) {
                 return $this->render("coupon/couponList", $json);
             } else {
-                throw new Exception("Unable to fetch data. Please try again later!");
+                throw new Exception("No coupon found. Try adding a new item into list!");
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());
-            return header("Location: /couponlist?msg=$msg");
+            return header("Location: /?msg=$msg");
         }
     }
 

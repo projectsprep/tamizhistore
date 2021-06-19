@@ -29,7 +29,7 @@ class AreaController extends Controller
             if ($json) {
                 return $this->render("area/areaList", $json);
             } else {
-                throw new Exception("Unable to fetch data. Please try again later");
+                throw new Exception("No arealist found. Try adding a new item into list!");
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());

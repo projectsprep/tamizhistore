@@ -31,11 +31,11 @@ class TimeSlotsController extends Controller
             if ($json) {
                 return $this->render("timeslots/tslists", $json);
             } else {
-                throw new Exception("Unable to fetch data. Please try again later!");
+                throw new Exception("No timeslots found. Try adding a new item into list!");
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());
-            return header("Location: /timeslots?msg=$msg");
+            return header("Location: /?msg=$msg");
         }
     }
 

@@ -29,11 +29,11 @@ class PaymentController extends Controller
             if ($json) {
                 return $this->render("payment/paymentList", $json);
             } else {
-                throw new Exception("Unable to fetch data. Please try again later!");
+                throw new Exception("No payments found. Try adding a new item into list!");
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());
-            return header("Location: /paymentlist?msg=$msg");
+            return header("Location: /?msg=$msg");
         }
     }
 

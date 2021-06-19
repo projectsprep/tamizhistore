@@ -30,11 +30,11 @@ class NotificationsController extends Controller
             if ($json) {
                 return $this->render("notifications/notificationList", $json);
             } else {
-                throw new Exception("No Notifications found");
+                throw new Exception("No notifications found. Try adding a new item into list!");
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());
-            return header("Location: /notifications?msg=$msg");
+            return header("Location: /?msg=$msg");
         }
     }
 

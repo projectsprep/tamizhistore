@@ -61,11 +61,11 @@ class ProductController extends Controller
             if ($json) {
                 return $this->render("products/productList", $json);
             } else {
-                throw new Exception("Unable to fetch data. Please try again later!");
+                throw new Exception("No products found. Try adding a new item into list!");
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());
-            return header("Location: /productlist?msg=$msg");
+            return header("Location: /?msg=$msg");
         }
     }
 

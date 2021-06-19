@@ -30,11 +30,11 @@ class CountryCodeController extends Controller
             if ($json) {
                 return $this->render("countrycode/codeList", $json);
             } else {
-                throw new Exception("Something went wrong!");
+                throw new Exception("No countrycode found. Try adding a new item into list!");
             }
         } catch (Exception $e) {
-            $msg = urlencode("Unable to fetch data. Please try again later!");
-            return header("Location: /countrycode?msg=$msg");
+            $msg = urlencode($e->getMessage());
+            return header("Location: /?msg=$msg");
         }
     }
 

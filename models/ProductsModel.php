@@ -52,6 +52,9 @@ class ProductsModel
         $array = [];
         if($result->num_rows > 0){
             while($row = $result->fetch_assoc()){
+                $rating = $this->getProductRating($row['id']);
+                $userRating = $this->userRating($row['id']);
+                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating));
                 array_push($array, $row);
             }
             return $array;
@@ -65,6 +68,9 @@ class ProductsModel
         $array = [];
         if($result->num_rows > 0){
             while($row = $result->fetch_assoc()){
+                $rating = $this->getProductRating($row['id']);
+                $userRating = $this->userRating($row['id']);
+                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating));
                 array_push($array, $row);
             }
             return json_encode($array);

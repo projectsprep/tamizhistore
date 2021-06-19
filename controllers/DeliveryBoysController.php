@@ -30,11 +30,11 @@ class DeliveryBoysController extends Controller
             if ($json) {
                 return $this->render("deliveryboys/deliveryBoysList", $json);
             } else {
-                throw new Exception("Something went wrong!");
+                throw new Exception("No deliveryboys list found. Try adding a new item into list!");
             }
         } catch (Exception $e) {
-            $msg = urlencode("Unable to fetch data. Please try again later!");
-            return header("Location: /deliveryboys?msg=$msg");
+            $msg = urlencode($e->getMessage());
+            return header("Location: /?msg=$msg");
         }
     }
 
