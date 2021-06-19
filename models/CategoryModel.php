@@ -33,9 +33,14 @@ class CategoryModel
         }
     }
 
+    public function __destruct()
+    {
+        $this->conn->close();
+    }
+
     public function getCount()
     {
-        $tables = ['category', "subcategory", "product", "tbl_coupon", "area_db", "timeslot", "user", "feedback", "code", "rider", "noti", "rate_order", "orders"];
+        $tables = ['category', "subcategory", "product", "tbl_coupon", "area_db", "timeslot", "users", "feedback", "code", "rider", "noti", "rate_order", "orders"];
         $array = [];
         foreach ($tables as $table) {
             $query = "SELECT COUNT(id) $table FROM $table";

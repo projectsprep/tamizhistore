@@ -258,7 +258,7 @@ foreach ($params as $param) {
                                     <div class="media">
                                         <div class="media-body">
                                             <p class="text-muted fw-medium">Customers</p>
-                                            <h4 class="mb-0"><?= $user ?></h4>
+                                            <h4 class="mb-0"><?= $users ?></h4>
                                         </div>
 
                                         <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
@@ -437,20 +437,22 @@ foreach ($params as $param) {
                     </div>
                     <div class="col-md-4">
                         <div class="card mini-stats-wid shadow">
-                            <div class="card-body">
-                                <div class="media">
-                                    <div class="media-body">
-                                        <p class="text-muted fw-medium">Delivery Boys</p>
-                                        <h4 class="mb-0"><?= $rider ?></h4>
-                                    </div>
+                            <a href="/deliveryboys">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <div class="media-body">
+                                            <p class="text-muted fw-medium">Delivery Boys</p>
+                                            <h4 class="mb-0"><?= $rider ?></h4>
+                                        </div>
 
-                                    <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
-                                        <span class="avatar-title">
-                                            <i class="bx bx-list-ol font-size-24"></i>
-                                        </span>
+                                        <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
+                                            <span class="avatar-title">
+                                                <i class="bx bx-list-ol font-size-24"></i>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </div>

@@ -2,17 +2,46 @@
 
 namespace App\models;
 
-use mysqli;
 use app\models\DB;
+use app\models\RatingModel;
+use \app\controllers\ApiController;
 
 class ProductsModel
 {
     private $conn = null;
+    public $ratingDB;
 
     public function __construct()
     {
         $this->conn = new DB();
         $this->conn = $this->conn->conn();
+        $this->ratingDB = new RatingModel();
+    }
+
+    public function userRating($pid){
+        $userRating = $this->ratingDB->userProductRating(ApiController::$decodedData->data->id, $pid);
+        if($userRating){
+            return $userRating;
+        }else{
+            return 0;
+        }
+    }
+
+    public function getProductRating($pid){
+        $pid = $this->conn->real_escape_string($pid);
+
+        $query = "SELECT rating FROM productrating where pid=$pid";
+        $result = $this->conn->query($query);
+        $sum = 0;
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                $sum += $row['rating'];
+            }
+            $result = $sum/$result->num_rows;
+            return $result;
+        }else{
+            return 0;
+        }
     }
 
     public function getSearchProduct($table, $q){
@@ -44,21 +73,68 @@ class ProductsModel
         }
     }
 
+    public function readByCid($table, $cid){
+        $table = $this->conn->real_escape_string($table);
+        $cid = $this->conn->real_escape_string($cid);
+
+        $query = "select p.id, p.pname, p.pimg, p.sname, category.catname, subcategory.name, p.pgms, p.pprice, p.stock, p.status, p.psdesc from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id WHERE cid=$cid order by id desc";
+        $result = $this->conn->query($query);
+        $array = [];
+
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                $rating = $this->getProductRating($row['id']);
+                $userRating = $this->userRating($row['id']);
+                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating));
+                array_push($array, $row);
+            }
+            shuffle($array);
+            return $array;
+        }else{
+            return false;
+        }
+    }
+
+    public function readBySid($table, $sid){
+        $table = $this->conn->real_escape_string($table);
+        $sid = $this->conn->real_escape_string($sid);
+
+        $query = "select p.id, p.pname, p.pimg, p.sname, category.catname, subcategory.name, p.pgms, p.pprice, p.stock, p.status, p.psdesc from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id WHERE sid=$sid order by id desc";
+        $result = $this->conn->query($query);
+        $array = [];
+
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                $rating = $this->getProductRating($row['id']);
+                $userRating = $this->userRating($row['id']);
+                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating));
+                array_push($array, $row);
+            }
+            shuffle($array);
+            return $array;
+        }else{
+            return false;
+        }
+    }
+
     public function read($table)
     {
         $table = $this->conn->real_escape_string($table);
 
-        $query = "select p.id, p.pname, p.pimg, p.sname, category.catname, subcategory.name, p.pgms, p.pprice, p.stock, p.status, p.psdesc from product p left join category on p.cid = category.id left join subcategory on p.sid=subcategory.id order by id desc";
+        $query = "select p.id, p.pname, p.pimg, p.sname, category.catname, subcategory.name, p.pgms, p.pprice, p.stock, p.status, p.psdesc from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id order by id desc";
         $result = $this->conn->query($query);
         $array = [];
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
+                $rating = $this->getProductRating($row['id']);
+                $userRating = $this->userRating($row['id']);
+                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating));
                 array_push($array, $row);
             }
             $array = mb_convert_encoding($array, 'UTF-8', 'UTF-8');
             return json_encode($array);
         } else {
-            return json_encode("No results found");
+            return false;
         }
     }
 
@@ -72,6 +148,9 @@ class ProductsModel
         $result = $this->conn->query($query);
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
+                $rating = $this->getProductRating($row['id']);
+                $userRating = $this->userRating($row['id']);
+                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating));
                 array_push($array, $row);
             }
 

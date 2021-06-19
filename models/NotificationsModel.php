@@ -17,6 +17,11 @@ class NotificationsModel
         $this->conn = $this->conn->conn();
     }
 
+    public function __destruct()
+    {
+        $this->conn->close();
+    }
+
     public function create($table, $categoryName, $categoryImage)
     {
         $table = $this->conn->real_escape_string($table);

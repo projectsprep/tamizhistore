@@ -17,6 +17,11 @@ class SubCategoryModel
         $this->conn = $this->conn->conn();
     }
 
+    public function __destruct()
+    {
+        $this->conn->close();
+    }
+
     public function create($table, $subcategoryName, $subcategoryImage, $category)
     {
         $table = $this->conn->real_escape_string($table);

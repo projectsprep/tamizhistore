@@ -16,6 +16,11 @@ class TimeSlotsModel
         $this->conn = new DB();
         $this->conn = $this->conn->conn();
     }
+    
+    public function __destruct()
+    {
+        $this->conn->close();
+    }
 
     public function create($table, $minTime, $maxTime)
     {

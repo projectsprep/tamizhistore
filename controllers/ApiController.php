@@ -18,6 +18,9 @@ use app\models\PaymentModel;
 use app\models\CountryCodeModel;
 use app\models\SubCategoryModel;
 use app\models\CartModel;
+use app\models\UserAddressModel;
+use app\models\LoginModel;
+use app\models\RatingModel;
 
 use \Firebase\JWT\JWT;
 
@@ -43,6 +46,14 @@ class ApiController extends Controller
     private SubCategoryModel $sDB;
     private Application $app;
     private CartModel $cartDB;
+    private UserAddressModel $addressDB;
+    private LoginModel $loginDB;
+    private static RatingModel $ratingDB;
+    private $secretKey = "tamizhiowt";
+    private $token;
+    private static $staticToken;
+    private static $staticSecretKey = "tamihziowt";
+    public static $decodedData;
 
     public function __construct()
     {
@@ -58,6 +69,9 @@ class ApiController extends Controller
         $this->codeDB = new CountryCodeModel();
         $this->sDB = new SubCategoryModel();
         $this->cartDB = new CartModel();
+        $this->addressDB = new UserAddressModel();
+        $this->loginDB = new LoginModel();
+        self::$ratingDB = new RatingModel();
         $this->app = new Application(dirname(__DIR__));
 
         $headers = getallheaders();
@@ -66,8 +80,9 @@ class ApiController extends Controller
             try{
                 $secretKey = "tamizhiowt";
         
-                $token = $headers['Authorization'];
-                $decodedData = JWT::decode($token, $secretKey, array("HS256"));
+                $this->token = $headers['Authorization'];
+                self::$staticToken = $headers['Authorization'];
+                self::$decodedData = JWT::decode($this->token, $secretKey, array("HS256"));
             }catch(Exception $e){
                 http_response_code(403);
                 echo json_encode(array("result"=>false, "message"=>$e->getMessage()));
@@ -77,6 +92,123 @@ class ApiController extends Controller
             http_response_code(401);
             echo json_encode(array("result"=>false, "message"=>"User not Authorized"));
             exit();
+        }
+    }
+
+    public function productRating(){
+        $data = json_decode(file_get_contents("php://input"));
+        $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
+        if(isset($data->pid) && ($data->pid != "") && isset($data->rating) && ($data->rating != "")){
+            $result = self::$ratingDB->productRating($decodedData->data->id, $data->pid, $data->rating);
+            if($result){
+                return json_encode(array("result"=>true));
+            }else{
+                return json_encode(array("result"=>false, "message"=>"Unable to rate product!"));
+            }
+        }else{
+            return json_encode(array("result"=>false, "message"=>"Invalid arguments!"));
+        }
+    }
+
+    public static function getUserProductRating($pid){
+        if(isset($pid) && $pid != ""){
+            $decodedData = JWT::decode(self::$staticToken, self::$staticSecretKey, array("HS256"));
+            $result = self::$ratingDB->userProductRating($decodedData->data->id, $pid);
+            if($result){
+                return $result;
+            }else{
+                return false;
+            }
+        }else{
+            return json_encode(array("result"=>false, "message"=>"Invalid arguments!"));
+        }
+    }
+
+    public function editUserProfile(){
+        $data = json_decode(file_get_contents("php://input"));
+
+        if(isset($data->username) && isset($data->password) && isset($data->phone) && isset($data->name)){
+            if(($data->username != "") && ($data->password != "") && ($data->phone != "") && ($data->name != "")){
+                $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
+                $result = $this->loginDB->update($decodedData->data->id, $data->username, $data->name, $data->password, $data->phone);
+                if($result){
+                    return json_encode(array("result"=>true));
+                }else{
+                    http_response_code(400);
+                    return json_encode(array("result"=>false, "message"=>"Unable to update user details!"));
+                }
+            }else{
+                http_response_code(400);
+                return json_encode(array("result"=>false, "message"=>"Invalid arguments"));    
+            }
+        }else{
+            http_response_code(400);
+            return json_encode(array("result"=>false, "message"=>"Invalid arguments"));
+        }
+    }
+
+    public function userAddress(){
+        $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
+        // echo "<pre>";
+        // var_dump($decodedData->data->id);
+        // echo "</pre>";
+        $result = $this->addressDB->read($decodedData->data->id);
+
+        if($result){
+            return json_encode(array("result"=>true, "data"=>$result, "isMore"=>false));
+        }else{
+            http_response_code(404);
+            return json_encode(array("result"=>false, "message"=>"Address not found!"));    
+        }
+    }
+
+    public function addUserAddress(){
+        $data = json_decode(file_get_contents("php://input"));
+        if(isset($data->address) && $data->address!=""){
+            $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
+            $result = $this->addressDB->add($decodedData->data->id, $data->address);
+            if($result){
+                return json_encode(array("result"=>true));
+            }else{
+                http_response_code(400);
+                return json_encode(array("result"=>false, "message"=>"Unable to add address!"));
+            }
+        }else{
+            http_response_code(400);
+            return json_encode(array("result"=>false, "message"=>"Invalid arguments"));
+        }
+    }
+
+    public function updateUserAddress(){
+        $data = json_decode(file_get_contents("php://input"));
+        if(isset($data->id) && isset($data->address) && $data->id!="" && $data->address!=""){
+            $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
+            $result = $this->addressDB->update($data->id, $decodedData->data->id, $data->address);
+            if($result){
+                return json_encode(array("result"=>true));
+            }else{
+                http_response_code(400);
+                return json_encode(array("result"=>false, "message"=>"Unable to update address!"));
+            }
+        }else{
+            http_response_code(400);
+            return json_encode(array("result"=>false, "message"=>"Invalid arguments"));
+        }
+    }
+
+    public function removeUserAddress(){
+        $data = json_decode(file_get_contents("php://input"));
+        if(isset($data->id) && $data->id!=""){
+            $result = $this->addressDB->delete($data->id);
+            if($result){
+                return json_encode(array("result"=>true));
+            }else{
+                http_response_code(400);
+                return json_encode(array("result"=>false, "message"=>"Unable to delete address!"));
+            }
+        }else{
+            http_response_code(400);
+            return json_encode(array("result"=>false, "message"=>"Invalid arguemnts"));
         }
     }
 
@@ -130,21 +262,18 @@ class ApiController extends Controller
 
     public function cart(){
         if($this->app->request->getMethod() == "get"){
-            if(isset($_GET['uid']) && ($_GET['uid'] != "")){
-                $json = $this->cartDB->read($_GET['uid']);
-                if($json){
-                    return json_encode(["searchResult"=>true, "data"=>$json, "isMore"=>false]);
-                }else{
-                    return json_encode(array("searchResult"=>false, "message"=>"No products found!"));
-                }
+            $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
+            $json = $this->cartDB->read($decodedData->data->id);
+            if($json){
+                return json_encode(["result"=>true, "data"=>$json, "isMore"=>false]);
             }else{
-                http_response_code(400);
-                return json_encode(array('result'=>false, "message"=>"Invalid arguments"));
+                return json_encode(array("result"=>false, "message"=>"No products found!"));
             }
         }else if($this->app->request->getMethod() == "post"){
             $data = json_decode(file_get_contents("php://input"));
-            if(isset($data->uid) && isset($data->pid) && ($data->uid != "") && ($data->pid != "")){
-                $result = $this->cartDB->add($data->uid, $data->pid);
+            if(isset($data->pid) && ($data->pid != "")){
+                $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
+                $result = $this->cartDB->add($decodedData->data->id, $data->pid);
                 if($result == true){
                     return json_encode(array("result"=>true));
                 }else{
@@ -472,16 +601,43 @@ class ApiController extends Controller
         try {
             if (isset($_GET['id'])) {
                 if ($_GET['id'] !== "") {
-                    return $this->pDB->getProductById("product", $_GET['id']);
+                    $result = $this->pDB->getProductById("product", $_GET['id']);
+                    if($result){
+                        return $result;
+                    }else{
+                        return json_encode(array("result"=>false));
+                    }
                 } else {
                     throw new Exception("Invalid ID");
                 }
-            } else {
+            }else if(isset($_GET['cid'])){
+                if($_GET['cid'] !== ""){
+                    $result = $this->pDB->readByCid("product", $_GET['cid']);
+                    if($result){
+                        return json_encode(array("result"=>true, "data"=>$result));
+                    }else{
+                        return json_encode(array("result"=>false));
+                    }
+                }else{
+                    throw new Exception("Invalid category ID");
+                }
+            }else if(isset($_GET['sid'])){
+                if($_GET['sid'] !== ""){
+                    $result = $this->pDB->readBySid("product", $_GET['sid']);
+                    if($result){
+                        return json_encode(array("result"=>true, "data"=>$result));
+                    }else{
+                        return json_encode(array("result"=>false));
+                    }
+                }else{
+                    throw new Exception("Invalid subcategory ID");
+                }
+            }else {
                 return $this->pDB->read('product');
             }
         } catch (Exception $e) {
             http_response_code(400);
-            return json_encode($e->getMessage());
+            return json_encode(array("result"=>false, "message"=>$e->getMessage()));
         }
     }
 

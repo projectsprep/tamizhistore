@@ -14,6 +14,11 @@ class ProfileModel
         $this->conn = $this->conn->conn();
     }
 
+    public function __destruct()
+    {
+        $this->conn->close();
+    }
+
     public function login($username, $pass)
     {
         $username = $this->conn->real_escape_string($username);

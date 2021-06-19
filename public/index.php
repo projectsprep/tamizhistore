@@ -1,6 +1,6 @@
 <?php
 require __DIR__. '/../vendor/autoload.php';
-error_reporting(0);
+// error_reporting(0);
 
 $expo = \ExponentPhpSDK\Expo::normalSetup();
 
@@ -93,9 +93,18 @@ $app->router->post("/api/cart", [ApiController::class, "cart"]);
 $app->router->get("/api/cart", [ApiController::class, "cart"]);
 $app->router->post("/api/cart/inc", [ApiController::class, "cartInc"]);
 $app->router->post("/api/cart/dec", [ApiController::class, "cartDec"]);
-$app->router->post("/api/login", [LoginController::class, "login"]);
 $app->router->post("/api/cart/remove", [ApiController::class, "removeCart"]);
-
+$app->router->post("/api/login", [LoginController::class, "login"]);
+$app->router->get("/api/useraddress", [ApiController::class, "userAddress"]);
+$app->router->post("/api/useraddress", [ApiController::class, "addUserAddress"]);
+$app->router->post("/api/useraddress/update", [ApiController::class, "updateUserAddress"]);
+$app->router->post("/api/useraddress/remove", [ApiController::class, "removeUserAddress"]);
+$app->router->post("/api/userprofile", [ApiController::class, "editUserProfile"]);
+$app->router->post("/api/makeorder", [AppController::class, "makeOrder"]);
+$app->router->get("/api/userorders", [AppController::class, "userOrders"]);
+$app->router->post("/api/cartorders", [AppController::class, "cartOrders"]);
+$app->router->post("/api/productrating", [ApiController::class, "productRating"]);
+$app->router->get("/api/getproductrating", [ApiController::class, "getProductRating"]);
 
 // /areaList
 $app->router->get("/arealist", [AreaController::class, "read"]);

@@ -88,4 +88,9 @@ class PaymentModel
             return false;
         }
     }
+
+    public function __destruct()
+    {
+        $this->conn->close();
+    }
 }

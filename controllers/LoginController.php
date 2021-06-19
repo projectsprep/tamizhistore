@@ -56,41 +56,6 @@ class LoginController extends Controller{
             http_response_code(400);
             return json_encode(array("result"=>false, "message"=>"Invalid arguments"));
         }
-        // if(isset($_POST['username']) && isset($_POST['phone']) && isset($_POST['password']) && (!(isset($_POST['name']))) && (!(isset($_POST['email'])))){
-        //     if(($_POST['username'] != "") && ($_POST['phone'] != "") && ($_POST['password'] != "")){
-        //         $result = $this->db->login($_POST['username'], $_POST['phone'], $_POST['password']);
-        //         if(gettype($result) == "array"){
-        //             $iss = "tamizhistore";
-        //             $iat = time();
-        //             $nbf = $iat;
-        //             $aud = "users";
-
-        //             $secretKey = "tamizhiowt";
-
-        //             $payloadInfo = array(
-        //                 "iss"=>$iss,
-        //                 "iat"=>$iat,
-        //                 "nbf"=>$nbf,
-        //                 "aud"=>$aud,
-        //                 "data"=>$result
-        //             );
-        //             $jwt = JWT::encode($payloadInfo, $secretKey, 'HS256');
-        //             return json_encode(array("result"=>true, "token"=>$jwt));
-        //         }else if(gettype($result) == "string"){
-        //             return json_encode(array("result"=>false, "message"=>$result));
-        //         }
-        //     }else{
-        //         return json_encode(array("result"=>false, "message"=>"Invalid arguments"));
-        //     }
-        // }else if(isset($_POST['username']) && isset($_POST['phone']) && isset($_POST['password']) && isset($_POST['name']) && isset($_POST['email'])){
-        //     if(($_POST['username'] != "") && ($_POST['phone'] != "") && ($_POST['password'] != "") && ($_POST['email'] != "") && ($_POST['name'] != "")){
-        //         return $this->create($_POST['username'], $_POST['phone'], $_POST['password'], $_POST["email"], $_POST['name']);
-        //     }else{
-        //         return json_encode(array("result"=>false, "message"=>"Invalid arguments"));
-        //     }
-        // }else{
-        //     return json_encode(array("result"=>false, "message"=>"Invalid arguments"));
-        // }
     }
 
     public function create($username, $phone, $password, $name){

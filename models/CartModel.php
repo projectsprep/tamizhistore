@@ -15,10 +15,15 @@ class CartModel{
         $this->table = $this->conn->real_escape_string($this->table);
     }
 
+    public function __destruct()
+    {
+        $this->conn->close();
+    }
+
     public function read($uid){
         $uid = $this->conn->real_escape_string($uid);
 
-        $query = "SELECT * FROM $this->table INNER JOIN product on productid=product.id where userid=$uid";
+        $query = "SELECT c.id id, c.userid, c.productid, c.quantity, p.pname, p.sname, p.cid, p.sid, p.psdesc, p.pgms, p.pprice, p.status, p.stock, p.pimg, p.prel, p.date, p.discount, p.popular FROM $this->table c INNER JOIN product p on c.productid=p.id where userid=$uid";
         $result = $this->conn->query($query);
         $array = [];
         if($result->num_rows > 0){

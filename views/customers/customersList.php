@@ -36,12 +36,9 @@ $conn = $db->conn();
                                         <tr>
                                             <th scope="col" style="width: 70px;">Sl.no</th>
                                             <th scope="col">Name</th>
-                                            <th scope="col">IMEI</th>
-                                            <th scope="col">Email</th>
-                                            <th scope="col">Country Code</th>
+                                            <th scope="col">Username</th>
                                             <th scope="col">Mobile</th>
                                             <th scope="col">Register Date</th>
-                                            <th scope="col">Password</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -63,22 +60,13 @@ $conn = $db->conn();
                                                     <h5 class="font-size-14 mb-1"><?= $name; ?></h5>
                                                 </td>
                                                 <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $imei; ?></h5>
+                                                    <h5 class="font-size-14 mb-1"><?= $username; ?></h5>
                                                 </td>
                                                 <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $email; ?></h5>
+                                                    <h5 class="font-size-14 mb-1"><?= $phone; ?></h5>
                                                 </td>
                                                 <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $ccode; ?></h5>
-                                                </td>
-                                                <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $mobile; ?></h5>
-                                                </td>
-                                                <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $rdate; ?></h5>
-                                                </td>
-                                                <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $password; ?></h5>
+                                                    <h5 class="font-size-14 mb-1"><?= $created_at; ?></h5>
                                                 </td>
                                             </tr>
                                         <?php

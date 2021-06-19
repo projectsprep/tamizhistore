@@ -19,7 +19,7 @@ class CustomersModel
     {
         $this->table = $this->conn->real_escape_string($this->table);
 
-        $query = "SELECT * FROM $this->table";
+        $query = "SELECT * FROM users";
         $result = $this->conn->query($query);
         $array = [];
         if ($result->num_rows > 0) {
