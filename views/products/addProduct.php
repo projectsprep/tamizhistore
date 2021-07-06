@@ -10,14 +10,22 @@ $result = $conn->query("select id, catname from category");
 
     <div class="page-content">
         <div class="container-fluid">
-
-
+        <?php
+            if (isset($_GET['msg'])) {
+            ?>
+                <div class="alert alert-primary alert-dismissible fade show">
+                    <?php echo $_GET['msg']; ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php
+            }
+            ?>
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">Add Product</h4>
-                            <form class="needs-validation" action="" method="post" novalidate enctype="multipart/form-data">
+                            <form class="needs-validation" action="" method="post" enctype="multipart/form-data">
                                 <div class="mb-3">
                                     <label class="form-label">Product Name</label>
                                     <input type="text" class="form-control" required name="productName" />
@@ -66,9 +74,27 @@ $result = $conn->query("select id, catname from category");
                                         Please select a valid Subcategory.
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col mb-3">
+                                        <label for="productname">Min Avilable Hours</label>
+                                        <input type="time" class="form-control" name="minTime" />
+                                        <div class="invalid-feedback">
+                                            Please enter a valid Min time
+                                        </div>
+                                    </div>
+
+                                    <div class="col mb-3">
+                                        <label class="form-label">Max Available Hours</label>
+                                        <input type="time" class="form-control" name="maxTime" />
+                                        <div class="invalid-feedback">
+                                            Please enter a valid Max time
+                                        </div>
+                                    </div>
+                                    <h6>(Leave the time blank or at 00:00 to make product available all the time.)</h6>
+                                </div>
                                 <div class="mb-3">
                                     <label class="form-label">Out of Stock?</label>
-                                    <select class="form-select" required name="outofstock">
+                                    <select class="form-select" name="outofstock">
                                         <option selected="" value="no">No</option>
                                         <option value="yes">Yes</option>
                                     </select>
@@ -78,7 +104,7 @@ $result = $conn->query("select id, catname from category");
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Product publish or unpublish?</label>
-                                    <select class="form-select" required="" name="publish">
+                                    <select class="form-select" name="publish">
                                         <option selected="" value="publish">Publish</option>
                                         <option value="unpublish">Unpublish</option>
                                     </select>
@@ -88,7 +114,7 @@ $result = $conn->query("select id, catname from category");
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Make product popular?</label>
-                                    <select class="form-select" required="" name="popular">
+                                    <select class="form-select" name="popular">
                                         <option selected="" value="no">No</option>
                                         <option value="yes">Yes</option>
                                     </select>
@@ -104,7 +130,7 @@ $result = $conn->query("select id, catname from category");
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Product (GMS,KG,LTR,ML,PCS..)</label>
-                                    <input type="text" name="range" class="form-control">
+                                    <input type="text" name="unit" required class="form-control">
                                     <div class="invalid-feedback">
                                         Please select a valid option.
                                     </div>
@@ -122,6 +148,15 @@ $result = $conn->query("select id, catname from category");
                                     <label class="form-label">Product Discount (in digits)</label>
                                     <div>
                                         <input type="number" class="form-control" name="discount" min='0' max="100" />
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Please enter a valid Product Discount.
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Product Pincode (in digits)</label>
+                                    <div>
+                                        <input type="number" class="form-control" name="pincode" min="0" />
                                     </div>
                                     <div class="invalid-feedback">
                                         Please enter a valid Product Discount.
@@ -159,11 +194,8 @@ $result = $conn->query("select id, catname from category");
             var id = $(this).val();
             // console.log(id);
             $.ajax({
-                url: "/api/getsubcategorynames",
-                method: "POST",
-                data: {
-                    id: id
-                },
+                url: "/getsubcategorynames?id="+id,
+                method: "GET",
                 dataType: "json",
                 success: function(data) {
                     $("#subCategory").html(data);

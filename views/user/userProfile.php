@@ -68,7 +68,7 @@ foreach ($array as $item) {
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label class="form-label col-sm-3 col-form-label">Password</label>
+                                    <label class="form-label col-sm-3 col-form-label">Password: </label>
                                     <div class="col-sm-9">
                                         <div class="input-group auth-pass-inputgroup">
                                             <input name="pass" type="password" class="form-control" required value="<?= $password ?>" />
@@ -85,6 +85,16 @@ foreach ($array as $item) {
                                     </button>
                                 </div>
                             </form>
+
+                            <form action="/settings">
+                                <div class="row mb-3">
+                                    <label class="form-label col-sm-3 col-form-label">Privacy Policy: </label>
+                                    <!-- <div id="editor"> -->
+                                        <textarea name="privacypolicy" cols="50" rows="4">This is a thingThis is a thingThis is a thingThis is a thingThis is a thingThis is a thingThis is a thingThis is a thingThis is a thing</textarea>
+                                    <!-- </div> -->
+                                </div>
+                                <input type="submit">
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -92,3 +102,13 @@ foreach ($array as $item) {
         </div>
     </div>
 </div>
+<script src="https://cdn.ckeditor.com/ckeditor5/28.0.0/classic/ckeditor.js"></script>
+
+
+<script>
+        ClassicEditor
+            .create( document.querySelector( '#editor' ) )
+            .catch( error => {
+                console.error( error );
+            } );
+    </script>

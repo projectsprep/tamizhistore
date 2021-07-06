@@ -37,7 +37,7 @@ $conn = $db->conn();
                                             <th scope="col" style="width: 70px;">Sl.no</th>
                                             <th scope="col">Name</th>
                                             <th scope="col">Mobile</th>
-                                            <th scope="col">Email</th>
+                                            <th scope="col">Username</th>
                                             <th scope="col">Address</th>
                                             <th scope="col">Password</th>
                                             <th scope="col">Rejected</th>
@@ -70,7 +70,7 @@ $conn = $db->conn();
                                                     <h5 class="font-size-14 mb-1"><?= $mobile; ?></h5>
                                                 </td>
                                                 <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $email; ?></h5>
+                                                    <h5 class="font-size-14 mb-1"><?= $username; ?></h5>
                                                 </td>
                                                 <td align="center">
                                                     <h5 class="font-size-14 mb-1"><?= $address; ?></h5>
@@ -188,27 +188,9 @@ $conn = $db->conn();
 <script>
     $(document).ready(
         function() {
-            $(document).on("click", ".editdeliveryboy", function() {
-                var categoryid = $(this).attr('id');
-                $("#categoryid").val(categoryid);
-
-                $.ajax({
-                    url: "/api/category?id=" + categoryid,
-                    method: "POST",
-                    data: {
-                        status
-                    },
-                    dataType: "json",
-                    success: function(data) {
-                        $("#editModal").modal("show");
-                        $("#categoryid").val(categoryid);
-                        $("#categoryname").val(data[0].catname)
-                    }
-                })
-            })
 
             $.ajax({
-                url: "/customers",
+                url: "/deliveryboys",
                 method: "GET",
                 data: {
                     view: ""

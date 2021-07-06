@@ -24,6 +24,24 @@ class SubCategoryController extends Controller
         $this->app = new Application(dirname(__DIR__));
     }
 
+    public function getSubCategories()
+    {
+        try {
+            if (isset($_GET['id'])) {
+                if ($_GET['id'] !== "") {
+                    return $this->db->getSubCategoryById("subcategory", $_GET['id']);
+                } else {
+                    throw new Exception("Invalid ID!");
+                }
+            } else {
+                return $this->db->read("subcategory");
+            }
+        } catch (Exception $e) {
+            http_response_code(400);
+            return json_encode($e->getMessage());
+        }
+    }
+
     public function create()
     {
         if ($this->app->request->getMethod() === "get") {
@@ -104,11 +122,9 @@ class SubCategoryController extends Controller
                         }
                     } else {
                         throw new Exception($validateImage);
-                        // return $this->render("categories/temp", $json, json_encode(["msg"=>$validateImage]));
                     }
                 } else {
                     throw new Exception("Unable to update SubCategory!");
-                    // return $this->render("categories/categoryList", $json, json_encode(["msg"=>"Unable to add new category. Check if all values are set"]));
                 }
             }
         } catch (Exception $e) {

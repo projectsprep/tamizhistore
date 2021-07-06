@@ -34,7 +34,7 @@ class CustomersModel
 
     public function readFeedback()
     {
-        $query = "SELECT f.*, u.name user FROM feedback f left join user u on u.id = f.uid";
+        $query = "SELECT f.*, u.username user FROM feedback f INNER join users u on u.id = f.uid";
         $result = $this->conn->query($query);
         $array = [];
         if ($result->num_rows > 0) {
@@ -44,6 +44,29 @@ class CustomersModel
             return json_encode($array);
         } else {
             return false;
+        }
+    }
+
+    public function updateFeedback($msg, $uid){
+        $query = "SELECT * FROM feedback WHERE msg='$msg' and uid=$uid";
+
+        $result = $this->conn->query($query);
+        if($result->num_rows > 0){
+            $query = "UPDATE feedback SET msg='$msg' WHERE uid=$uid";
+            $result = $this->conn->query($query);
+            if($this->conn->affected_rows > 0){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            $query = "INSERT INTO feedback SET msg='$msg', uid=$uid";
+            $result = $this->conn->query($query);
+            if($this->conn->affected_rows > 0){
+                return true;
+            }else{
+                return false;
+            }
         }
     }
 }

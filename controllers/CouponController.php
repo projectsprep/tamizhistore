@@ -51,6 +51,24 @@ class CouponController extends Controller
         }
     }
 
+    public function getCoupons()
+    {
+        try {
+            if (isset($_GET['id'])) {
+                if ($_GET['id'] !== "") {
+                    return $this->db->getCouponById("tbl_coupon", $_GET['id']);
+                } else {
+                    throw new Exception("Invalid ID");
+                }
+            } else {
+                return $this->db->read("tbl_coupon");
+            }
+        } catch (Exception $e) {
+            http_response_code(400);
+            return json_encode($e->getMessage());
+        }
+    }
+
     public function read()
     {
         $json = $this->db->read("tbl_coupon");

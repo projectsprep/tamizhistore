@@ -23,6 +23,24 @@ class CategoryController extends Controller
         $this->app = new Application(dirname(__DIR__));
     }
 
+    public function getCategories()
+    {
+        try {
+            if (isset($_GET['id'])) {
+                if ($_GET['id'] !== '') {
+                    return $this->db->getCategoryById("category", $_GET['id']);
+                } else {
+                    throw new Exception("Invalid ID");
+                }
+            } else {
+                return $this->db->read("category");
+            }
+        } catch (Exception $e) {
+            http_response_code(400);
+            return json_encode($e->getMessage());
+        }
+    }
+
     public function add()
     {
         if ($this->app->request->getMethod() === "get") {
@@ -171,7 +189,7 @@ class CategoryController extends Controller
             // if everything is ok, try to upload file
         } else {
             if (move_uploaded_file($_FILES["categoryimage"]["tmp_name"], $targetFile)) {
-                $this->imageDest = "/assets/images/category/" . basename($_FILES['categoryimage']['name']);
+                $this->imageDest = "/assets/images/cat/" . basename($_FILES['categoryimage']['name']);
                 return true;
             } else {
                 return false;

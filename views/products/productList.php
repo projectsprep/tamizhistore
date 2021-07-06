@@ -39,6 +39,10 @@ $db = $db->conn();
                                             <th scope="col">Seller name</th>
                                             <th scope="col">Category Name</th>
                                             <th scope="col">Subcategory Name</th>
+                                            <th scope="col">MinTime</th>
+                                            <th scope="col">MaxTime</th>
+                                            <th scope="col">Pincode</th>
+                                            <th scope="col">Popular</th>
                                             <th scope="col">Product Price</th>
                                             <th scope="col">Product Range</th>
                                             <th scope="col">In Stock</th>
@@ -80,6 +84,26 @@ $db = $db->conn();
                                                 <td>
                                                     <div>
                                                         <h5 class="font-size-14 mb-1"><?= $name; ?></h5>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <h5 class="font-size-14 mb-1"><?= date("h:i a", strtotime($minTime)); ?></h5>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <h5 class="font-size-14 mb-1"><?= date("h:i a", strtotime($maxTime)); ?></h5>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <h5 class="font-size-14 mb-1"><?= $pincode; ?></h5>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <h5 class="font-size-14 mb-1"><?= $popular == 0 ? "false" : "true"; ?></h5>
                                                     </div>
                                                 </td>
                                                 <td>
@@ -165,6 +189,30 @@ $db = $db->conn();
                             Please select a valid Subcategory.
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="minTime">Min Avilable Hours</label>
+                            <input type="time" id="minTime" class="form-control" required name="minTime" />
+                            <div class="invalid-feedback">
+                                Please enter a valid Min time
+                            </div>
+                        </div>
+
+                        <div class="col mb-3">
+                            <label for="maxTime">Max Available Hours</label>
+                            <input type="time" id="maxTime" class="form-control" required name="maxTime" />
+                            <div class="invalid-feedback">
+                                Please enter a valid Max time
+                            </div>
+                        </div>
+                        <h6>(Leave the time blank or at 00:00 to make product available all the time.)</h6>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Pincode</label>
+                        <div>
+                            <input type="number" id="pincode" class="form-control" required name="pincode" />
+                        </div>
+                    </div>
                     <div class="mb-3">
                         <label class="form-label">Product Description</label>
                         <div>
@@ -198,12 +246,12 @@ $db = $db->conn();
                     <div class="mb-3">
                         <label class="form-label">Product Price (<i class="bx bx-rupee"></i>)</label>
                         <div>
-                            <input type="text" id="productPrice" class="form-control" required name="price" value="<?= $pprice ?>" />
+                            <input type="number" id="productPrice" class="form-control" required name="price" value="<?= $pprice ?>" />
                         </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Product (GMS,KG,LTR,ML,PCS..)</label>
-                        <input type="text" name="range" id="productRange" class="form-control">
+                        <input type="text" name="unit" id="productRange" class="form-control">
                         <div class="invalid-feedback">
                             Please select a valid option.
                         </div>
@@ -221,7 +269,7 @@ $db = $db->conn();
                 <div class="modal-footer">
                     <input type="hidden" name="id" id="productid">
                     <input type="submit" name="submit" class="btn btn-primary waves-effect waves-light">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal" aria-hidden="true">Close</button>
                 </div>
             </form>
         </div>
@@ -293,11 +341,8 @@ $db = $db->conn();
                 $("#productid").val(productid);
 
                 $.ajax({
-                    url: "/api/getproduct",
-                    method: "POST",
-                    data: {
-                        id: productid
-                    },
+                    url: "/getproduct?id="+productid,
+                    method: "GET",
                     dataType: "json",
                     success: function(data) {
                         $("#editModal").modal("show");
@@ -310,6 +355,9 @@ $db = $db->conn();
                         $("#category").find(":selected").val(data[0].cid);
                         $("#subCategory").find(":selected").text(data[0].subname);
                         $("#subCategory").find(":selected").val(data[0].sid);
+                        $("#minTime").val(data[0].minTime);
+                        $("#maxTime").val(data[0].maxTime);
+                        $("#pincode").val(data[0].pincode);
                         $("#stock").find(":selected").val(data[0].stock);
                         $("#stock").find(":selected").text(data[0].stock == 1 ? "Yes" : "No");
                         $("#productStatus").find(":selected").text(data[0].status == 1 ? "Publish" : "Unpublish");
@@ -319,11 +367,14 @@ $db = $db->conn();
                         $("#description").val(data[0].psdesc);
                         $("#discount").val(data[0].discount);
                     }
+                    // error: function(data, thrownError, ajaxOptions){
+                    //     alert(ajaxOptions)
+                    // }
                 })
 
                 $.ajax({
-                    url: "/api/getcategorynames",
-                    method: "POST",
+                    url: "/getcategorynames",
+                    method: "GET",
                     dataType: "json",
                     success: function(data) {
                         $("#category").append(data);
@@ -331,11 +382,8 @@ $db = $db->conn();
                         var id = $("#category").find(":selected").val();
                         // console.log(id);
                         $.ajax({
-                            url: "/api/getsubcategorynames",
-                            method: "POST",
-                            data: {
-                                id: id
-                            },
+                            url: "/getsubcategorynames?id="+id,
+                            method: "GET",
                             dataType: "json",
                             success: function(data) {
                                 $("#subCategory").append(data);
@@ -400,11 +448,8 @@ $db = $db->conn();
                 var id = $(this).val();
                 // console.log(id);
                 $.ajax({
-                    url: "api/getsubcategorynames",
-                    method: "POST",
-                    data: {
-                        id: id
-                    },
+                    url: "/getsubcategorynames?id="+id,
+                    method: "GET",
                     dataType: "json",
                     success: function(data) {
                         $("#subCategory").html(data);

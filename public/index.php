@@ -23,6 +23,8 @@ use app\controllers\SubCategoryController;
 use app\controllers\CustomersController;
 use app\controllers\DeliveryBoysController;
 use app\controllers\LoginController;
+use app\controllers\ProductRequestController;
+use app\controllers\SettingsController;
 
 $app = new Application(dirname(__DIR__));
 $db = new DB();
@@ -49,6 +51,7 @@ $app->router->get("/categorylist", [CategoryController::class, "read"]);
 $app->router->post("/categorylist/delete", [CategoryController::class, "delete"]);
 // $app->router->get("/categorylist/edit", [CategoryController::class, "update"]);
 $app->router->post("/categorylist/edit", [CategoryController::class, "update"]);
+$app->router->get("/category", [CategoryController::class, "getCategories"]);
 
 
 // /subcategorylist routes
@@ -57,15 +60,21 @@ $app->router->get("/subcategorylist/add", [SubCategoryController::class, "create
 $app->router->post("/subcategorylist/add", [SubCategoryController::class, "create"]);
 $app->router->post("/subcategorylist/edit", [SubCategoryController::class, "update"]);
 $app->router->post("/subcategorylist/delete", [SubCategoryController::class, "delete"]);
+$app->router->get("/subcategory", [SubCategoryController::class, "getSubCategories"]);
+$app->router->get("/getsubcategorynames", [ProductController::class, "getSubcategoryNames"]);
+
 
 // /productlist routes
 $app->router->get("/productlist", [ProductController::class, "read"]);
+$app->router->get("/getproduct", [ProductController::class, "getproducts"]);
+$app->router->get("/getcategorynames", [ProductController::class, "getCategoryNamesWithList"]);
+$app->router->get("/getsubcategorynames", [ProductController::class, "getSubcategoryNames"]);
 $app->router->get("/productlist/add", [ProductController::class, "create"]);
 $app->router->post("/productlist/add", [ProductController::class, "create"]);
 $app->router->get("/productlist/edit", [ProductController::class, "update"]);
 $app->router->post("/productlist/edit", [ProductController::class, "update"]);
 $app->router->post("/productlist/delete", [ProductController::class, "delete"]);
-
+$app->router->get("/productlist/fooditems", [ProductController::class, "foodItems"]);
 // /api
 $app->router->get("/api/banner", [ApiController::class, "getBanner"]);
 $app->router->post("/api/product", [ApiController::class, "getProductWithList"]);
@@ -74,19 +83,14 @@ $app->router->get("/api/category", [ApiController::class, "getCategories"]);
 $app->router->get("/api/category/random", [ApiController::class, "getRandomCategories"]);
 $app->router->get("/api/subcategory", [ApiController::class, "getSubCategories"]);
 $app->router->get("/api/subcategory/random", [ApiController::class, "getRandomSubCategories"]);
-$app->router->post("/api/coupons", [ApiController::class, "getCoupons"]);
-$app->router->post("/api/area", [ApiController::class, "getArea"]);
 $app->router->post("/api/getcategory", [ApiController::class, "getCategoryWithList"]);
-$app->router->post("/api/timeslot", [ApiController::class, "getTimeslot"]);
-$app->router->post("/api/payment", [ApiController::class, "getPayment"]);
-$app->router->post("/api/codelist", [ApiController::class, "getCodelist"]);
 $app->router->post("/api/getcategorynames", [ApiController::class, "getCategoryNamesWithList"]);
 $app->router->post("/api/getsubcategorynames", [ApiController::class, "getSubcategoryNames"]);
 $app->router->get("/api/getproduct", [ApiController::class, "getProducts"]);
 $app->router->post("/api/getfood", [ApiController::class, "getFoodItems"]);
 $app->router->get("/api/getfooditems/random", [ApiController::class, "getRandomFoodItems"]);
 $app->router->post("/api/getproduct/random", [ApiController::class, "getRandomProducts"]);
-$app->router->post("/api/pushednotifies", [ApiController::class, "getNotifications"]);
+$app->router->post("/api/pushednotifies", [NotificationsController::class, "getNotifications"]);
 $app->router->post("/api/pushednotifiessite", [ApiController::class, "pushedNotifications"]);
 $app->router->post("/api/expotoken", [ApiController::class, "expoNotifications"]);
 $app->router->post("/api/cart", [ApiController::class, "cart"]);
@@ -95,6 +99,7 @@ $app->router->post("/api/cart/inc", [ApiController::class, "cartInc"]);
 $app->router->post("/api/cart/dec", [ApiController::class, "cartDec"]);
 $app->router->post("/api/cart/remove", [ApiController::class, "removeCart"]);
 $app->router->post("/api/login", [LoginController::class, "login"]);
+$app->router->post("/api/dellogin", [LoginController::class, "deliveryBoyLogin"]);
 $app->router->get("/api/useraddress", [ApiController::class, "userAddress"]);
 $app->router->post("/api/useraddress", [ApiController::class, "addUserAddress"]);
 $app->router->post("/api/useraddress/update", [ApiController::class, "updateUserAddress"]);
@@ -105,8 +110,20 @@ $app->router->get("/api/userorders", [AppController::class, "userOrders"]);
 $app->router->post("/api/cartorders", [AppController::class, "cartOrders"]);
 $app->router->post("/api/productrating", [ApiController::class, "productRating"]);
 $app->router->get("/api/getproductrating", [ApiController::class, "getProductRating"]);
+$app->router->post("/api/cancelorder", [AppController::class, "cancelOrder"]);
+$app->router->post("/api/addexpotoken", [ApiController::class, "addExpoToken"]);
+$app->router->post("/api/ratedeliverypartner", [ApiController::class, "rateDeliveryPartner"]);
+$app->router->post("/api/logout", [ApiController::class, "logout"]);
+$app->router->post("/api/feedback", [ApiController::class, "feedback"]);
+$app->router->post("/api/requestproduct", [ApiController::class, "requestProduct"]);
+$app->router->get("/api/getpincode", [ApiController::class, "getPincode"]);
+$app->router->post("/api/booking", [ApiController::class, "booking"]);
+$app->router->post("/api/cancelbooking", [ApiController::class, "cancelBooking"]);
+$app->router->get("/api/getbookings", [ApiController::class, "getBookings"]);
+$app->router->post("/api/adddelexpotoken", [ApiController::class, "addDelExpoToken"]);
 
 // /areaList
+$app->router->get("/area", [AreaController::class, "getArea"]);
 $app->router->get("/arealist", [AreaController::class, "read"]);
 $app->router->get("/arealist/add", [AreaController::class, "create"]);
 $app->router->post("/arealist/add", [AreaController::class, "create"]);
@@ -114,6 +131,7 @@ $app->router->post("/arealist/edit", [AreaController::class, "edit"]);
 $app->router->post("/arealist/delete", [AreaController::class, "delete"]);
 
 // /timeslots
+$app->router->get("/timeslot", [TimeSlotsController::class, "getTimeslot"]);
 $app->router->get("/timeslots", [TimeSlotsController::class, "read"]);
 $app->router->get("/timeslots/add", [TimeSlotsController::class, "create"]);
 $app->router->post("/timeslots/edit", [TimeSlotsController::class, "edit"]);
@@ -121,6 +139,7 @@ $app->router->post("/timeslots/add", [TimeSlotsController::class, "create"]);
 $app->router->post("/timeslots/delete", [TimeSlotsController::class, "delete"]);
 
 // /coupon
+$app->router->get("/coupons", [CouponController::class, "getCoupons"]);
 $app->router->get("/couponlist", [CouponController::class, "read"]);
 $app->router->get("/couponlist/add", [CouponController::class, "create"]);
 $app->router->post("/couponlist/add", [CouponController::class, "create"]);
@@ -134,6 +153,7 @@ $app->router->post("/notifications/delete", [NotificationsController::class, "de
 $app->router->post("/notifications", [NotificationsController::class, "push"]);
 
 // /countrycode
+$app->router->get("/codelist", [CountryCodeController::class, "getCodelist"]);
 $app->router->get("/countrycode", [CountryCodeController::class, "read"]);
 $app->router->get("/countrycode/add", [CountryCodeController::class, "create"]);
 $app->router->post("/countrycode/add", [CountryCodeController::class, "create"]);
@@ -146,6 +166,7 @@ $app->router->get("/orders/pending", [OrdersController::class, "readPending"]);
 $app->router->get("/orders/export", [OrdersController::class, 'exportOrders']);
 
 // /paymentlist
+$app->router->get("/payment", [PaymentController::class, "getPayment"]);
 $app->router->get("/paymentlist", [PaymentController::class, "read"]);
 $app->router->post("/paymentlist/edit", [PaymentController::class, "update"]);
 
@@ -153,6 +174,7 @@ $app->router->post("/paymentlist/edit", [PaymentController::class, "update"]);
 $app->router->post("/app/assigndeliveryboy", [AppController::class, "assignDeliveryBoy"]);
 $app->router->post("/app/riderres", [AppController::class, "deliveryBoyNotiRes"]);
 $app->router->post("/app/assignedorders", [AppController::class, "assignedOrders"]);
+$app->router->get("/app/orders", [AppController::class, "pendingOrders"]);
 
 // /customers
 $app->router->get("/customers", [CustomersController::class, 'readCustomers']);
@@ -164,5 +186,14 @@ $app->router->post("/deliveryboys/add", [DeliveryBoysController::class, "create"
 $app->router->get("/deliveryboys", [DeliveryBoysController::class, "read"]);
 $app->router->post("/deliveryboys/delete", [DeliveryBoysController::class, "delete"]);
 $app->router->post("/deliveryboys/update", [DeliveryBoysController::class, "update"]);
+
+// /productrequest
+$app->router->get("/productrequest", [ProductRequestController::class, "read"]);
+
+// /bookings
+$app->router->get("/bookings", [ProductRequestController::class, "readBookings"]);
+
+// /settings
+$app->router->get("/settings", [SettingsController::class, "read"]);
 
 $app->run();

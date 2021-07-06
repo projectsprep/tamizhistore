@@ -139,7 +139,7 @@
                 <div class="modal-footer">
                     <input type="hidden" name="id" id="paymentid">
                     <input type="submit" name="submit" class="btn btn-primary waves-effect waves-light">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal" aria-hidden="true">Close</button>
                 </div>
             </form>
         </div>
@@ -210,8 +210,8 @@
                 $("#paymentid").val(paymentid);
 
                 $.ajax({
-                    url: "/api/payment?id=" + paymentid,
-                    method: "POST",
+                    url: "/payment?id=" + paymentid,
+                    method: "GET",
                     data: {},
                     dataType: "json",
                     success: function(data) {
@@ -276,22 +276,6 @@
                             swal("Your Timeslot is safe!");
                         }
                     })
-            })
-
-            $("#category").on("change", function() {
-                var id = $(this).val();
-                // console.log(id);
-                $.ajax({
-                    url: "api/getsubcategorynames",
-                    method: "POST",
-                    data: {
-                        id: id
-                    },
-                    dataType: "json",
-                    success: function(data) {
-                        $("#subCategory").html(data);
-                    },
-                })
             })
 
         }

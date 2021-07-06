@@ -26,26 +26,102 @@ class ProductController extends Controller
         $this->app = new Application(dirname(__DIR__));
     }
 
+    public function foodItems(){
+        $json = $this->db->getFoodItems();
+        try {
+            if ($json) {
+                return $this->render("products/foodItems", $json);
+            } else {
+                throw new Exception("No Food Items found. Try adding a new item into list!");
+            }
+        } catch (Exception $e) {
+            $msg = urlencode($e->getMessage());
+            return header("Location: /?msg=$msg");
+        }
+    }
+
+    public function getSubcategoryNames()
+    {
+        if (isset($_GET['id'])) {
+            return $this->db->getSubcategoryNames("subcategory", $_GET['id']);
+        } else {
+            http_response_code(400);
+            return json_encode(array("Message" => "Invalid ID"));
+        }
+    }
+
+    public function getCategoryNamesWithList()
+    {
+        return $this->db->getCategoryNames("category");
+    }
+
+    public function getProducts()
+    {
+        try {
+            if (isset($_GET['id'])) {
+                if ($_GET['id'] !== "") {
+                    $result = $this->db->getProductById("product", $_GET['id']);
+                    if($result){
+                        return $result;
+                    }else{
+                        return json_encode(array("result"=>false));
+                    }
+                } else {
+                    throw new Exception("Invalid ID");
+                }
+            }else if(isset($_GET['cid'])){
+                if($_GET['cid'] !== ""){
+                    $result = $this->db->readByCid("product", $_GET['cid']);
+                    if($result){
+                        return json_encode(array("result"=>true, "data"=>$result));
+                    }else{
+                        return json_encode(array("result"=>false));
+                    }
+                }else{
+                    throw new Exception("Invalid category ID");
+                }
+            }else if(isset($_GET['sid'])){
+                if($_GET['sid'] !== ""){
+                    $result = $this->db->readBySid("product", $_GET['sid']);
+                    if($result){
+                        return json_encode(array("result"=>true, "data"=>$result));
+                    }else{
+                        return json_encode(array("result"=>false));
+                    }
+                }else{
+                    throw new Exception("Invalid subcategory ID");
+                }
+            }else {
+                return $this->db->read('product');
+            }
+        } catch (Exception $e) {
+            http_response_code(400);
+            return json_encode(array("result"=>false, "message"=>$e->getMessage()));
+        }
+    }
+
     public function create()
     {
         if ($this->app->request->getMethod() === "get") {
             return $this->render("products/addProduct");
         } else if ($this->app->request->getMethod() === "post") {
             try {
-                if (isset($_POST["productName"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["outofstock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["range"]) && isset($_POST["price"]) && isset($_POST["discount"]) && isset($_FILES['productimage'])) {
-                    $imageResult = $this->validateImage();
-                    if ($imageResult == true) {
-                        if ($this->db->create("product", $_POST["productName"], $this->imageDest, $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["unit"], $_POST["price"], $_POST["discount"], $_POST['popular'])) {
-                            $msg = urlencode("New product created successfully!");
-                            return header("Location: /productlist?msg=$msg");
+                if (isset($_POST["productName"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["outofstock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["unit"]) && isset($_POST["price"]) && isset($_POST["discount"]) && isset($_POST["pincode"]) && isset($_FILES['productimage'])) {
+                        $imageResult = $this->validateImage();
+                        if ($imageResult == true) {
+                            $minTime = $_POST['minTime'] === "" || $_POST['minTime'] == "00:00" ? "" : $_POST['minTime'];
+                            $maxTime = $_POST['maxTime'] === "" || $_POST['maxTime'] == "00:00" ? "" : $_POST['maxTime'];
+                            if ($this->db->create("product", $_POST["productName"], $this->imageDest, $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["unit"], $_POST["price"], $_POST["discount"], $_POST['popular'], $_POST['pincode'], $minTime, $maxTime)) {
+                                $msg = urlencode("New product created successfully!");
+                                return header("Location: /productlist?msg=$msg");
+                            } else {
+                                throw new Exception("Unable to add a new product!");
+                            }
                         } else {
-                            throw new Exception("Unable to add a new product!");
+                            throw new Exception($imageResult);
                         }
-                    } else {
-                        throw new Exception($imageResult);
-                    }
                 } else {
-                    throw new Exception("All input fields are required!");
+                    throw new Exception("Missing Required input fields!");
                 }
             } catch (Exception $e) {
                 $msg = urlencode($e->getMessage());
@@ -73,13 +149,15 @@ class ProductController extends Controller
     {
         try {
             if ($this->app->request->getMethod() === "post") {
-                if (isset($_POST["id"]) && isset($_POST["productName"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["outofstock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["range"]) && isset($_POST["price"]) && isset($_POST["discount"])) {
+                if (isset($_POST["id"]) && isset($_POST["productName"]) && isset($_POST["pincode"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["outofstock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["unit"]) && isset($_POST["price"]) && isset($_POST["discount"])) {
                     $validateImage = NULL;
                     if (isset($_FILES['productimage']['name']) && $_FILES['productimage']['name'] != "") {
                         $validateImage = $this->validateImage();
                     }
                     if ($validateImage === true || $validateImage == NULL) {
-                        if ($this->db->update("product", $_POST['id'], $_POST["productName"], $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["range"], $_POST["price"], $_POST["discount"], $_POST['popular'], $validateImage == true ? $this->imageDest : "")) {
+                        $minTime = $_POST['minTime'] === "" || $_POST['minTime'] == "00:00" ? "" : $_POST['minTime'];
+                        $maxTime = $_POST['maxTime'] === "" || $_POST['maxTime'] == "00:00" ? "" : $_POST['maxTime'];
+                        if ($this->db->update("product", $_POST['id'], $_POST["productName"], $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["unit"], $_POST["price"], $_POST["discount"], $_POST['popular'], $_POST['pincode'], $minTime, $maxTime, $validateImage == true ? $this->imageDest : "")) {
                             $msg = urlencode("Product updated successfully!");
                             return header("Location: /productlist?msg=$msg");
                         } else {

@@ -7,7 +7,7 @@ use app\models\DB;
 class OrdersModel
 {
     private $conn = null;
-    private $table = "orders";
+    private $table = "temporders";
 
     public function __construct()
     {
@@ -17,7 +17,7 @@ class OrdersModel
     public function read()
     {
         $table = $this->conn->real_escape_string($this->table);
-        $query = "SELECT o.*, r.name rider, a.area `address` FROM $this->table o LEFT join rider r on o.rid=r.id LEFT JOIN address a on o.address_id=a.id";
+        $query = "SELECT o.*, p.pname, p.pprice, r.name rider FROM $this->table o LEFT join rider r on o.riderid=r.id LEFT JOIN product p on p.id=o.productid order by orderdate desc";
         $result = $this->conn->query($query);
         $array = [];
         if ($result->num_rows > 0) {
@@ -34,7 +34,7 @@ class OrdersModel
     public function readPending()
     {
         $table = $this->conn->real_escape_string($this->table);
-        $query = "SELECT o.*, r.name rider, a.area `address` FROM $table o LEFT join rider r on o.rid=r.id LEFT JOIN address a on o.address_id=a.id where o.status = 'pending'";
+        $query = "SELECT o.*, p.pname, p.pprice, r.name rider FROM $this->table o LEFT join rider r on o.riderid=r.id LEFT JOIN product p on p.id=o.productid where orderstatus='pending' order by orderdate desc";
         $result = $this->conn->query($query);
         $array = [];
         if ($result->num_rows > 0) {

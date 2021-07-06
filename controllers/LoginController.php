@@ -22,8 +22,8 @@ class LoginController extends Controller{
 
     public function login(){
         $data = json_decode(file_get_contents("php://input"));
-        if(!empty($data->username) && !empty($data->phone) && !empty($data->password) && !isset($data->name)){
-            $result = $this->db->login($data->username, $data->phone, $data->password);
+        if(!empty($data->username) && !empty($data->password) && !isset($data->name)){
+            $result = $this->db->login($data->username, $data->password);
             if(gettype($result) == "array"){
                 $iss = "tamizhistore";
                 $iat = time();
@@ -45,9 +45,9 @@ class LoginController extends Controller{
                 http_response_code(401);
                 return json_encode(array("result"=>false, "message"=>$result));
             }
-        }else if(!empty($data->username) && !empty($data->phone) && !empty($data->password) && !empty($data->name)){
-            if(($data->username != "") && ($data->phone != "") && ($data->password != "") && ($data->name != "")){
-                return $this->create($data->username, $data->phone, $data->password, $data->name);
+        }else if(!empty($data->username) && !empty($data->password) && !empty($data->name)){
+            if(($data->username != "") && ($data->password != "") && ($data->name != "")){
+                return $this->create($data->username, $data->password, $data->name);
             }else{
                 http_response_code(400);
                 return json_encode(array("result"=>false, "message"=>"Invalid arguments"));
@@ -58,9 +58,9 @@ class LoginController extends Controller{
         }
     }
 
-    public function create($username, $phone, $password, $name){
-        $result = $this->db->create($username, $password, $phone, $name);
-        if($result){
+    public function create($username, $password, $name){
+        $result = $this->db->create($username, $password, $name);
+        if(gettype($result) === "array"){
             $iss = "tamizhistore";
             $iat = time();
             $nbf = $iat;
@@ -79,7 +79,39 @@ class LoginController extends Controller{
             return json_encode(array("result"=>true, "token"=>$jwt));
         }else{
             http_response_code(401);
-            return json_encode(array("result"=>false, "message"=>"Unable to create a new account!"));
+            return json_encode(array("result"=>false, "message"=>"$result"));
         }
     }
+
+    public function deliveryBoyLogin(){
+        $data = json_decode(file_get_contents("php://input"));
+        if(!empty($data->username) && !empty($data->password) && !isset($data->name)){
+            $result = $this->db->riderLogin($data->username, $data->password);
+            if(gettype($result) == "array"){
+                $iss = "tamizhistore";
+                $iat = time();
+                $nbf = $iat;
+                $aud = "users";
+
+                $secretKey = "tamizhiowt";
+
+                $payloadInfo = array(
+                    "iss"=>$iss,
+                    "iat"=>$iat,
+                    "nbf"=>$nbf,
+                    "aud"=>$aud,
+                    "data"=>$result
+                );
+                $jwt = JWT::encode($payloadInfo, $secretKey, 'HS256');
+                return json_encode(array("result"=>true, "token"=>$jwt));
+            }else if(gettype($result) == "string"){
+                http_response_code(401);
+                return json_encode(array("result"=>false, "message"=>$result));
+            }
+        }else{
+            http_response_code(400);
+            return json_encode(array("result"=>false, "message"=>"Invalid arguments"));
+        }
+    }
+
 }

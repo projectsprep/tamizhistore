@@ -38,6 +38,24 @@ class CountryCodeController extends Controller
         }
     }
 
+    public function getCodelist()
+    {
+        try {
+            if (isset($_GET['id'])) {
+                if ($_GET['id'] !== "") {
+                    return $this->db->getCodeById("code", $_GET['id']);
+                } else {
+                    throw new Exception("Invalid ID");
+                }
+            } else {
+                return $this->db->read("code");
+            }
+        } catch (Exception $e) {
+            http_response_code(400);
+            return json_encode($e->getMessage());
+        }
+    }
+
     public function create()
     {
         if ($this->app->request->getMethod() === "get") {

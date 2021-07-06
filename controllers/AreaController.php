@@ -37,6 +37,24 @@ class AreaController extends Controller
         }
     }
 
+    public function getArea()
+    {
+        try {
+            if (isset($_GET['id'])) {
+                if ($_GET['id'] !== "") {
+                    return $this->db->getAreaById("area_db", $_GET['id']);
+                } else {
+                    throw new Exception("Invalid ID");
+                }
+            } else {
+                return $this->db->read("area_db");
+            }
+        } catch (Exception $e) {
+            http_response_code(400);
+            return json_encode($e->getMessage());
+        }
+    }
+
     public function create()
     {
         if ($this->app->request->getMethod() === "get") {

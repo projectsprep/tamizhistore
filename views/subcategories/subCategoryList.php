@@ -120,7 +120,7 @@ $conn = $db->conn();
                 <div class="modal-footer">
                     <input type="hidden" name="id" id="subcategoryid">
                     <input type="submit" name="submit" class="btn btn-primary waves-effect waves-light">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal" aria-hidden="true">Close</button>
                 </div>
             </form>
         </div>
@@ -199,11 +199,8 @@ $conn = $db->conn();
                 $("#subcategoryid").val(subcategoryid);
 
                 $.ajax({
-                    url: "/api/subcategory",
-                    method: "POST",
-                    data: {
-                        id: subcategoryid
-                    },
+                    url: "/subcategory?id="+subcategoryid,
+                    method: "GET",
                     dataType: "json",
                     success: function(data) {
                         $("#editModal").modal("show");
@@ -216,12 +213,11 @@ $conn = $db->conn();
             })
 
             $.ajax({
-                url: "/api/getcategorynames",
-                method: "POST",
+                url: "/getcategorynames",
+                method: "GET",
                 dataType: "json",
                 success: function(data) {
                     $("#category").append(data);
-                    console.log(data);
                 },
             })
 

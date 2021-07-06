@@ -114,7 +114,7 @@ $conn = $db->conn();
                 <div class="modal-footer">
                     <input type="hidden" name="id" id="categoryid">
                     <input type="submit" name="submit" class="btn btn-primary waves-effect waves-light">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal" aria-hidden="true">Close</button>
                 </div>
             </form>
         </div>
@@ -187,9 +187,8 @@ $conn = $db->conn();
                 $("#categoryid").val(categoryid);
 
                 $.ajax({
-                    url: "/api/category?id=" + categoryid,
-                    method: "POST",
-                    data: {},
+                    url: "/category?id=" + categoryid,
+                    method: "GET",
                     dataType: "json",
                     success: function(data) {
                         $("#editModal").modal("show");

@@ -2,23 +2,25 @@
     "packages": [
         {
             "name": "alymosul/exponent-server-sdk-php",
-            "version": "1.2.0",
-            "version_normalized": "1.2.0.0",
+            "version": "1.3.0",
+            "version_normalized": "1.3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Alymosul/exponent-server-sdk-php.git",
-                "reference": "e4e89b289ec37dc92e940d91d8f3eb33d7ffc2b2"
+                "reference": "81e263c5f0b306f19da4acea7aa217b796626fff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Alymosul/exponent-server-sdk-php/zipball/e4e89b289ec37dc92e940d91d8f3eb33d7ffc2b2",
-                "reference": "e4e89b289ec37dc92e940d91d8f3eb33d7ffc2b2",
+                "url": "https://api.github.com/repos/Alymosul/exponent-server-sdk-php/zipball/81e263c5f0b306f19da4acea7aa217b796626fff",
+                "reference": "81e263c5f0b306f19da4acea7aa217b796626fff",
                 "shasum": ""
             },
             "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
                 "php": ">=7.0"
             },
-            "time": "2019-12-11T11:19:40+00:00",
+            "time": "2021-06-22T13:15:22+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -45,23 +47,23 @@
             ],
             "support": {
                 "issues": "https://github.com/Alymosul/exponent-server-sdk-php/issues",
-                "source": "https://github.com/Alymosul/exponent-server-sdk-php/tree/master"
+                "source": "https://github.com/Alymosul/exponent-server-sdk-php/tree/1.3.0"
             },
             "install-path": "../alymosul/exponent-server-sdk-php"
         },
         {
             "name": "firebase/php-jwt",
-            "version": "v5.3.0",
-            "version_normalized": "5.3.0.0",
+            "version": "v5.4.0",
+            "version_normalized": "5.4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "3c2d70f2e64e2922345e89f2ceae47d2463faae1"
+                "reference": "d2113d9b2e0e349796e72d2a63cf9319100382d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/3c2d70f2e64e2922345e89f2ceae47d2463faae1",
-                "reference": "3c2d70f2e64e2922345e89f2ceae47d2463faae1",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/d2113d9b2e0e349796e72d2a63cf9319100382d2",
+                "reference": "d2113d9b2e0e349796e72d2a63cf9319100382d2",
                 "shasum": ""
             },
             "require": {
@@ -70,7 +72,10 @@
             "require-dev": {
                 "phpunit/phpunit": ">=4.8 <=9"
             },
-            "time": "2021-05-20T17:37:02+00:00",
+            "suggest": {
+                "paragonie/sodium_compat": "Support EdDSA (Ed25519) signatures when libsodium is not present"
+            },
+            "time": "2021-06-23T19:00:23+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -102,7 +107,7 @@
             ],
             "support": {
                 "issues": "https://github.com/firebase/php-jwt/issues",
-                "source": "https://github.com/firebase/php-jwt/tree/v5.3.0"
+                "source": "https://github.com/firebase/php-jwt/tree/v5.4.0"
             },
             "install-path": "../firebase/php-jwt"
         }

@@ -71,6 +71,33 @@ class RatingModel{
         }
     }
 
+    public function riderRating($rid, $uid, $rating){
+        $rid = $this->conn->real_escape_string($rid);
+        $uid = $this->conn->real_escape_string($uid);
+        $rating = $this->conn->real_escape_string($rating);
+
+        $query = "SELECT * FROM riderrating where uid=$uid and rid=$rid";
+        $result = $this->conn->query($query);
+
+        if($result->num_rows > 0){
+            $query = "UPDATE riderrating SET rating=$rating WHERE uid=$uid and rid=$rid";
+            $result = $this->conn->query($query);
+            if($this->conn->affected_rows > 0){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            $query = "INSERT INTO riderrating SET uid=$uid, rid=$rid, rating=$rating";
+            $result = $this->conn->query($query);
+            if($this->conn->affected_rows > 0){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+
     public function __destruct()
     {
         $this->conn->close();

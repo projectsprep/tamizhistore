@@ -7,6 +7,7 @@ use app\models\DB;
 class LoginModel{
     private $conn = null;
     private $table = 'users';
+    private $rider = "rider";
 
     public function __construct()
     {
@@ -19,18 +20,17 @@ class LoginModel{
         $this->conn->close();
     }
 
-    public function login($username, $phone, $password){
+    public function login($username, $password){
         $username = $this->conn->real_escape_string($username);
-        $phone = $this->conn->real_escape_string($phone);
         $password = $this->conn->real_escape_string($password);
 
-        $query = "SELECT * FROM $this->table WHERE username='$username' and phone=$phone";
+        $query = "SELECT * FROM $this->table WHERE username='$username'";
         $result = $this->conn->query($query);
         if($result->num_rows > 0){
             $row = $result->fetch_assoc();
             $pass = password_verify($password, $row['password']);
             if(password_verify($password, $row['password'])){
-                return array("id"=>$row['id'], "name"=>$row['name'], "username"=>$row['username'], "phone"=>$row['phone']);
+                return array("id"=>$row['id'], "name"=>$row['name'], "username"=>$row['username']);
             }else{
                 return "Invalid password!";
             }
@@ -39,37 +39,42 @@ class LoginModel{
         }
     }
 
-    public function create($username, $password, $phone, $name){
+    public function create($username, $password, $name){
         $username = $this->conn->real_escape_string($username);
-        $phone = $this->conn->real_escape_string($phone);
         $password = $this->conn->real_escape_string($password);
         $name = $this->conn->real_escape_string($name);
 
         $password = password_hash($password, PASSWORD_DEFAULT);
 
-        $query = "INSERT INTO $this->table SET username='$username', `password`='$password', `name`='$name', phone=$phone";
+        $query = "SELECT username FROM $this->table WHERE username='$username'";
         $result = $this->conn->query($query);
-        if($this->conn->affected_rows > 0){
+
+        if($result->num_rows > 0){
+            return "Username does not exist! Please try another username!";
+        }else{
+            $query = "INSERT INTO $this->table SET username='$username', `password`='$password', `name`='$name'";
+            $result = $this->conn->query($query);
+            if($this->conn->affected_rows > 0){
             $query = "SELECT * FROM $this->table where username='$username'";
             $result = $this->conn->query($query);
             if($result->num_rows > 0){
                 $row = $result->fetch_assoc();
-                return array("id"=>$row['id'], "name"=>$row['name'], "username"=>$row['username'], "phone"=>$row['phone']);
+                    return array("id"=>$row['id'], "name"=>$row['name'], "username"=>$row['username']);
+                }
+            }else{
+                return "Unable to create new account!";
             }
-        }else{
-            return false;
         }
 
     }
 
-    public function update($id, $username, $name, $password, $phone){
+    public function update($id, $username, $name, $password){
         $id = $this->conn->real_escape_string($id);
         $username = $this->conn->real_escape_string($username);
         $name = $this->conn->real_escape_string($name);
         $password = $this->conn->real_escape_string($password);
-        $phone = $this->conn->real_escape_string($phone);
 
-        $query = "UPDATE $this->table SET username='$username', name='$name', password='$password', phone=$phone where id=$id";
+        $query = "UPDATE $this->table SET username='$username', name='$name', password='$password' where id=$id";
         $this->conn->query($query);
 
         if($this->conn->affected_rows > 0){
@@ -77,6 +82,25 @@ class LoginModel{
         }else{
             return false;
         }
-
     }
+
+    public function riderLogin($username, $password){
+        $username = $this->conn->real_escape_string($username);
+        $password = $this->conn->real_escape_string($password);
+
+        $query = "SELECT * FROM $this->rider WHERE username='$username'";
+        $result = $this->conn->query($query);
+        if($result->num_rows > 0){
+            $row = $result->fetch_assoc();
+            $pass = password_verify($password, $row['password']);
+            if(password_verify($password, $row['password'])){
+                return array("id"=>$row['id'], "name"=>$row['name'], "username"=>$row['username']);
+            }else{
+                return "Invalid password!";
+            }
+        }else{
+            return "Username not found!";
+        }
+    }
+
 }

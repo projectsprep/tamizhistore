@@ -17,8 +17,6 @@ $array = json_decode($json, true);
     <meta charset="utf-8" />
     <title><?= $uriTitle ?> - Admin & <?= $uriTitle ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" /> -->
-    <!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css"> -->
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.0/css/buttons.dataTables.min.css">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -129,12 +127,11 @@ $array = json_decode($json, true);
                                 <source src="/assets/notification.mp3" type="audio/mp3">
                                 Your browser does not support audio element
                             </audio>
-                            <!-- <audio src="/assets/notification.mp3"></audio> -->
                             <div data-simplebar style="max-height: 230px;">
                                 <div id="notify"></div>
                             </div>
                             <div class="p-2 border-top d-grid">
-                                <a class="btn btn-sm btn-link font-size-14 text-center" href="/notifications">
+                                <a class="btn btn-sm btn-link font-size-14 text-center" href="/orders">
                                     <i class="mdi mdi-arrow-right-circle me-1"></i> <span key="t-view-more">View More..</span>
                                 </a>
                             </div>
@@ -200,9 +197,15 @@ $array = json_decode($json, true);
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
                             <li><a href="/productlist/add" key="t-products">Add Product</a></li>
-                            <li><a href="/productlist/import" key="t-product-detail">Import Product</a></li>
                             <li><a href="/productlist" key="t-orders">Product List</a></li>
                         </ul>
+                    </li>
+
+                    <li>
+                        <a href="/productlist/fooditems" class="waves-effect">
+                            <i class="bx bx-food-menu"></i>
+                            <span key="t-chat">Food Items List</span>
+                        </a>
                     </li>
 
                     <li>
@@ -213,6 +216,26 @@ $array = json_decode($json, true);
                         <ul class="sub-menu" aria-expanded="false">
                             <li><a href="/couponlist/add" key="t-products">Add Coupon</a></li>
                             <li><a href="/couponlist" key="t-product-detail">Coupon List</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="bx bx-book-bookmark"></i>
+                            <span key="t-ecommerce"><span>Bookings</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="/bookings" key="t-orders">Bookings List</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="bx bxs-widget"></i>
+                            <span key="t-ecommerce"><span>Product Requests</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="/productrequest" key="t-orders">Product Request List</a></li>
                         </ul>
                     </li>
 
@@ -319,6 +342,7 @@ $array = json_decode($json, true);
 <script src="/assets/js/pages/dashboard.init.js"></script>
 <script src="/assets/js/app.js"></script>
 <script src="/assets/libs/dropzone/min/dropzone.min.js"></script>
+
 <script>
     $(document).ready(function() {
         $(".alert").delay(2000).slideUp(300, function() {
@@ -349,14 +373,11 @@ $array = json_decode($json, true);
                         }
                         $(".badge").html(data.unseenNotification);
                     }
-                },
-                // error: function(xhr, ajaxOptions, thrownError) {
-                //     alert(data);
-                // },
+                }
             })
         }
 
-        loadUnseenNotification()
+        loadUnseenNotification();
         $(".dropdown.d-inline-block.notifydropdown").on('shown.bs.dropdown', function() {
             $(".badge").html('');
             loadUnseenNotification("yes");

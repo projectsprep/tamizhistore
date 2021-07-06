@@ -27,8 +27,8 @@
                                     <input type="number" class="form-control" id="formrow-firstname-input" name="mobile" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="formrow-firstname-input" class="form-label">DeliveryBoy Email</label>
-                                    <input type="email" class="form-control" id="formrow-firstname-input" name="email" required>
+                                    <label for="formrow-firstname-input" class="form-label">DeliveryBoy username</label>
+                                    <input type="text" class="form-control" id="formrow-firstname-input" name="username" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="formrow-firstname-input" class="form-label">DeliveryBoy Address</label>

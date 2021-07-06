@@ -117,7 +117,7 @@
                 <div class="modal-footer">
                     <input type="hidden" name="id" id="areaid">
                     <input type="submit" name="submit" class="btn btn-primary waves-effect waves-light">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal" aria-hidden="true">Close</button>
                 </div>
             </form>
         </div>
@@ -187,9 +187,8 @@
                 $("#areaid").val(areaid);
 
                 $.ajax({
-                    url: "/api/area?id=" + areaid,
-                    method: "POST",
-                    data: {},
+                    url: "/area?id=" + areaid,
+                    method: "GET",
                     dataType: "json",
                     success: function(data) {
                         $("#editArea").modal("show");
@@ -250,22 +249,6 @@
                             swal("Your Arealist is safe!");
                         }
                     })
-            })
-
-            $("#category").on("change", function() {
-                var id = $(this).val();
-                // console.log(id);
-                $.ajax({
-                    url: "api/getsubcategorynames",
-                    method: "POST",
-                    data: {
-                        id: id
-                    },
-                    dataType: "json",
-                    success: function(data) {
-                        $("#subCategory").html(data);
-                    },
-                })
             })
 
         }

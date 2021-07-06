@@ -40,6 +40,11 @@ class CartModel{
     public function add($uid, $pid){
         $uid = $this->conn->real_escape_string($uid);
         $pid = $this->conn->real_escape_string($pid);
+        $query = "SELECT * FROM $this->table where userid=$uid and productid=$pid";
+        $result = $this->conn->query($query);
+        if($result->num_rows > 0){
+            return "Cart already exists!";
+        }
         $query = "INSERT INTO $this->table SET userid=$uid, productid=$pid";
         $result = $this->conn->query($query);
         if($this->conn->affected_rows > 0){

@@ -37,7 +37,6 @@ $conn = $db->conn();
                                             <th scope="col" style="width: 70px;">Sl.no</th>
                                             <th scope="col">Name</th>
                                             <th scope="col">Username</th>
-                                            <th scope="col">Mobile</th>
                                             <th scope="col">Register Date</th>
                                         </tr>
                                     </thead>
@@ -61,9 +60,6 @@ $conn = $db->conn();
                                                 </td>
                                                 <td align="center">
                                                     <h5 class="font-size-14 mb-1"><?= $username; ?></h5>
-                                                </td>
-                                                <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $phone; ?></h5>
                                                 </td>
                                                 <td align="center">
                                                     <h5 class="font-size-14 mb-1"><?= $created_at; ?></h5>

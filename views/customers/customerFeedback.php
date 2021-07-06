@@ -37,7 +37,6 @@ $conn = $db->conn();
                                             <th scope="col" style="width: 70px;">Sl.no</th>
                                             <th scope="col">Username</th>
                                             <th scope="col">Message</th>
-                                            <th scope="col">Rating</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -60,9 +59,6 @@ $conn = $db->conn();
                                                 </td>
                                                 <td align="center">
                                                     <h5 class="font-size-14 mb-1"><?= $msg; ?></h5>
-                                                </td>
-                                                <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $rate; ?></h5>
                                                 </td>
                                             </tr>
                                         <?php

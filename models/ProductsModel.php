@@ -18,15 +18,6 @@ class ProductsModel
         $this->ratingDB = new RatingModel();
     }
 
-    public function userRating($pid){
-        $userRating = $this->ratingDB->userProductRating(ApiController::$decodedData->data->id, $pid);
-        if($userRating){
-            return $userRating;
-        }else{
-            return 0;
-        }
-    }
-
     public function getProductRating($pid){
         $pid = $this->conn->real_escape_string($pid);
 
@@ -52,9 +43,6 @@ class ProductsModel
         $array = [];
         if($result->num_rows > 0){
             while($row = $result->fetch_assoc()){
-                $rating = $this->getProductRating($row['id']);
-                $userRating = $this->userRating($row['id']);
-                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating));
                 array_push($array, $row);
             }
             return $array;
@@ -63,14 +51,11 @@ class ProductsModel
         }
     }
     public function getFoodItems(){
-        $query = "SELECT * FROM product where cid = 3";
+        $query = "SELECT p.*, s.name FROM product p inner join subcategory s on s.id=p.sid where cid = 3";
         $result = $this->conn->query($query);
         $array = [];
         if($result->num_rows > 0){
             while($row = $result->fetch_assoc()){
-                $rating = $this->getProductRating($row['id']);
-                $userRating = $this->userRating($row['id']);
-                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating));
                 array_push($array, $row);
             }
             return json_encode($array);
@@ -83,15 +68,12 @@ class ProductsModel
         $table = $this->conn->real_escape_string($table);
         $cid = $this->conn->real_escape_string($cid);
 
-        $query = "select p.id, p.pname, p.pimg, p.sname, category.catname, subcategory.name, p.pgms, p.pprice, p.stock, p.status, p.psdesc from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id WHERE cid=$cid order by id desc";
+        $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id WHERE cid=$cid order by id desc";
         $result = $this->conn->query($query);
         $array = [];
 
         if($result->num_rows > 0){
             while($row = $result->fetch_assoc()){
-                $rating = $this->getProductRating($row['id']);
-                $userRating = $this->userRating($row['id']);
-                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating));
                 array_push($array, $row);
             }
             shuffle($array);
@@ -105,15 +87,12 @@ class ProductsModel
         $table = $this->conn->real_escape_string($table);
         $sid = $this->conn->real_escape_string($sid);
 
-        $query = "select p.id, p.pname, p.pimg, p.sname, category.catname, subcategory.name, p.pgms, p.pprice, p.stock, p.status, p.psdesc from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id WHERE sid=$sid order by id desc";
+        $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id WHERE sid=$sid order by id desc";
         $result = $this->conn->query($query);
         $array = [];
 
         if($result->num_rows > 0){
             while($row = $result->fetch_assoc()){
-                $rating = $this->getProductRating($row['id']);
-                $userRating = $this->userRating($row['id']);
-                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating));
                 array_push($array, $row);
             }
             shuffle($array);
@@ -127,14 +106,11 @@ class ProductsModel
     {
         $table = $this->conn->real_escape_string($table);
 
-        $query = "select p.id, p.pname, p.pimg, p.sname, category.catname, subcategory.name, p.pgms, p.pprice, p.stock, p.status, p.psdesc from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id order by id desc";
+        $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id order by id desc";
         $result = $this->conn->query($query);
         $array = [];
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                $rating = $this->getProductRating($row['id']);
-                $userRating = $this->userRating($row['id']);
-                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating));
                 array_push($array, $row);
             }
             $array = mb_convert_encoding($array, 'UTF-8', 'UTF-8');
@@ -149,14 +125,11 @@ class ProductsModel
         $table = $this->conn->real_escape_string($table);
         $id = htmlspecialchars($id);
 
-        $query = "select p.id, p.pname, p.pimg, p.sname, category.catname, subcategory.name, p.pgms, p.pprice, p.stock, p.status, category.id cid, subcategory.id sid, subcategory.name subname, p.popular, p.psdesc, p.discount from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id where p.id = $id";
+        $query = "select p.*, category.catname, subcategory.name, category.id cid, subcategory.id sid, subcategory.name subname from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id where p.id = $id";
         $array = [];
         $result = $this->conn->query($query);
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                $rating = $this->getProductRating($row['id']);
-                $userRating = $this->userRating($row['id']);
-                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating));
                 array_push($array, $row);
             }
 
@@ -166,7 +139,7 @@ class ProductsModel
         }
     }
 
-    public function create($table, $productName, $productImage, $sellerName, $category, $subCategory, $stock, $publish, $description, $unit, $price, $discount, $popular)
+    public function create($table, $productName, $productImage, $sellerName, $category, $subCategory, $stock, $publish, $description, $unit, $price, $discount, $popular, $pincode, $minTime="", $maxTime="")
     {
         $table = $this->conn->real_escape_string($table);
         $productName = $this->conn->real_escape_string($productName);
@@ -181,23 +154,31 @@ class ProductsModel
         $price = $this->conn->real_escape_string($price);
         $discount = $this->conn->real_escape_string($discount);
         $popular = $this->conn->real_escape_string($popular);
+        $pincode = $this->conn->real_escape_string($pincode);
+        $minTime = $this->conn->real_escape_string($minTime);
+        $maxTime = $this->conn->real_escape_string($maxTime);
+
+        $stock = strtolower($stock) == "no" ? 0 : 1;
+        $popular = strtolower($popular) == "yes" ? 0 : 1;
 
         $query = "INSERT INTO $table SET 
         pname='$productName',
         pimg='$productImage',
         sname='$sellerName',
-        cid='$category',
-        sid='$subCategory',
+        cid=$category,
+        sid=$subCategory,
         date=NOW(),
         psdesc='$description',
         pgms='$unit',
-        pprice='$price',
+        pprice=$price,
         status='$publish',
-        stock='$stock',
-        discount='$discount',
-        popular='$popular'
+        stock=$stock,
+        discount=$discount,
+        popular=$popular
+        " . ($pincode == "" ? '' : sprintf(", pincode=%s", $pincode)) . "
+        ". ($minTime == "" ? '' : sprintf(",minTime= '%s'", $minTime)) . "
+        " . ($maxTime == "" ? '' : sprintf(",maxTime= '%s'", $maxTime)) ."
         ";
-
         $result = $this->conn->query($query);
         if ($result) {
             return true;
@@ -220,7 +201,7 @@ class ProductsModel
         }
     }
 
-    public function update($table, $id, $productName, $sellerName, $category, $subCategory, $stock, $publish, $description, $range, $price, $discount, $popular, $image = "")
+    public function update($table, $id, $productName, $sellerName, $category, $subCategory, $stock, $publish, $description, $unit, $price, $discount, $popular, $pincode, $minTime, $maxTime, $image = "")
     {
         $table = $this->conn->real_escape_string($table);
         $id = $this->conn->real_escape_string($id);
@@ -231,16 +212,19 @@ class ProductsModel
         $stock = $this->conn->real_escape_string($stock);
         $publish = $this->conn->real_escape_string($publish);
         $description = $this->conn->real_escape_string($description);
-        $range = $this->conn->real_escape_string($range);
+        $unit = $this->conn->real_escape_string($unit);
         $price = $this->conn->real_escape_string($price);
         $discount = $this->conn->real_escape_string($discount);
         $popular = $this->conn->real_escape_string($popular);
+        $pincode = $this->conn->real_escape_string($pincode);
         $image = $this->conn->real_escape_string($image);
 
         if (isset($image) && $image != "") {
-            $query = "UPDATE $table set pname='$productName', sname='$sellerName', cid='$category', sid='$subCategory', stock='$stock', status='$publish', psdesc='$description', pgms='$range', pprice='$price', discount='$discount', popular='$popular', pimg='$image' where id=$id";
+            $query = "UPDATE $table set pname='$productName', sname='$sellerName', cid='$category', sid='$subCategory', pincode=$pincode, stock='$stock', status='$publish', psdesc='$description', pgms='$unit', pprice=$price, discount='$discount', popular='$popular', pimg='$image'". ($minTime == "" ? '' : sprintf(",minTime= '%s'", $minTime)) . "
+            " . ($maxTime == "" ? '' : sprintf(",maxTime= '%s'", $maxTime)) ." where id=$id";
         } else {
-            $query = "UPDATE $table set pname='$productName', sname='$sellerName', cid='$category', sid='$subCategory', stock='$stock', status='$publish', psdesc='$description', pgms='$range', pprice='$price', discount='$discount', popular='$popular' where id=$id";
+            $query = "UPDATE $table set pname='$productName', sname='$sellerName', cid='$category', sid='$subCategory', pincode=$pincode, stock='$stock', status='$publish', psdesc='$description', pgms='$unit', pprice=$price, discount='$discount', popular='$popular'         ". ($minTime == "" ? '' : sprintf(",minTime= '%s'", $minTime)) . "
+            " . ($maxTime == "" ? '' : sprintf(",maxTime= '%s'", $maxTime)) ." where id=$id";
         }
         $result = $this->conn->query($query);
         if ($this->conn->affected_rows > 0) {

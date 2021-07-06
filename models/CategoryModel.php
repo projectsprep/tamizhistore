@@ -40,7 +40,7 @@ class CategoryModel
 
     public function getCount()
     {
-        $tables = ['category', "subcategory", "product", "tbl_coupon", "area_db", "timeslot", "users", "feedback", "code", "rider", "noti", "rate_order", "orders"];
+        $tables = ['category', "subcategory", "product", "tbl_coupon", "area_db", "timeslot", "users", "feedback", "code", "rider", "noti", "rate_order", "temporders", "bookings", "productrequest"];
         $array = [];
         foreach ($tables as $table) {
             $query = "SELECT COUNT(id) $table FROM $table";
@@ -54,7 +54,7 @@ class CategoryModel
 
         $status = ['pending', 'cancelled'];
         foreach ($status as $stat) {
-            $query = "SELECT COUNT(id) $stat FROM orders where status='$stat'";
+            $query = "SELECT COUNT(id) $stat FROM temporders where orderstatus='$stat'";
             $result = $this->conn->query($query);
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {

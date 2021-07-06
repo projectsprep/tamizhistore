@@ -66,24 +66,13 @@ class Router
     public function renderOnlyView($view, $params = [], $msg = [])
     {
         if (!empty($params)) {
-            // if(type($params) === "array"){
-            //     $params = "Hello world";
-            // }else if(type($params) === "json"){
             $params = json_decode($params, true);
-            // $params = array_merge($params, json_decode($msg));
-            // }
         }
 
         if (!empty($msg)) {
             $msg = json_decode($msg, true);
         }
 
-
-        // foreach($params as $param){
-        //     foreach($param as $key=>$value){
-        //         $$key = $value;
-        //     }
-        // }
         ob_start();
         include_once Application::$ROOT_DIR . "/views/$view.php";
         return ob_get_clean();

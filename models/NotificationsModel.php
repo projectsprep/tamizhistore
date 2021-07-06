@@ -22,13 +22,13 @@ class NotificationsModel
         $this->conn->close();
     }
 
-    public function create($table, $categoryName, $categoryImage)
+    public function create($table, $title, $message)
     {
         $table = $this->conn->real_escape_string($table);
-        $categoryName = $this->conn->real_escape_string($categoryName);
-        $categoryImage = $this->conn->real_escape_string($categoryImage);
+        $title = $this->conn->real_escape_string($title);
+        $message = $this->conn->real_escape_string($message);
 
-        $query = "INSERT INTO $table (catname, catimg) VALUES ('$categoryName', '$categoryImage');";
+        $query = "INSERT INTO $table (title, msg) VALUES ('$title', '$message');";
         $result = $this->conn->query($query);
         if ($result) {
             return true;
@@ -127,7 +127,17 @@ class NotificationsModel
         $query = "update $table set pushed=1, duration=NOW() where id = $id";
         $result = $this->conn->query($query);
         if ($result) {
-            return true;
+            $query = "SELECT * FROM $table where id=$id";
+            $array = [];
+            $result = $this->conn->query($query);
+            if($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                    array_push($array, $row);
+                }
+                return $array;
+            }else{
+                return false;
+            }
         } else {
             return false;
         }

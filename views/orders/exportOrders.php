@@ -37,19 +37,23 @@ $conn = $db->conn();
                                             <th scope="col" style="width: 70px;">Sl.no</th>
                                             <th scope="col">Order ID</th>
                                             <th scope="col">User ID</th>
+                                            <th scope="col">Product ID</th>
                                             <th scope="col">Product Name</th>
                                             <th scope="col">Product Price</th>
                                             <th scope="col">Order Date</th>
                                             <th scope="col">Delivery Date</th>
                                             <th scope="col">Delivery Status</th>
+                                            <th scope="col">Payment Method</th>
                                             <th scope="col">Quantity</th>
                                             <th scope="col">Rider Status</th>
                                             <th scope="col">Rider Name</th>
-                                            <th scope="col">Tax</th>
-                                            <th scope="col">Address</th>
-                                            <th scope="col">Coupon</th>
-                                            <th scope="col">Coupon Amount</th>
-                                            <th scope="col">Total Amount</th>
+                                            <th scope="col">Coupon ID</th>
+                                            <th scope="col">Addressid</th>
+                                            <th scope="col">Custom address</th>
+                                            <th scope="col">Customer Phone</th>
+                                            <th scope="col">Total Products Price (Rs.)</th>
+                                            <th scope="col">Delivery Charge (Rs.)</th>
+                                            <th scope="col">Total Price (Rs.)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -71,7 +75,10 @@ $conn = $db->conn();
                                                     <h5 class="font-size-14 mb-1"><?= $oid; ?></h5>
                                                 </td>
                                                 <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $uid; ?></h5>
+                                                    <h5 class="font-size-14 mb-1"><?= $userid; ?></h5>
+                                                </td>
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $productid; ?></h5>
                                                 </td>
                                                 <td align="center">
                                                     <h5 class="font-size-14 mb-1"><?= $pname; ?></h5>
@@ -80,37 +87,49 @@ $conn = $db->conn();
                                                     <h5 class="font-size-14 mb-1"><?= $pprice; ?></h5>
                                                 </td>
                                                 <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $order_date; ?></h5>
+                                                    <h5 class="font-size-14 mb-1"><?= $orderdate; ?></h5>
                                                 </td>
                                                 <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $ddate; ?></h5>
+                                                    <h5 class="font-size-14 mb-1"><?= $deliverydate; ?></h5>
                                                 </td>
                                                 <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $status; ?></h5>
+                                                    <h5 class="font-size-14 mb-1"><?= $orderstatus; ?></h5>
                                                 </td>
                                                 <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $qty; ?></h5>
+                                                    <h5 class="font-size-14 mb-1"><?= $paymentmethod; ?></h5>
                                                 </td>
                                                 <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $r_status; ?></h5>
+                                                    <h5 class="font-size-14 mb-1"><?= $quantity; ?></h5>
+                                                </td>
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $deliverystatus; ?></h5>
                                                 </td>
                                                 <td align="center">
                                                     <h5 class="font-size-14 mb-1"><?= $rider; ?></h5>
                                                 </td>
                                                 <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $tax; ?></h5>
+                                                    <h5 class="font-size-14 mb-1"><?= $couponid; ?></h5>
                                                 </td>
-                                                <td align="center">
+                                                <!-- <td align="center">
                                                     <h5 class="font-size-14 mb-1"><?= $address; ?></h5>
+                                                </td> -->
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $addressid; ?></h5>
                                                 </td>
                                                 <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $coupon_id; ?></h5>
+                                                    <h5 class="font-size-14 mb-1"><?= $customaddress; ?></h5>
                                                 </td>
                                                 <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $cou_amt; ?></h5>
+                                                    <h5 class="font-size-14 mb-1"><?= $customerPhone; ?></h5>
                                                 </td>
                                                 <td align="center">
-                                                    <h5 class="font-size-14 mb-1"><?= $wal_amt; ?></h5>
+                                                    <h5 class="font-size-14 mb-1"><?= $totalproductprice; ?></h5>
+                                                </td>
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $deliverycharge; ?></h5>
+                                                </td>
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $totalprice; ?></h5>
                                                 </td>
                                             </tr>
                                         <?php
@@ -127,34 +146,6 @@ $conn = $db->conn();
     </div>
     <!-- End Page-content -->
 
-</div>
-
-
-<div class="modal fade hide" role="dialog" id="editModal" aria-labelledby="editModalLabel" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="/categorylist/edit" method="Post" id="editCategoryForm" enctype="multipart/form-data">
-                <div class="modal-header">
-                    <h4 class="modal-title">Edit Category</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="">Category Name</label>
-                        <input type="text" name="categoryName" id="categoryname" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="">Category Image</label>
-                        <input type="file" name="categoryimage" class="form-control">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="hidden" name="id" id="categoryid">
-                    <input type="submit" name="submit" class="btn btn-primary waves-effect waves-light">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
-                </div>
-            </form>
-        </div>
-    </div>
 </div>
 
 <style>
@@ -246,10 +237,7 @@ $conn = $db->conn();
                 success: function(data) {
                     $("#loader").hide();
                     $("#display").show();
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    alert(thrownError);
-                },
+                }
             })
         }
     )

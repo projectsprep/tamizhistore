@@ -13,7 +13,7 @@ foreach ($params as $param) {
             if (isset($_GET['msg'])) {
             ?>
                 <div class="alert alert-primary alert-dismissible fade show">
-                <?php echo $_GET['msg']; ?>
+                    <?php echo $_GET['msg']; ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <?php
@@ -61,26 +61,44 @@ foreach ($params as $param) {
                             </div>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title mb-4">Monthly Earning</h4>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <p class="text-muted">This month</p>
-                                    <h3>$34,252</h3>
-                                    <p class="text-muted"><span class="text-success me-2"> 12% <i class="mdi mdi-arrow-up"></i> </span> From previous period</p>
+                    <div class="col-md py-2">
+                        <div class="card mini-stats-wid shadow">
+                            <a href="/bookings">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <div class="media-body">
+                                            <p class="text-muted fw-medium">Bookings</p>
+                                            <h4 class="mb-0"><?= $bookings ?></h4>
+                                        </div>
 
-                                    <div class="mt-4">
-                                        <a href="#" class="btn btn-primary waves-effect waves-light btn-sm">View More <i class="mdi mdi-arrow-right ms-1"></i></a>
+                                        <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
+                                            <span class="avatar-title rounded-circle bg-primary">
+                                                <i class="bx bx-book-bookmark font-size-24"></i>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
-                                    <div class="mt-4 mt-sm-0">
-                                        <div id="radialBar-chart" class="apex-charts"></div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="card mini-stats-wid shadow">
+                            <a href="/productrequest">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <div class="media-body">
+                                            <p class="text-muted fw-medium">Product Requests</p>
+                                            <h4 class="mb-0"><?= $productrequest ?></h4>
+                                        </div>
+
+                                        <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
+                                            <span class="avatar-title rounded-circle bg-primary">
+                                                <i class="bx bxs-widget font-size-24"></i>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <p class="text-muted mb-0">We craft digital, graphic and dimensional thinking.</p>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -98,7 +116,7 @@ foreach ($params as $param) {
 
                                             <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
                                                 <span class="avatar-title">
-                                                    <i class="bx bx-list-ol font-size-24"></i>
+                                                    <i class="bx bxs-grid-alt font-size-24"></i>
                                                 </span>
                                             </div>
                                         </div>
@@ -118,7 +136,7 @@ foreach ($params as $param) {
 
                                             <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
                                                 <span class="avatar-title rounded-circle bg-primary">
-                                                    <i class="bx bx-list-ul font-size-24"></i>
+                                                    <i class="bx bxs-grid font-size-24"></i>
                                                 </span>
                                             </div>
                                         </div>
@@ -244,7 +262,7 @@ foreach ($params as $param) {
 
                                         <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
                                             <span class="avatar-title rounded-circle bg-primary">
-                                                <i class="bx bx-cart-alt font-size-24"></i>
+                                                <i class="bx bxs-flag font-size-24"></i>
                                             </span>
                                         </div>
                                     </div>
@@ -339,12 +357,12 @@ foreach ($params as $param) {
                                     <div class="media">
                                         <div class="media-body">
                                             <p class="text-muted fw-medium">Total Orders</p>
-                                            <h4 class="mb-0"><?= $orders ?></h4>
+                                            <h4 class="mb-0"><?= $temporders ?></h4>
                                         </div>
 
                                         <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
                                             <span class="avatar-title rounded-circle bg-primary">
-                                                <i class="bx bx-time-five font-size-24"></i>
+                                                <i class="bx bx-cart-alt font-size-24"></i>
                                             </span>
                                         </div>
                                     </div>
@@ -365,7 +383,7 @@ foreach ($params as $param) {
 
                                         <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
                                             <span class="avatar-title">
-                                                <i class="bx bx-list-ol font-size-24"></i>
+                                                <i class="bx bx-question-mark font-size-24"></i>
                                             </span>
                                         </div>
                                     </div>
@@ -386,7 +404,7 @@ foreach ($params as $param) {
 
                                         <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
                                             <span class="avatar-title">
-                                                <i class="bx bx-list-ol font-size-24"></i>
+                                                <i class="bx bx-window-close font-size-24"></i>
                                             </span>
                                         </div>
                                     </div>
@@ -408,7 +426,7 @@ foreach ($params as $param) {
 
                                         <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
                                             <span class="avatar-title">
-                                                <i class="bx bx-gift font-size-24"></i>
+                                                <i class="bx bx-bell font-size-24"></i>
                                             </span>
                                         </div>
                                     </div>
@@ -428,7 +446,7 @@ foreach ($params as $param) {
 
                                         <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
                                             <span class="avatar-title rounded-circle bg-primary">
-                                                <i class="bx bx-map font-size-24"></i>
+                                                <i class="bx bxs-star-half font-size-24"></i>
                                             </span>
                                         </div>
                                     </div>
@@ -448,7 +466,7 @@ foreach ($params as $param) {
 
                                         <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
                                             <span class="avatar-title">
-                                                <i class="bx bx-list-ol font-size-24"></i>
+                                                <i class="bx bx-run font-size-24"></i>
                                             </span>
                                         </div>
                                     </div>
@@ -464,7 +482,41 @@ foreach ($params as $param) {
 
 </div>
 <div class="rightbar-overlay"></div>
+<!-- <div class="modal fade" id="subscribeModal" tabindex="-1" aria-labelledby="subscribeModalLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header border-bottom-0">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="text-center mb-4">
+                                    <div class="avatar-md mx-auto mb-4">
+                                        <div class="avatar-title bg-light rounded-circle text-primary h1">
+                                            <i class="mdi mdi-email-open"></i>
+                                        </div>
+                                    </div>
 
+                                    <div class="row justify-content-center">
+                                        <div class="col-xl-10">
+                                            <h4 class="text-primary">Subscribe !</h4>
+                                            <p class="text-muted font-size-14 mb-4">Subscribe our newletter and get notification to stay update.</p>
+
+                                            <div class="input-group bg-light rounded">
+                                                <input type="email" class="form-control bg-transparent border-0" placeholder="Enter Email address" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                                
+                                                <button class="btn btn-primary" type="button" id="button-addon2">
+                                                    <i class="bx bxs-paper-plane"></i>
+                                                </button>
+                                                
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
 </body>
 
 

@@ -72,8 +72,9 @@ class DeliveryBoysModel
         $email = $this->conn->real_escape_string($email);
         $address = $this->conn->real_escape_string($address);
         $password = $this->conn->real_escape_string($password);
+        $password = password_hash($password, PASSWORD_DEFAULT);
 
-        $query = "INSERT INTO $this->table SET name='$name', mobile='$mobile', email='$email', address='$address', password='$password'";
+        $query = "INSERT INTO $this->table SET name='$name', mobile='$mobile', username='$email', address='$address', password='$password'";
         $result = $this->conn->query($query);
         if ($this->conn->affected_rows > 0) {
             return true;

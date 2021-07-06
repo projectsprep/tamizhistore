@@ -29,7 +29,6 @@
                                             <th scope="col" style="width: 70px;">Sl.no</th>
                                             <th scope="col">Title</th>
                                             <th scope="col">Message</th>
-                                            <th scope="col">Image</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -52,11 +51,6 @@
                                                 </td>
                                                 <td>
                                                     <h5 class="font-size-14 mb-1"><?= $msg; ?></h5>
-                                                </td>
-                                                <td>
-                                                    <div>
-                                                        <img src="/assets/images/<?= $img ?>" class="img-thumbnail">
-                                                    </div>
                                                 </td>
                                                 <td>
                                                     <a href="#" id="<?= $id ?>" class="text-danger deletenoti"><i class="bx bx-trash-alt"></i></a>
@@ -201,7 +195,6 @@
                     },
                     error: function(thrownError, ajaxOptions) {
                         $(".container-fluid").prepend("<div class='alert alert-danger alert-dismissible fade show'>Unable to push Notification!<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>");
-                        alert(ajaxOptions)
                     }
                 })
 

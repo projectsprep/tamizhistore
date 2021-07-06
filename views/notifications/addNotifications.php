@@ -35,13 +35,6 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-3">
-                                    <label for="image">Image</label>
-                                    <div class="fallback">
-                                        <input type="file" name="image" />
-                                    </div>
-                                </div>
-
                                 <div class="d-flex flex-wrap gap-2">
                                     <button type="submit" class="btn btn-primary waves-effect waves-light">
                                         Submit

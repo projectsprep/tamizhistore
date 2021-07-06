@@ -154,7 +154,7 @@
                 <div class="modal-footer">
                     <input type="hidden" name="id" id="couponid">
                     <input type="submit" name="submit" class="btn btn-primary waves-effect waves-light">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal" aria-hidden="true">Close</button>
                 </div>
             </form>
         </div>
@@ -225,8 +225,8 @@
                 $("#couponid").val(couponid);
 
                 $.ajax({
-                    url: "/api/coupons?id=" + couponid,
-                    method: "POST",
+                    url: "/coupons?id=" + couponid,
+                    method: "GET",
                     data: {
                         id: couponid
                     },

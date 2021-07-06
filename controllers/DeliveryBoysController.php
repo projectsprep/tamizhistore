@@ -44,8 +44,8 @@ class DeliveryBoysController extends Controller
             return $this->render("deliveryboys/addDeliveryBoys");
         } else if ($this->app->request->getMethod() === "post") {
             try {
-                if (isset($_POST['name']) && isset($_POST['mobile']) && isset($_POST['email']) && isset($_POST['address']) && isset($_POST['password'])) {
-                    if ($this->db->create($_POST['name'], $_POST['mobile'], $_POST['email'], $_POST['address'], $_POST['password'])) {
+                if (isset($_POST['name']) && isset($_POST['mobile']) && isset($_POST['username']) && isset($_POST['address']) && isset($_POST['password'])) {
+                    if ($this->db->create($_POST['name'], $_POST['mobile'], $_POST['username'], $_POST['address'], $_POST['password'])) {
                         $msg = urlencode("Added new Delivery Boy!");
                         return header("Location: /deliveryboys?msg=$msg");
                     } else {

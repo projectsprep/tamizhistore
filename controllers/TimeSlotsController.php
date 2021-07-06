@@ -24,6 +24,25 @@ class TimeSlotsController extends Controller
         $this->db = new TimeSlotsModel();
         $this->app = new Application(dirname(__DIR__));
     }
+
+    public function getTimeslot()
+    {
+        try {
+            if (isset($_GET['id'])) {
+                if ($_GET['id'] !== "") {
+                    return $this->db->getTimeslotById("timeslot", $_GET['id']);
+                } else {
+                    throw new Exception("Invalid ID");
+                }
+            } else {
+                return $this->db->read("timeslot");
+            }
+        } catch (Exception $e) {
+            http_response_code(400);
+            return json_encode($e->getMessage());
+        }
+    }
+
     public function read()
     {
         $json = $this->db->read("timeslot");

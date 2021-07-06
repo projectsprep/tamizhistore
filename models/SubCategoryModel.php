@@ -34,8 +34,7 @@ class SubCategoryModel
         if ($result) {
             return true;
         } else {
-            echo $query;
-            // return false;
+            return false;
         }
     }
 
@@ -73,6 +72,25 @@ class SubCategoryModel
         $id = $this->conn->real_escape_string($id);
 
         $query = "Select s.id, s.cat_id, s.name, s.img, category.catname from $table s inner join category on s.cat_id = category.id  where s.id=$id ORDER BY s.id DESC";
+        $result = $this->conn->query($query);
+        $array = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($array, $row);
+            }
+
+            return json_encode($array);
+        } else {
+            return false;
+        }
+    }
+
+    public function getSubCategoryByCid($table, $cid)
+    {
+        $table = $this->conn->real_escape_string($table);
+        $cid = $this->conn->real_escape_string($cid);
+
+        $query = "Select s.id, s.cat_id, s.name, s.img, category.catname from $table s inner join category on s.cat_id = category.id  where s.cat_id=$cid ORDER BY s.id DESC";
         $result = $this->conn->query($query);
         $array = [];
         if ($result->num_rows > 0) {

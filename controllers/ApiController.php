@@ -11,26 +11,21 @@ use app\models\ProductsModel;
 use app\models\CategoryModel;
 use app\models\NotificationsModel;
 use app\models\DB;
-use app\models\CouponModel;
-use app\models\AreaModel;
-use app\models\TimeSlotsModel;
-use app\models\PaymentModel;
-use app\models\CountryCodeModel;
 use app\models\SubCategoryModel;
 use app\models\CartModel;
 use app\models\UserAddressModel;
 use app\models\LoginModel;
 use app\models\RatingModel;
+use app\models\NotiTokenModel;
+use app\models\ApiProductsModel;
+use app\models\CustomersModel;
+use app\models\BookingsModel;
+use app\models\DelNotiTokenModel;
 
 use \Firebase\JWT\JWT;
 
 
 use Exception;
-
-// session_start();
-// // if (!(isset($_COOKIE['user']) && isset($_SESSION['user']))) {
-// //     header("Location: /login");
-// // }
 
 class ApiController extends Controller
 {
@@ -38,22 +33,24 @@ class ApiController extends Controller
     private ProductsModel $pDB;
     private CategoryModel $cDB;
     private NotificationsModel $nDB;
-    private CouponModel $couponDB;
-    private AreaModel $areaDB;
-    private TimeSlotsModel $tsDB;
-    private PaymentModel $paymentDB;
-    private CountryCodeModel $codeDB;
     private SubCategoryModel $sDB;
     private Application $app;
     private CartModel $cartDB;
     private UserAddressModel $addressDB;
     private LoginModel $loginDB;
     private static RatingModel $ratingDB;
+    private NotiTokenModel $notiTokenDB;
+    private ApiProductsModel $apDB;
+    private CustomersModel $customerDB;
+    private BookingsModel $bookingDB;
+    private DelNotiTokenModel $delnotiDB;
     private $secretKey = "tamizhiowt";
     private $token;
-    private static $staticToken;
-    private static $staticSecretKey = "tamihziowt";
+    private $conn = null;
     public static $decodedData;
+    private $imageDest;
+
+    private $pincode = "614713";
 
     public function __construct()
     {
@@ -62,310 +59,512 @@ class ApiController extends Controller
         $this->pDB = new ProductsModel();
         $this->cDB = new CategoryModel();
         $this->nDB = new NotificationsModel();
-        $this->couponDB = new CouponModel();
-        $this->areaDB = new AreaModel();
-        $this->tsDB = new TimeSlotsModel();
-        $this->paymentDB = new PaymentModel();
-        $this->codeDB = new CountryCodeModel();
         $this->sDB = new SubCategoryModel();
         $this->cartDB = new CartModel();
         $this->addressDB = new UserAddressModel();
         $this->loginDB = new LoginModel();
         self::$ratingDB = new RatingModel();
+        $this->notiTokenDB = new NotiTokenModel();
+        $this->apDB = new ApiProductsModel();
+        $this->customerDB = new CustomersModel();
+        $this->bookingDB = new BookingsModel();
+        $this->delnotiDB = new DelNotiTokenModel();
         $this->app = new Application(dirname(__DIR__));
 
         $headers = getallheaders();
 
-        if(isset($headers['Authorization']) && ($headers['Authorization'] != "")){
-            try{
+        if (isset($headers["Pincode"]) && ($headers['Pincode'] !== "")) {
+            $this->pincode = $headers['Pincode'];
+        }
+
+        if (isset($headers['Authorization']) && ($headers['Authorization'] != "")) {
+            try {
                 $secretKey = "tamizhiowt";
-        
+
                 $this->token = $headers['Authorization'];
-                self::$staticToken = $headers['Authorization'];
                 self::$decodedData = JWT::decode($this->token, $secretKey, array("HS256"));
-            }catch(Exception $e){
+            } catch (Exception $e) {
                 http_response_code(403);
-                echo json_encode(array("result"=>false, "message"=>$e->getMessage()));
+                echo json_encode(array("result" => false, "message" => $e->getMessage()));
                 exit();
             }
-        }else{
+        } else {
             http_response_code(401);
-            echo json_encode(array("result"=>false, "message"=>"User not Authorized"));
+            echo json_encode(array("result" => false, "message" => "User not Authorized"));
             exit();
         }
     }
 
-    public function productRating(){
+    public function addDelExpoToken()
+    {
+        $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
+        $data = json_decode(file_get_contents("php://input"));
+        if (isset($data->token) && ($data->token !== "")) {
+            $result = $this->delnotiDB->addToken($decodedData->data->id, $data->token);
+            if ($result === true) {
+                return json_encode(array("result" => true));
+            } else {
+                http_response_code(400);
+                return json_encode(array("result" => false, "message" => "Unable to create a token!"));
+            }
+        } else {
+            http_response_code(400);
+            return json_encode(array("result" => false, "message" => "Invalid arguments!"));
+        }
+    }
+
+    public function booking()
+    {
+        $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
+        $data = json_decode(file_get_contents("php://input"));
+        $note = $data->note ?? "";
+        if (isset($data->pid) && ($data->pid !== "") && isset($data->msg) && ($data->msg !== "") && isset($data->phone) && ($data->phone !== "") && isset($data->address) && ($data->address !== "")) {
+            $phone = strval($data->phone);
+            if (strlen($phone) > 10 || strlen($phone) < 10) {
+                http_response_code(400);
+                return json_encode(array("result" => false, "message" => "Phone should be a valid 10 digit numbers!"));
+            }
+            $result = $this->bookingDB->create($decodedData->data->id, $data->pid, $data->phone, $data->address, $data->msg, $note);
+            if ($result === true) {
+                return json_encode(array("result" => true));
+            } else if ($result) {
+                http_response_code(400);
+                return json_encode(array("result" => false, "message" => $result));
+            } else {
+                http_response_code(400);
+                return json_encode(array("result" => false, "message" => "Unable to place booking!"));
+            }
+        } else {
+            http_response_code(400);
+            return json_encode(array("result" => false, "message" => "Invalid arguments!"));
+        }
+    }
+
+    public function cancelBooking()
+    {
         $data = json_decode(file_get_contents("php://input"));
         $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
-        if(isset($data->pid) && ($data->pid != "") && isset($data->rating) && ($data->rating != "")){
+        if (isset($data->id) && ($data->id !== "")) {
+            $result = $this->bookingDB->cancel($decodedData->data->id, $data->id);
+            if ($result === true) {
+                return json_encode(array("result" => true));
+            } else {
+                http_response_code(400);
+                return json_encode(array('result' => false, "message" => "Unable to cancel booking!"));
+            }
+        } else {
+            http_response_code(400);
+            return json_encode(array("result" => false, "message" => "Invalid arguments!"));
+        }
+    }
+
+    public function getBookings()
+    {
+        $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
+        $result = $this->bookingDB->read($decodedData->data->id);
+        if ($result) {
+            return json_encode(array("result" => true, "data" => $result));
+        } else {
+            http_response_code(400);
+            return json_encode(array("result" => false, "message" => "No bookings found!"));
+        }
+    }
+
+    public function getPincode()
+    {
+        $query = "SELECT DISTINCT pincode FROM product";
+        $result = $this->conn->query($query);
+        $array = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($array, $row['pincode']);
+            }
+            return json_encode(array('result' => true, "data" => $array));
+        } else {
+            http_response_code(400);
+            return json_encode(array("result" => false, "message" => "No pincodes found!"));
+        }
+    }
+
+    public function requestProduct()
+    {
+        if (isset($_POST['pname']) && ($_POST['pname'] !== "") && isset($_POST['msg']) && ($_POST['msg'] !== "") && isset($_FILES['image']['name']) && ($_FILES['image']['name'] !== "")) {
+            $productName = $this->conn->real_escape_string($_POST['pname']);
+            $msg = $this->conn->real_escape_string($_POST['msg']);
+
+            $query = "SELECT * FROM productrequest where productname='$productName' and `message`='$msg'";
+            $result = $this->conn->query($query);
+            if ($result->num_rows > 0) {
+                http_response_code(400);
+                return json_encode(array("result" => false, "message" => "Product Request already exist!"));
+            } else {
+                $validateImage = $this->validateImage();
+                if ($validateImage === true) {
+                    $query = "INSERT INTO productrequest SET productname='$productName', `message`='$msg', `image`='" . $this->imageDest . "'";;
+                    $result = $this->conn->query($query);
+                    if ($this->conn->affected_rows > 0) {
+                        return json_encode(array("result" => true));
+                    } else {
+                        http_response_code(400);
+                        return json_encode(array("result" => false, "message" => "Unable to make a request!"));
+                    }
+                } else {
+                    http_response_code(400);
+                    return json_encode(array("result" => false, "message" => $validateImage));
+                }
+            }
+        } else {
+            return json_encode(array("result" => false, "message" => "Invalid arguments!"));
+        }
+    }
+
+    public function feedback()
+    {
+        $data = json_decode(file_get_contents("php://input"));
+        if (isset($data->msg) && ($data->msg != "")) {
+            $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
+            $result = $this->customerDB->updateFeedback($data->msg, $decodedData->data->id);
+            if ($result === true) {
+                return json_encode(array("result" => true));
+            } else {
+                http_response_code(400);
+                return json_encode(array("result" => false, "message" => "Unable to send feedback!"));
+            }
+        } else {
+            http_response_code(400);
+            return json_encode(array("result" => false, "message" => "Invalid arguments!"));
+        }
+    }
+
+    public function logout()
+    {
+        $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
+        $id = $decodedData->data->id;
+        $result = $this->notiTokenDB->logout($id);
+        if ($result) {
+            return json_encode(array("result" => true));
+        }
+    }
+
+    public function rateDeliveryPartner()
+    {
+        $data = json_decode(file_get_contents("php://input"));
+        $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
+        if (isset($data->id) && ($data->id != "") && isset($data->rating) && ($data->rating != "")) {
+            $result = self::$ratingDB->riderRating($data->id, $decodedData->data->id, $data->rating);
+            if ($result) {
+                return json_encode(array("result" => true));
+            } else {
+                http_response_code(400);
+                return json_encode(array("result" => false, "message" => "Unable to rate rider!"));
+            }
+        } else {
+            http_response_code(400);
+            return json_encode(array("result" => false, "message" => "Invalid arguments!"));
+        }
+    }
+
+    public function productRating()
+    {
+        $data = json_decode(file_get_contents("php://input"));
+        $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
+        if (isset($data->pid) && ($data->pid != "") && isset($data->rating) && ($data->rating != "")) {
             $result = self::$ratingDB->productRating($decodedData->data->id, $data->pid, $data->rating);
-            if($result){
-                return json_encode(array("result"=>true));
-            }else{
-                return json_encode(array("result"=>false, "message"=>"Unable to rate product!"));
+            if ($result) {
+                return json_encode(array("result" => true));
+            } else {
+                http_response_code(400);
+                return json_encode(array("result" => false, "message" => "Unable to rate product!"));
             }
-        }else{
-            return json_encode(array("result"=>false, "message"=>"Invalid arguments!"));
+        } else {
+            http_response_code(400);
+            return json_encode(array("result" => false, "message" => "Invalid arguments!"));
         }
     }
 
-    public static function getUserProductRating($pid){
-        if(isset($pid) && $pid != ""){
-            $decodedData = JWT::decode(self::$staticToken, self::$staticSecretKey, array("HS256"));
-            $result = self::$ratingDB->userProductRating($decodedData->data->id, $pid);
-            if($result){
-                return $result;
-            }else{
-                return false;
-            }
-        }else{
-            return json_encode(array("result"=>false, "message"=>"Invalid arguments!"));
-        }
-    }
-
-    public function editUserProfile(){
+    public function editUserProfile()
+    {
         $data = json_decode(file_get_contents("php://input"));
 
-        if(isset($data->username) && isset($data->password) && isset($data->phone) && isset($data->name)){
-            if(($data->username != "") && ($data->password != "") && ($data->phone != "") && ($data->name != "")){
+        if (isset($data->username) && isset($data->password) && isset($data->phone) && isset($data->name)) {
+            if (($data->username != "") && ($data->password != "") && ($data->phone != "") && ($data->name != "")) {
                 $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
                 $result = $this->loginDB->update($decodedData->data->id, $data->username, $data->name, $data->password, $data->phone);
-                if($result){
-                    return json_encode(array("result"=>true));
-                }else{
+                if ($result) {
+                    return json_encode(array("result" => true));
+                } else {
                     http_response_code(400);
-                    return json_encode(array("result"=>false, "message"=>"Unable to update user details!"));
+                    return json_encode(array("result" => false, "message" => "Unable to update user details!"));
                 }
-            }else{
+            } else {
                 http_response_code(400);
-                return json_encode(array("result"=>false, "message"=>"Invalid arguments"));    
+                return json_encode(array("result" => false, "message" => "Invalid arguments"));
             }
-        }else{
+        } else {
             http_response_code(400);
-            return json_encode(array("result"=>false, "message"=>"Invalid arguments"));
+            return json_encode(array("result" => false, "message" => "Invalid arguments"));
         }
     }
 
-    public function userAddress(){
+    public function userAddress()
+    {
         $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
-        // echo "<pre>";
-        // var_dump($decodedData->data->id);
-        // echo "</pre>";
         $result = $this->addressDB->read($decodedData->data->id);
 
-        if($result){
-            return json_encode(array("result"=>true, "data"=>$result, "isMore"=>false));
-        }else{
+        if ($result) {
+            return json_encode(array("result" => true, "data" => $result, "isMore" => false));
+        } else {
             http_response_code(404);
-            return json_encode(array("result"=>false, "message"=>"Address not found!"));    
+            return json_encode(array("result" => false, "message" => "Address not found!"));
         }
     }
 
-    public function addUserAddress(){
+    public function addUserAddress()
+    {
         $data = json_decode(file_get_contents("php://input"));
-        if(isset($data->address) && $data->address!=""){
+        if (isset($data->address) && $data->address != "") {
             $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
             $result = $this->addressDB->add($decodedData->data->id, $data->address);
-            if($result){
-                return json_encode(array("result"=>true));
-            }else{
+            if ($result) {
+                return json_encode(array("result" => true));
+            } else {
                 http_response_code(400);
-                return json_encode(array("result"=>false, "message"=>"Unable to add address!"));
+                return json_encode(array("result" => false, "message" => "Unable to add address!"));
             }
-        }else{
+        } else {
             http_response_code(400);
-            return json_encode(array("result"=>false, "message"=>"Invalid arguments"));
+            return json_encode(array("result" => false, "message" => "Invalid arguments"));
         }
     }
 
-    public function updateUserAddress(){
+    public function updateUserAddress()
+    {
         $data = json_decode(file_get_contents("php://input"));
-        if(isset($data->id) && isset($data->address) && $data->id!="" && $data->address!=""){
+        if (isset($data->id) && isset($data->address) && $data->id != "" && $data->address != "") {
             $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
             $result = $this->addressDB->update($data->id, $decodedData->data->id, $data->address);
-            if($result){
-                return json_encode(array("result"=>true));
-            }else{
+            if ($result) {
+                return json_encode(array("result" => true));
+            } else {
                 http_response_code(400);
-                return json_encode(array("result"=>false, "message"=>"Unable to update address!"));
+                return json_encode(array("result" => false, "message" => "Unable to update address!"));
             }
-        }else{
+        } else {
             http_response_code(400);
-            return json_encode(array("result"=>false, "message"=>"Invalid arguments"));
+            return json_encode(array("result" => false, "message" => "Invalid arguments"));
         }
     }
 
-    public function removeUserAddress(){
+    public function removeUserAddress()
+    {
         $data = json_decode(file_get_contents("php://input"));
-        if(isset($data->id) && $data->id!=""){
+        if (isset($data->id) && $data->id != "") {
             $result = $this->addressDB->delete($data->id);
-            if($result){
-                return json_encode(array("result"=>true));
-            }else{
+            if ($result) {
+                return json_encode(array("result" => true));
+            } else {
                 http_response_code(400);
-                return json_encode(array("result"=>false, "message"=>"Unable to delete address!"));
+                return json_encode(array("result" => false, "message" => "Unable to delete address!"));
             }
-        }else{
+        } else {
             http_response_code(400);
-            return json_encode(array("result"=>false, "message"=>"Invalid arguemnts"));
+            return json_encode(array("result" => false, "message" => "Invalid arguemnts"));
         }
     }
 
-    public function cartInc(){
+    public function cartInc()
+    {
         $data = json_decode(file_get_contents("php://input"));
-        if((isset($data->id)) && ($data->id != "")){
+        if ((isset($data->id)) && ($data->id != "")) {
             $result = $this->cartDB->increment($data->id);
-            if($result == true){
-                return json_encode(array("result"=>true));
-            }else{
+            if ($result == true) {
+                return json_encode(array("result" => true));
+            } else {
                 http_response_code(400);
-                return json_encode(array("result"=>false, "message"=>"Unable to update the data!"));
+                return json_encode(array("result" => false, "message" => "Unable to update the data!"));
             }
-        }else{
+        } else {
             http_response_code(400);
-            return json_encode(array("result"=>false, "message"=>"Invalid arguments!"));
+            return json_encode(array("result" => false, "message" => "Invalid arguments!"));
         }
     }
 
-    public function cartDec(){
+    public function cartDec()
+    {
         $data = json_decode(file_get_contents("php://input"));
-        if((isset($data->id)) && ($data->id != "")){
+        if ((isset($data->id)) && ($data->id != "")) {
             $result = $this->cartDB->decrement($data->id);
-            if($result == true){
-                return json_encode(array("result"=>true));
-            }else{
+            if ($result == true) {
+                return json_encode(array("result" => true));
+            } else {
                 http_response_code(400);
-                return json_encode(array("result"=>false, "message"=>"Unable to update the data!"));
+                return json_encode(array("result" => false, "message" => "Unable to update the data!"));
             }
-        }else{
+        } else {
             http_response_code(400);
-            return json_encode(array("result"=>false, "message"=>"Invalid arguments!"));
+            return json_encode(array("result" => false, "message" => "Invalid arguments!"));
         }
     }
 
-    public function removeCart(){
+    public function removeCart()
+    {
         $data = json_decode(file_get_contents("php://input"));
-        if(isset($data->id) && ($data->id != "")){
+        if (isset($data->id) && ($data->id != "")) {
             $result = $this->cartDB->delete($data->id);
-            if($result == true){
-                return json_encode(array("result"=>true));
-            }else{
+            if ($result == true) {
+                return json_encode(array("result" => true));
+            } else {
                 http_response_code(400);
-                return json_encode(array("result"=>false, "message"=>"Unable to delete product from cart"));
+                return json_encode(array("result" => false, "message" => "Unable to delete product from cart"));
             }
-        }else{
+        } else {
             http_response_code(400);
-            return json_encode(array("result"=>false, "message"=>"Invalid arguments!"));
+            return json_encode(array("result" => false, "message" => "Invalid arguments!"));
         }
     }
 
-    public function cart(){
-        if($this->app->request->getMethod() == "get"){
+    public function cart()
+    {
+        if ($this->app->request->getMethod() == "get") {
             $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
             $json = $this->cartDB->read($decodedData->data->id);
-            if($json){
-                return json_encode(["result"=>true, "data"=>$json, "isMore"=>false]);
-            }else{
-                return json_encode(array("result"=>false, "message"=>"No products found!"));
+            if ($json) {
+                return json_encode(["result" => true, "data" => $json, "isMore" => false]);
+            } else {
+                return json_encode(array("result" => false, "message" => "No products found!"));
             }
-        }else if($this->app->request->getMethod() == "post"){
+        } else if ($this->app->request->getMethod() == "post") {
             $data = json_decode(file_get_contents("php://input"));
-            if(isset($data->pid) && ($data->pid != "")){
+            if (isset($data->pid) && ($data->pid != "")) {
                 $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
                 $result = $this->cartDB->add($decodedData->data->id, $data->pid);
-                if($result == true){
+                if ($result === true) {
                     $json = $this->cartDB->read($decodedData->data->id);
-                    return json_encode(array("result"=>true, "data"=>$json));
-                }else{
+                    return json_encode(array("result" => true, "data" => $json));
+                } else if (gettype($result) === "string") {
                     http_response_code(400);
-                    return json_encode(array("result"=>false, "message"=>"Unable to add to cart!"));
+                    return json_encode(array("result" => false, "message" => $result));
+                } else {
+                    http_response_code(400);
+                    return json_encode(array("result" => false, "message" => "Unable to add to cart!"));
                 }
-            }else{
+            } else {
                 http_response_code(400);
-                return json_encode(array('result'=>false, "message"=>"Invalid arguments"));
+                return json_encode(array('result' => false, "message" => "Invalid arguments"));
             }
         }
     }
 
-    public function expoNotifications(){
+    public function expoNotifications(array $data, $token)
+    {
         $channelName = "default";
-        try{
-            if(isset($_POST['token']) && ($_POST['token'] != "")){
-                $unique = $_POST['token'];
-                $recipant = "ExponentPushToken[$unique]";
-                $notification = ['body' => 'This is a noti from php expo script', 'data'=> json_encode(array('someData' => 'goes here'))];
-                $this->app->expo->subscribe($channelName, $recipant);
-                $this->app->expo->notify([$channelName], $notification);
-            }else{
-                throw new Exception("Invalid token");
-            }
-        }catch(Exception $e){
+        try {
+            $unique = $token;
+            $recipant = "ExponentPushToken[$unique]";
+            $notification = ["title" => $data[0]['title'], 'body' => $data[0]['msg']];
+            $this->app->expo->subscribe($channelName, $recipant);
+            $this->app->expo->notify([$channelName], $notification);
+        } catch (Exception $e) {
             return json_encode($e->getMessage());
         }
     }
 
-    public function getBanner(){
+    public function addExpoToken()
+    {
+        $data = json_decode(file_get_contents("php://input"));
+        if (isset($data->token) && ($data->token != "")) {
+            $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
+            $result = $this->notiTokenDB->add($decodedData->data->id, $data->token);
+            if ($result) {
+                return json_encode(array("result" => true));
+            } else {
+                http_response_code(400);
+                return json_encode(array("result" => false, "message" => "Unable to add token!"));
+            }
+        } else {
+            http_response_code(400);
+            return json_encode(array("result" => false, "message" => "Invalid arguments!"));
+        }
+    }
+
+    public function getBanner()
+    {
         $query = "SELECT * FROM banner";
         $result = $this->conn->query($query);
         $array = [];
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
                 array_push($array, $row);
             }
             return json_encode($array);
-        }else{
+        } else {
             http_response_code(400);
-            return json_encode(array("searchResult"=>false, "message"=>"No Results found!"));
+            return json_encode(array("searchResult" => false, "message" => "No Results found!"));
         }
     }
 
-    public function getRandomCategories(){
-        try{
-            if(isset($_GET['rows']) && ($_GET['rows']!="")){
-                $json = $this->cDB->read("category");
-                $array = json_decode($json);
-                shuffle($array);
+    public function getRandomCategories()
+    {
+        try {
+            if (isset($_GET['rows']) && ($_GET['rows'] != "")) {
+                $array = [];
+                $query = "select * from category order by(case id when 3 then 1 when 2 then 2 when 4 then 3 when 13 then 4 else 5 end) asc";
+                $result = $this->conn->query($query);
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        array_push($array, $row);
+                    }
+                }
                 $array = array_slice($array, 0, $_GET['rows']);
-                $json = json_encode($array);
-                return $json;
-            }else{
+                $array = json_encode($array);
+                return $array;
+            } else {
                 throw new Exception("Not enough argument found!");
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             http_response_code(400);
             return json_encode($e->getMessage());
         }
     }
 
-    public function getSearchProduct(){
-        if((isset($_GET['query'])) && ($_GET['query'] != "")){
-            $json = $this->pDB->getSearchProduct("product", $_GET['query']);
-            if($json){
-                return json_encode(["searchResult"=>true, "data"=>$json, "isMore"=>false]);
-            }else{
+    public function getSearchProduct()
+    {
+        if (isset($_GET['p']) && ($_GET['p'] !== "")) {
+            $p = $_GET['p'];
+        }
+        if ((isset($_GET['query'])) && ($_GET['query'] != "")) {
+            $json = $this->apDB->getSearchProduct("product", $_GET['query'], $this->pincode, isset($p) ? $p : "");
+            if ($json) {
+                return json_encode(array("result" => true, "data" => $json['data'], 'isMore' => $json['isMore']));
+            } else {
                 http_response_code(400);
-                return json_encode(["searchResult"=>false, "message"=>"No products found!"]);
+                return json_encode(["result" => false, "message" => "No products found!"]);
             }
-        }else{
+        } else {
             http_response_code(400);
             return json_encode("Invalid arguments!");
         }
     }
 
-    public function getRandomSubCategories(){
-        try{
-            if(isset($_GET['rows']) && ($_GET['rows']!="")){
-                $json = $this->sDB->read("subcategory");
-                $array = json_decode($json);
-                shuffle($array);
+    public function getRandomSubCategories()
+    {
+        try {
+            if (isset($_GET['rows']) && ($_GET['rows'] != "")) {
+                $array = [];
+                $query = "select * from subcategory order by(case cat_id when 3 then 1 when 2 then 2 when 4 then 3 when 13 then 4 else 5 end) asc";
+                $result = $this->conn->query($query);
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        array_push($array, $row);
+                    }
+                }
                 $array = array_slice($array, 0, $_GET['rows']);
                 $json = json_encode($array);
                 return $json;
-            }else{
+            } else {
                 throw new Exception("Not enough argument found!");
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             http_response_code(400);
             return json_encode($e->getMessage());
         }
@@ -380,26 +579,14 @@ class ApiController extends Controller
                 } else {
                     throw new Exception("Invalid ID!");
                 }
-            } else {
-                return $this->sDB->read("subcategory");
-            }
-        } catch (Exception $e) {
-            http_response_code(400);
-            return json_encode($e->getMessage());
-        }
-    }
-
-    public function getCodelist()
-    {
-        try {
-            if (isset($_POST['id'])) {
-                if ($_POST['id'] !== "") {
-                    return $this->codeDB->getCodeById("code", $_POST['id']);
+            } else if (isset($_GET['cid'])) {
+                if ($_GET['cid'] != "") {
+                    return $this->sDB->getSubCategoryByCid("subcategory", $_GET['cid']);
                 } else {
-                    throw new Exception("Invalid ID");
+                    throw new Exception("Invalid CID");
                 }
             } else {
-                return $this->codeDB->read("code");
+                return $this->sDB->read("subcategory");
             }
         } catch (Exception $e) {
             http_response_code(400);
@@ -476,78 +663,6 @@ class ApiController extends Controller
         return json_encode($output);
     }
 
-    public function getTimeslot()
-    {
-        try {
-            if (isset($_POST['id'])) {
-                if ($_POST['id'] !== "") {
-                    return $this->tsDB->getTimeslotById("timeslot", $_POST['id']);
-                } else {
-                    throw new Exception("Invalid ID");
-                }
-            } else {
-                return $this->tsDB->read("timeslot");
-            }
-        } catch (Exception $e) {
-            http_response_code(400);
-            return json_encode($e->getMessage());
-        }
-    }
-
-    public function getArea()
-    {
-        try {
-            if (isset($_POST['id'])) {
-                if ($_POST['id'] !== "") {
-                    return $this->areaDB->getAreaById("area_db", $_POST['id']);
-                } else {
-                    throw new Exception("Invalid ID");
-                }
-            } else {
-                return $this->areaDB->read("area_db");
-            }
-        } catch (Exception $e) {
-            http_response_code(400);
-            return json_encode($e->getMessage());
-        }
-    }
-
-    public function getCoupons()
-    {
-        try {
-            if (isset($_POST['id'])) {
-                if ($_POST['id'] !== "") {
-                    return $this->couponDB->getCouponById("tbl_coupon", $_POST['id']);
-                } else {
-                    throw new Exception("Invalid ID");
-                }
-            } else {
-                return $this->couponDB->read("tbl_coupon");
-            }
-        } catch (Exception $e) {
-            http_response_code(400);
-            return json_encode($e->getMessage());
-        }
-    }
-
-    public function getPayment()
-    {
-        try {
-            if (isset($_POST['id'])) {
-                if ($_POST['id'] !== "") {
-                    return $this->paymentDB->getPaymentById("payment_list", $_POST['id']);
-                } else {
-                    throw new Exception("Invalid ID");
-                }
-            } else {
-                return $this->paymentDB->read("payment_list");
-            }
-        } catch (Exception $e) {
-            http_response_code(400);
-            return json_encode($e->getMessage());
-        }
-    }
-
     public function getCategoryWithList()
     {
         $query = "SELECT * FROM category ORDER BY id DESC";
@@ -600,83 +715,111 @@ class ApiController extends Controller
     public function getProducts()
     {
         try {
+
+            if (isset($_GET['p']) && $_GET['p'] !== "") {
+                $p = $_GET['p'];
+            }
             if (isset($_GET['id'])) {
                 if ($_GET['id'] !== "") {
-                    $result = $this->pDB->getProductById("product", $_GET['id']);
-                    if($result){
-                        return $result;
-                    }else{
-                        return json_encode(array("result"=>false));
+                    $result = $this->apDB->getProductById("product", $_GET['id'], $this->pincode, isset($p) ? $p : "");
+                    if ($result) {
+                        return json_encode(array("rseult" => true, "data" => $result['data'], "isMore" => $result['isMore']));
+                    } else {
+                        http_response_code(400);
+                        return json_encode(array("result" => false, "message" => "No products found in your location!"));
                     }
                 } else {
                     throw new Exception("Invalid ID");
                 }
-            }else if(isset($_GET['cid'])){
-                if($_GET['cid'] !== ""){
-                    $result = $this->pDB->readByCid("product", $_GET['cid']);
-                    if($result){
-                        return json_encode(array("result"=>true, "data"=>$result));
-                    }else{
-                        return json_encode(array("result"=>false));
+            } else if (isset($_GET['cid'])) {
+                if ($_GET['cid'] !== "") {
+                    $result = $this->apDB->readByCid("product", $_GET['cid'], $this->pincode, isset($p) ? $p : "");
+                    if ($result) {
+                        return json_encode(array("result" => true, "data" => $result['data'], "isMore" => $result['isMore']));
+                    } else {
+                        http_response_code(400);
+                        return json_encode(array("result" => false, "message" => "No products found in your location!"));
                     }
-                }else{
+                } else {
                     throw new Exception("Invalid category ID");
                 }
-            }else if(isset($_GET['sid'])){
-                if($_GET['sid'] !== ""){
-                    $result = $this->pDB->readBySid("product", $_GET['sid']);
-                    if($result){
-                        return json_encode(array("result"=>true, "data"=>$result));
-                    }else{
-                        return json_encode(array("result"=>false));
+            } else if (isset($_GET['sid'])) {
+                if ($_GET['sid'] !== "") {
+                    $result = $this->apDB->readBySid("product", $_GET['sid'], $this->pincode, isset($p) ? $p : "");
+                    if ($result) {
+                        return json_encode(array("result" => true, "data" => $result['data'], "isMore" => $result['isMore']));
+                    } else {
+                        http_response_code(400);
+                        return json_encode(array("result" => false, "message" => "No products found in your location!"));
                     }
-                }else{
+                } else {
                     throw new Exception("Invalid subcategory ID");
                 }
-            }else {
-                return $this->pDB->read('product');
+            } else {
+                $result = $this->apDB->read('product', $this->pincode, isset($p) ? $p : "");
+                if ($result) {
+                    return json_encode(array("result" => true, "data" => $result['data'], 'isMore' => $result['isMore']));
+                } else {
+                    http_response_code(400);
+                    return json_encode(array("result" => false, "message" => "No products found in your location!"));
+                }
             }
         } catch (Exception $e) {
             http_response_code(400);
-            return json_encode(array("result"=>false, "message"=>$e->getMessage()));
+            return json_encode(array("result" => false, "message" => $e->getMessage()));
         }
     }
 
-    public function getFoodItems(){
-        return $this->pDB->getFoodItems();
+    public function getFoodItems()
+    {
+        return $this->apDB->getFoodItems($this->pincode);
     }
 
-    public function getRandomFoodItems(){
-        try{
-            if(isset($_GET['rows']) && ($_GET['rows']!="")){
-                $json = $this->pDB->getFoodItems();
-                $array = json_decode($json);
-                shuffle($array);
-                $array = array_slice($array, 0, $_GET['rows']);
-                $json = json_encode($array);
-                return $json;
-            }else{
+    public function getRandomFoodItems()
+    {
+        try {
+            if (isset($_GET['rows']) && ($_GET['rows'] != "")) {
+                $json = $this->apDB->getFoodItems($this->pincode);
+                if ($json) {
+                    $array = json_decode($json);
+                    shuffle($array);
+                    $array = array_slice($array, 0, $_GET['rows']);
+                    $json = json_encode($array);
+                    return $json;
+                } else {
+                    http_response_code(400);
+                    return json_encode(array("result" => false, "message" => "No products found in your location!"));
+                }
+            } else {
                 throw new Exception("Not enough arguments found");
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             http_response_code(400);
             return json_encode($e->getMessage());
         }
     }
 
-    public function getRandomProducts(){
-        try{
-            if(isset($_POST['rows']) && $_POST['rows']!=""){
-                $json = $this->pDB->read('product');
-                $array = json_decode($json);
-                shuffle($array);
-                $array = array_slice($array, 0, $_POST['rows']);
-                $json = json_encode($array);
-                return $json;
-            }else{
+    public function getRandomProducts()
+    {
+        try {
+            if (isset($_GET['p']) && ($_GET['p'] !== "")) {
+                $p = $_GET['p'];
+            }
+
+            if (isset($_POST['rows']) && $_POST['rows'] != "") {
+                $json = $this->apDB->read('product', $this->pincode, isset($p) ? $p : "");
+                if ($json) {
+                    shuffle($json['data']);
+                    $array = array_slice($json['data'], 0, $_POST['rows']);
+                    return json_encode(array("result" => true, "data" => $array, "isMore" => $json['isMore']));
+                } else {
+                    http_response_code(400);
+                    return json_encode(array("result" => false, "message" => "No products found in your location!"));
+                }
+            } else {
                 throw new Exception("Not enough arguments found");
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             http_response_code(400);
             return json_encode($e->getMessage());
         }
@@ -714,7 +857,6 @@ class ApiController extends Controller
         $sTime = substr($time, 11);
         $sTime = explode(":", $sTime);
 
-        // var d = new Date();
         $year = date("Y") - $dTime[0];
         $month = abs((date("m")) - $dTime[1]);
         $day = abs(date('d') - $dTime[2]);
@@ -835,5 +977,53 @@ class ApiController extends Controller
     public function pushedNotifications()
     {
         return $this->nDB->pushedNotifies("noti");
+    }
+
+    public function validateImage()
+    {
+        $targetDir = Application::$ROOT_DIR . "/public/assets/images/request/";
+        $targetFile = $targetDir . basename($_FILES['image']['name']);
+        $uploadOk = 1;
+        $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+
+        //check if image is an actual image
+        if (isset($_POST['submit'])) {
+            $check = getimagesize($_FILES['image']['tmp_name']);
+            if ($check !== false) {
+                $uploadOk = 1;
+            } else {
+                $uploadOk = 0;
+                return "File is not an image";
+            }
+        }
+
+        //check if image file already exist
+        if (file_exists($targetFile)) {
+            $uploadOk = 0;
+            return "Image file already exist";
+        }
+
+        // limit the file size
+        if ($_FILES['image']['size'] > 5000000) {
+            $uploadOk = 0;
+            return "File size too large";
+        }
+
+        if ($imageFileType != "jpg" && $imageFileType != 'png' && $imageFileType != "jpeg") {
+            $uploadOk = 0;
+            return "Only jpg, png and jpeg file formats are allowed";
+        }
+
+        if ($uploadOk == 0) {
+            return "Your file didn't uploaded for some reasons";
+            // if everything is ok, try to upload file
+        } else {
+            if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetFile)) {
+                $this->imageDest = "/assets/images/request/" . basename($_FILES['image']['name']);
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 }

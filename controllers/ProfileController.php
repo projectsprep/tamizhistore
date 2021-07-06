@@ -54,14 +54,15 @@ class ProfileController extends Controller
         session_regenerate_id(true);
         $_SESSION['user'] = $username;
         $_SESSION['notify'] = true;
-        return setcookie("user", $token, time() + 1000, "/");
+        return setcookie("user", $token, time() + (60 * 60 * 24 * 30), "/");
     }
 
     public function logout()
     {
         $_SESSION = [];
         session_destroy();
-        return setcookie("user", $_COOKIE['user'], time() - 1000, "/");
+        setcookie("user", $_COOKIE['user'], time() - 1000, "/");
+        return header("Location: /login");
     }
 
     public function forgotPassword()
@@ -122,7 +123,6 @@ class ProfileController extends Controller
                         $newPassword = $this->DB->real_escape_string($_POST['newpassword']);
                         $username = $this->DB->real_escape_string($_POST['username']);
                         $result = $this->DB->query("UPDATE admin SET password='$newPassword' WHERE username='$username'");
-                        echo $result;
                         if ($result == 1) {
                             return $this->app->router->renderOnlyView("resetPassword", json_encode(["msg" => true]));
                         } else {
