@@ -39,7 +39,7 @@ class CountryCodeModel
     {
         $table = $this->conn->real_escape_string($table);
 
-        $query = "Select * from $table";
+        $query = "Select * from $table order by id desc";
         $result = $this->conn->query($query);
         $array = [];
         if ($result->num_rows > 0) {

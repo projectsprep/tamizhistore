@@ -24,6 +24,29 @@ class UserProfileController extends Controller
         $this->app = new Application(dirname(__DIR__));
     }
 
+    public function test(){
+        try{
+            if(isset($_POST['active']) && ($_POST['active'] != "")){
+                $active = $this->db->real_escape_string($_POST['active']);
+                $msg = isset($_POST['message']) ? $this->db->real_escape_string($_POST['message']) : "";
+                $title = isset($_POST['title']) ? $this->db->real_escape_string($_POST['title']) : "";
+
+                $query = "UPDATE testing SET active=$active, message='$msg', title='$title'";
+                $result = $this->db->query($query);
+                if($this->db->affected_rows > 0){
+                    throw new Exception("Updated testing successfully!");
+                }else{
+                    throw new Exception("Unable to update testing!");
+                }
+            }else{
+                throw new Exception("Missing values!");
+            }    
+        }catch(Exception $e){
+            $msg = urlencode($e->getMessage());
+            return header("Location: /profile?msg=$msg");
+        }
+    }
+
     public function profile()
     {
         if ($this->app->request->getMethod() === "get") {

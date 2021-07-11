@@ -106,12 +106,12 @@ class ProductController extends Controller
             return $this->render("products/addProduct");
         } else if ($this->app->request->getMethod() === "post") {
             try {
-                if (isset($_POST["productName"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["outofstock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["unit"]) && isset($_POST["price"]) && isset($_POST["discount"]) && isset($_POST["pincode"]) && isset($_FILES['productimage'])) {
+                if (isset($_POST["productName"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["stock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["unit"]) && isset($_POST["price"]) && isset($_POST["discount"]) && isset($_POST["pincode"]) && isset($_POST["type"]) && isset($_FILES['productimage'])) {
                         $imageResult = $this->validateImage();
                         if ($imageResult == true) {
                             $minTime = $_POST['minTime'] === "" || $_POST['minTime'] == "00:00" ? "" : $_POST['minTime'];
                             $maxTime = $_POST['maxTime'] === "" || $_POST['maxTime'] == "00:00" ? "" : $_POST['maxTime'];
-                            if ($this->db->create("product", $_POST["productName"], $this->imageDest, $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["unit"], $_POST["price"], $_POST["discount"], $_POST['popular'], $_POST['pincode'], $minTime, $maxTime)) {
+                            if ($this->db->create("product", $_POST["productName"], $this->imageDest, $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["stock"], $_POST["publish"], $_POST["description"], $_POST["unit"], $_POST["price"], $_POST["discount"], $_POST['popular'], $_POST['pincode'], $_POST["type"], $minTime, $maxTime)) {
                                 $msg = urlencode("New product created successfully!");
                                 return header("Location: /productlist?msg=$msg");
                             } else {
@@ -149,7 +149,7 @@ class ProductController extends Controller
     {
         try {
             if ($this->app->request->getMethod() === "post") {
-                if (isset($_POST["id"]) && isset($_POST["productName"]) && isset($_POST["pincode"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["outofstock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["unit"]) && isset($_POST["price"]) && isset($_POST["discount"])) {
+                if (isset($_POST["id"]) && isset($_POST["productName"]) && isset($_POST["pincode"]) && isset($_POST["sellerName"]) && isset($_POST["category"]) && isset($_POST["subCategory"]) && isset($_POST["stock"]) && isset($_POST["publish"]) && isset($_POST["popular"]) && isset($_POST["description"]) && isset($_POST["unit"]) && isset($_POST["price"]) && isset($_POST["discount"]) && isset($_POST["type"])) {
                     $validateImage = NULL;
                     if (isset($_FILES['productimage']['name']) && $_FILES['productimage']['name'] != "") {
                         $validateImage = $this->validateImage();
@@ -157,7 +157,7 @@ class ProductController extends Controller
                     if ($validateImage === true || $validateImage == NULL) {
                         $minTime = $_POST['minTime'] === "" || $_POST['minTime'] == "00:00" ? "" : $_POST['minTime'];
                         $maxTime = $_POST['maxTime'] === "" || $_POST['maxTime'] == "00:00" ? "" : $_POST['maxTime'];
-                        if ($this->db->update("product", $_POST['id'], $_POST["productName"], $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["outofstock"], $_POST["publish"], $_POST["description"], $_POST["unit"], $_POST["price"], $_POST["discount"], $_POST['popular'], $_POST['pincode'], $minTime, $maxTime, $validateImage == true ? $this->imageDest : "")) {
+                        if ($this->db->update("product", $_POST['id'], $_POST["productName"], $_POST["sellerName"], $_POST["category"], $_POST["subCategory"], $_POST["stock"], $_POST["publish"], $_POST["description"], $_POST["unit"], $_POST["price"], $_POST["discount"], $_POST['popular'], $_POST['pincode'], $minTime, $maxTime, $_POST['type'], $validateImage == true ? $this->imageDest : "")) {
                             $msg = urlencode("Product updated successfully!");
                             return header("Location: /productlist?msg=$msg");
                         } else {
@@ -194,8 +194,18 @@ class ProductController extends Controller
 
     public function validateImage()
     {
+        function generateRandomString($length = 25) {
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $charactersLength = strlen($characters);
+            $randomString = '';
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $characters[rand(0, $charactersLength - 1)];
+            }
+            return $randomString;
+        }
+        $fileName = generateRandomString(15);
         $targetDir = Application::$ROOT_DIR . "/public/assets/images/product/";
-        $targetFile = $targetDir . basename($_FILES['productimage']['name']);
+        $targetFile = sprintf("%s%s.%s", $targetDir, $fileName, pathinfo($_FILES['productimage']['name'])['extension']);
         $uploadOk = 1;
         $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
@@ -212,8 +222,7 @@ class ProductController extends Controller
 
         //check if image file already exist
         if (file_exists($targetFile)) {
-            return "Image file already exist";
-            $uploadOk = 0;
+            $this->validateImage();
         }
 
         // limit the file size
@@ -232,7 +241,7 @@ class ProductController extends Controller
             // if everything is ok, try to upload file
         } else {
             if (move_uploaded_file($_FILES["productimage"]["tmp_name"], $targetFile)) {
-                $this->imageDest = "/assets/images/product/" . basename($_FILES['productimage']['name']);
+                $this->imageDest = sprintf("/assets/images/product/%s.%s", $fileName, pathinfo($_FILES['productimage']['name'])['extension']);
                 return true;
             } else {
                 return false;

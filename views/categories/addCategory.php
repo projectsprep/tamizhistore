@@ -44,6 +44,16 @@
                                         Please select a valid category image
                                     </div>
                                 </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Select Category status</label>
+                                    <select class="form-select" required name="cstatus" id="cstatus">
+                                        <option value="1" selected="">Active</option>
+                                        <option value="0">Inactive</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select a valid Status.
+                                    </div>
+                                </div>
                                 <div class="d-flex flex-wrap gap-2">
                                     <button type="submit" class="btn btn-primary waves-effect waves-light">
                                         Submit

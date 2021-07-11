@@ -59,8 +59,8 @@ class ProfileController extends Controller
 
     public function logout()
     {
-        $_SESSION = [];
         session_destroy();
+        $_SESSION = [];
         setcookie("user", $_COOKIE['user'], time() - 1000, "/");
         return header("Location: /login");
     }

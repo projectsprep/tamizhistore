@@ -139,7 +139,7 @@ class ProductsModel
         }
     }
 
-    public function create($table, $productName, $productImage, $sellerName, $category, $subCategory, $stock, $publish, $description, $unit, $price, $discount, $popular, $pincode, $minTime="", $maxTime="")
+    public function create($table, $productName, $productImage, $sellerName, $category, $subCategory, $stock, $publish, $description, $unit, $price, $discount, $popular, $pincode, $type, $minTime="", $maxTime="")
     {
         $table = $this->conn->real_escape_string($table);
         $productName = $this->conn->real_escape_string($productName);
@@ -155,6 +155,7 @@ class ProductsModel
         $discount = $this->conn->real_escape_string($discount);
         $popular = $this->conn->real_escape_string($popular);
         $pincode = $this->conn->real_escape_string($pincode);
+        $type = $this->conn->real_escape_string($type);
         $minTime = $this->conn->real_escape_string($minTime);
         $maxTime = $this->conn->real_escape_string($maxTime);
 
@@ -169,13 +170,14 @@ class ProductsModel
         sid=$subCategory,
         date=NOW(),
         psdesc='$description',
+        type='$type',
         pgms='$unit',
         pprice=$price,
         status='$publish',
         stock=$stock,
         discount=$discount,
         popular=$popular
-        " . ($pincode == "" ? '' : sprintf(", pincode=%s", $pincode)) . "
+        " . ($pincode == "" ? '' : sprintf(", pincode='%s'", $pincode)) . "
         ". ($minTime == "" ? '' : sprintf(",minTime= '%s'", $minTime)) . "
         " . ($maxTime == "" ? '' : sprintf(",maxTime= '%s'", $maxTime)) ."
         ";
@@ -201,7 +203,7 @@ class ProductsModel
         }
     }
 
-    public function update($table, $id, $productName, $sellerName, $category, $subCategory, $stock, $publish, $description, $unit, $price, $discount, $popular, $pincode, $minTime, $maxTime, $image = "")
+    public function update($table, $id, $productName, $sellerName, $category, $subCategory, $stock, $publish, $description, $unit, $price, $discount, $popular, $pincode, $minTime, $maxTime, $type, $image = "")
     {
         $table = $this->conn->real_escape_string($table);
         $id = $this->conn->real_escape_string($id);
@@ -217,13 +219,14 @@ class ProductsModel
         $discount = $this->conn->real_escape_string($discount);
         $popular = $this->conn->real_escape_string($popular);
         $pincode = $this->conn->real_escape_string($pincode);
+        $type = $this->conn->real_escape_string($type);
         $image = $this->conn->real_escape_string($image);
 
         if (isset($image) && $image != "") {
-            $query = "UPDATE $table set pname='$productName', sname='$sellerName', cid='$category', sid='$subCategory', pincode=$pincode, stock='$stock', status='$publish', psdesc='$description', pgms='$unit', pprice=$price, discount='$discount', popular='$popular', pimg='$image'". ($minTime == "" ? '' : sprintf(",minTime= '%s'", $minTime)) . "
+            $query = "UPDATE $table set pname='$productName', sname='$sellerName', cid='$category', sid='$subCategory', type='$type', pincode='$pincode', stock='$stock', status='$publish', psdesc='$description', pgms='$unit', pprice=$price, discount='$discount', popular='$popular', pimg='$image'". ($minTime == "" ? '' : sprintf(",minTime= '%s'", $minTime)) . "
             " . ($maxTime == "" ? '' : sprintf(",maxTime= '%s'", $maxTime)) ." where id=$id";
         } else {
-            $query = "UPDATE $table set pname='$productName', sname='$sellerName', cid='$category', sid='$subCategory', pincode=$pincode, stock='$stock', status='$publish', psdesc='$description', pgms='$unit', pprice=$price, discount='$discount', popular='$popular'         ". ($minTime == "" ? '' : sprintf(",minTime= '%s'", $minTime)) . "
+            $query = "UPDATE $table set pname='$productName', sname='$sellerName', cid='$category', sid='$subCategory', type='$type', pincode='$pincode', stock='$stock', status='$publish', psdesc='$description', pgms='$unit', pprice=$price, discount='$discount', popular='$popular'         ". ($minTime == "" ? '' : sprintf(",minTime= '%s'", $minTime)) . "
             " . ($maxTime == "" ? '' : sprintf(",maxTime= '%s'", $maxTime)) ." where id=$id";
         }
         $result = $this->conn->query($query);

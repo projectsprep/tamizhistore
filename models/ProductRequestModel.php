@@ -15,7 +15,7 @@ class ProductRequestModel{
     }
 
     public function read(){
-        $query = "SELECT * FROM $this->table ORDER BY id DESC";
+        $query = "SELECT p.*, u.username FROM $this->table p INNER join users u on p.uid = u.id ORDER BY id DESC";
         $result = $this->conn->query($query);
         $array = [];
 

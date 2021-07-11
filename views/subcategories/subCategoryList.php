@@ -35,9 +35,13 @@ $conn = $db->conn();
                                     <thead class="table-light thead-dark">
                                         <tr>
                                             <th scope="col" style="width: 70px;">Sl.no</th>
+                                            <th scope="col">SubCategory ID</th>
                                             <th scope="col">SubCategory Name</th>
                                             <th scope="col">SubCategory Image</th>
                                             <th scope="col">Category Name</th>
+                                            <th scope="col">Shop Address</th>
+                                            <th scope="col">Delivery Charge</th>
+                                            <th scope="col">Status</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -57,6 +61,9 @@ $conn = $db->conn();
                                                     </span>
                                                 </td>
                                                 <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $id; ?></h5>
+                                                </td>
+                                                <td align="center">
                                                     <h5 class="font-size-14 mb-1"><?= $name; ?></h5>
                                                 </td>
                                                 <td align="center">
@@ -65,6 +72,21 @@ $conn = $db->conn();
                                                 <td align="center">
                                                     <div>
                                                         <h5 class="font-size-14 mb-1"><?= $catname ?></h5>
+                                                    </div>
+                                                </td>
+                                                <td align="center">
+                                                    <div>
+                                                        <h5 class="font-size-14 mb-1">#<?= str_replace("|", ",", $address) ?></h5>
+                                                    </div>
+                                                </td>
+                                                <td align="center">
+                                                    <div>
+                                                        <h5 class="font-size-14 mb-1"><?= $deliverycharge; ?></h5>
+                                                    </div>
+                                                </td>
+                                                <td align="center">
+                                                    <div>
+                                                        <h5 class="font-size-14 mb-1"><?= $status == 1 ? "Active" : "Inactive"; ?></h5>
                                                     </div>
                                                 </td>
                                                 <td align="center">
@@ -116,6 +138,38 @@ $conn = $db->conn();
                             Please select a valid Category.
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="">Shop DoorNo.</label>
+                        <input type="text" name="doorno" id="doorno" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Shop AddressLine 1</label>
+                        <input type="text" name="addr1" id="addr1" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Shop AddressLine 2</label>
+                        <input type="text" name="addr2" id="addr2" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Shop Pincode</label>
+                        <input type="number" name="pincode" id="pincode" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Delivery Charge</label>
+                        <input type="number" name="charge" id="charge" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Select Shop status</label>
+                        <select class="form-select" required name="shopstatus" id="shopstatus">
+                            <option value="" selected></option>
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select a valid Status.
+                        </div>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <input type="hidden" name="id" id="subcategoryid">
@@ -208,6 +262,14 @@ $conn = $db->conn();
                         $("#subcategoryname").val(data[0].name);
                         $("#category").find(":selected").text(data[0].catname);
                         $("#category").find(":selected").val(data[0].cat_id);
+                        $("#shopstatus").find(":selected").text(data[0].status == 1 ? "Active" : "Inactive");
+                        $("#shopstatus").find(":selected").val(data[0].status);
+                        $("#charge").val(data[0].deliverycharge)
+                        let address = data[0].address.split("|");
+                        $("#doorno").val(address[0])
+                        $("#addr1").val(address[1])
+                        $("#addr2").val(address[2])
+                        $("#pincode").val(address[3])
                     }
                 })
             })

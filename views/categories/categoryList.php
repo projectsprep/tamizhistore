@@ -35,9 +35,11 @@ $conn = $db->conn();
                                     <thead class="table-light thead-dark">
                                         <tr>
                                             <th scope="col" style="width: 70px;">Sl.no</th>
+                                            <th scope="col">Category ID</th>
                                             <th scope="col">Category Name</th>
                                             <th scope="col">Category Image</th>
                                             <th scope="col">Total Subcategory</th>
+                                            <th scope="col">Category Status</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -57,6 +59,9 @@ $conn = $db->conn();
                                                     </span>
                                                 </td>
                                                 <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $id; ?></h5>
+                                                </td>
+                                                <td align="center">
                                                     <h5 class="font-size-14 mb-1"><?= $catname; ?></h5>
                                                 </td>
                                                 <td align="center">
@@ -65,6 +70,11 @@ $conn = $db->conn();
                                                 <td align="center">
                                                     <div>
                                                         <h5 class="font-size-14 mb-1"><?= $conn->query("select * from subcategory where cat_id = $id;")->num_rows; ?></h5>
+                                                    </div>
+                                                </td>
+                                                <td align="center">
+                                                    <div>
+                                                        <h5 class="font-size-14 mb-1"><?= $status == 1 ? "Active" : "Inactive" ?></h5>
                                                     </div>
                                                 </td>
                                                 <td align="center">
@@ -109,6 +119,17 @@ $conn = $db->conn();
                     <div class="form-group">
                         <label for="">Category Image (optional)</label>
                         <input type="file" name="categoryimage" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Select Category status</label>
+                        <select class="form-select" required name="cstatus" id="cstatus">
+                            <option value="" selected></option>
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select a valid Status.
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -194,6 +215,8 @@ $conn = $db->conn();
                         $("#editModal").modal("show");
                         $("#categoryid").val(categoryid);
                         $("#categoryname").val(data[0].catname)
+                        $("#cstatus").find(":selected").val(data[0].status)
+                        $("#cstatus").find(":selected").text(data[0].status == 1 ? "Active" : "Inactive");
                     }
                 })
             })
@@ -210,7 +233,7 @@ $conn = $db->conn();
                         data: $("#editCategoryForm").serialize(),
                         success: function(data) {
                             $("#editModal").modal("hide");
-                            $(".container-fluid").prepend("<div class='alert alert-success alert-dismissible fade show'>Category added successfully <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>")
+                            $(".container-fluid").prepend("<div class='alert alert-success alert-dismissible fade show'>Category updated successfully <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>")
                         },
                         error: function(xhr, ajaxOptions, thrownError) {
                             alert("something happened");
@@ -220,7 +243,7 @@ $conn = $db->conn();
             })
 
             $.ajax({
-                url: "/categorylist",
+                url: "/bannerlist",
                 method: "GET",
                 data: {
                     view: ""

@@ -6,6 +6,13 @@ use app\core\Controller;
 use app\models\ProductRequestModel;
 use app\models\BookingsModel;
 
+session_start();
+
+if (!(isset($_COOKIE['user']) && isset($_SESSION['user']))) {
+    header("Location: /login");
+}
+
+
 class ProductRequestController extends Controller{
     private $db;
     private $bookingsDB;

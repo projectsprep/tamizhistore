@@ -24,7 +24,10 @@ use app\controllers\CustomersController;
 use app\controllers\DeliveryBoysController;
 use app\controllers\LoginController;
 use app\controllers\ProductRequestController;
+use app\controllers\RiderOrdersController;
 use app\controllers\SettingsController;
+use app\controllers\BannerController;
+use app\controllers\StepsInfoController;
 
 $app = new Application(dirname(__DIR__));
 $db = new DB();
@@ -42,6 +45,7 @@ $app->router->post("/resetpassword", [ProfileController::class, "resetPassword"]
 //user profile controller
 $app->router->get("/profile", [UserProfileController::class, "profile"]);
 $app->router->post("/profile", [UserProfileController::class, "profile"]);
+$app->router->post("/profile/test", [UserProfileController::class, "test"]);
 
 // /categorylist routes
 $app->router->get('/', [CategoryController::class, 'home']);
@@ -71,7 +75,7 @@ $app->router->get("/getcategorynames", [ProductController::class, "getCategoryNa
 $app->router->get("/getsubcategorynames", [ProductController::class, "getSubcategoryNames"]);
 $app->router->get("/productlist/add", [ProductController::class, "create"]);
 $app->router->post("/productlist/add", [ProductController::class, "create"]);
-$app->router->get("/productlist/edit", [ProductController::class, "update"]);
+// $app->router->get("/productlist/edit", [ProductController::class, "update"]);
 $app->router->post("/productlist/edit", [ProductController::class, "update"]);
 $app->router->post("/productlist/delete", [ProductController::class, "delete"]);
 $app->router->get("/productlist/fooditems", [ProductController::class, "foodItems"]);
@@ -121,6 +125,8 @@ $app->router->post("/api/booking", [ApiController::class, "booking"]);
 $app->router->post("/api/cancelbooking", [ApiController::class, "cancelBooking"]);
 $app->router->get("/api/getbookings", [ApiController::class, "getBookings"]);
 $app->router->post("/api/adddelexpotoken", [ApiController::class, "addDelExpoToken"]);
+$app->router->get("/api/infobanner", [ApiController::class, "infobanner"]);
+$app->router->post("/api/test", [ApiController::class, "test"]);
 
 // /areaList
 $app->router->get("/area", [AreaController::class, "getArea"]);
@@ -175,6 +181,8 @@ $app->router->post("/app/assigndeliveryboy", [AppController::class, "assignDeliv
 $app->router->post("/app/riderres", [AppController::class, "deliveryBoyNotiRes"]);
 $app->router->post("/app/assignedorders", [AppController::class, "assignedOrders"]);
 $app->router->get("/app/orders", [AppController::class, "pendingOrders"]);
+$app->router->get("/app/activeorders", [AppController::class, "activeOrders"]);
+$app->router->post("/app/ordercomplete", [AppController::class, "completeOrder"]);
 
 // /customers
 $app->router->get("/customers", [CustomersController::class, 'readCustomers']);
@@ -194,6 +202,25 @@ $app->router->get("/productrequest", [ProductRequestController::class, "read"]);
 $app->router->get("/bookings", [ProductRequestController::class, "readBookings"]);
 
 // /settings
-$app->router->get("/settings", [SettingsController::class, "read"]);
+$app->router->get("/api/settings", [SettingsController::class, "read"]);
+
+// /riderorders
+$app->router->get("/riderorders", [RiderOrdersController::class, "read"]);
+
+// /banner
+$app->router->get("/bannerlist", [BannerController::class, "read"]);
+$app->router->get("/banner", [BannerController::class, "getBanner"]);
+$app->router->get("/bannerlist/add", [BannerController::class, "create"]);
+$app->router->post("/bannerlist/add", [BannerController::class, "create"]);
+$app->router->post("/bannerlist/update", [BannerController::class, "update"]);
+$app->router->post("/bannerlist/delete", [BannerController::class, "delete"]);
+
+// /stepsinfo
+$app->router->get("/stepsinfo", [StepsInfoController::class, "read"]);
+$app->router->get("/stepsinfo/add", [StepsInfoController::class, "add"]);
+$app->router->post("/stepsinfo/add", [StepsInfoController::class, "add"]);
+$app->router->post("/stepsinfo/update", [StepsInfoController::class, "update"]);
+$app->router->post("/stepsinfo/delete", [StepsInfoController::class, "delete"]);
+$app->router->get("/getstepsinfo", [StepsInfoController::class, "getstepsinfo"]);
 
 $app->run();

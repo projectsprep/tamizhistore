@@ -64,10 +64,40 @@ $result = $conn->query("select id, catname from category");
                                     </div>
                                 </div>
                                 <div class="mb-3">
+                                    <label for="charge" class="form-label">Shop DoorNo.</label>
+                                    <input type="text" class="form-control" name="doorno" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="charge" class="form-label">Shop AddressLine 1</label>
+                                    <input type="text" class="form-control" name="addr1" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="charge" class="form-label">Shop AddressLine 2</label>
+                                    <input type="text" class="form-control" name="addr2" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="charge" class="form-label">Shop Pincode</label>
+                                    <input type="number" class="form-control" name="pincode" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="charge" class="form-label">Delivery Charge</label>
+                                    <input type="number" class="form-control" name="charge" required>
+                                </div>
+                                <div class="mb-3">
                                     <label class="form-label">SubCategory Image</label>
                                     <input type="file" class="form-control" required name="subcategoryimage" />
                                     <div class="invalid-feedback">
                                         Please select a valid category image
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Select Shop status</label>
+                                    <select class="form-select" required name="shopstatus" id="shopstatus">
+                                        <option value="1" selected="">Active</option>
+                                        <option value="0">Inactive</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select a valid Status.
                                     </div>
                                 </div>
                                 <div class="d-flex flex-wrap gap-2">

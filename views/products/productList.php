@@ -34,6 +34,7 @@ $db = $db->conn();
                                     <thead class="table-light thead-dark">
                                         <tr>
                                             <th scope="col" style="width: 70px;">Sl.no</th>
+                                            <th scope="col">Product ID</th>
                                             <th scope="col">Product Name</th>
                                             <th scope="col">Product Image</th>
                                             <th scope="col">Seller name</th>
@@ -45,7 +46,8 @@ $db = $db->conn();
                                             <th scope="col">Popular</th>
                                             <th scope="col">Product Price</th>
                                             <th scope="col">Product Range</th>
-                                            <th scope="col">In Stock</th>
+                                            <th scope="col">Stock</th>
+                                            <th scope="col">Type</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Action</th>
                                         </tr>
@@ -64,6 +66,9 @@ $db = $db->conn();
                                                     <span class="">
                                                         <?= $i++; ?>
                                                     </span>
+                                                </td>
+                                                <td>
+                                                    <h5 class="font-size-14 mb-1"><?= $id; ?></h5>
                                                 </td>
                                                 <td>
                                                     <h5 class="font-size-14 mb-1"><?= $pname; ?></h5>
@@ -118,7 +123,12 @@ $db = $db->conn();
                                                 </td>
                                                 <td>
                                                     <div>
-                                                        <h5 class="font-size-14 mb-1"><?= $stock ? "Yes" : "No" ?></h5>
+                                                        <h5 class="font-size-14 mb-1"><?= $stock; ?></h5>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <h5 class="font-size-14 mb-1"><?= $type; ?></h5>
                                                     </div>
                                                 </td>
                                                 <td>
@@ -208,9 +218,14 @@ $db = $db->conn();
                         <h6>(Leave the time blank or at 00:00 to make product available all the time.)</h6>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Pincode</label>
-                        <div>
-                            <input type="number" id="pincode" class="form-control" required name="pincode" />
+                        <label for="validationCustom03" class="form-label">Product Type</label>
+                        <select class="form-select" required="" name="type" id="type">
+                            <option selected="" value=""></option>
+                            <option value="multiple">multiple</option>
+                            <option value="booking">booking</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select a valid Category.
                         </div>
                     </div>
                     <div class="mb-3">
@@ -220,12 +235,8 @@ $db = $db->conn();
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="validationCustom03" class="form-label">In Stock?</label>
-                        <select class="form-select" required="" name="outofstock" id="stock">
-                            <option selected="" value=""></option>
-                            <option value="1">Yes</option>
-                            <option value="0">No</option>
-                        </select>
+                        <label for="validationCustom03" class="form-label">Stock</label>
+                        <input type="number" id="stock" class="form-control" required name="stock" />
                     </div>
                     <div class="mb-3">
                         <label for="validationCustom03" class="form-label">Product publish or unpublish?</label>
@@ -242,6 +253,13 @@ $db = $db->conn();
                             <option value="0">Unpopular</option>
                             <option value="1">Popular</option>
                         </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Pincode</label>
+                        <div>
+                            <input type="text" id="pincode" class="form-control" required name="pincode" />
+                        </div>
+                        <p>(If multiple Pincodes are available, separate with a (,) in between them. For example: 000000,111111,222222)</p>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Product Price (<i class="bx bx-rupee"></i>)</label>
@@ -355,11 +373,12 @@ $db = $db->conn();
                         $("#category").find(":selected").val(data[0].cid);
                         $("#subCategory").find(":selected").text(data[0].subname);
                         $("#subCategory").find(":selected").val(data[0].sid);
+                        $("#type").find(":selected").text(data[0].type);
+                        $("#type").find(":selected").val(data[0].type);
                         $("#minTime").val(data[0].minTime);
                         $("#maxTime").val(data[0].maxTime);
                         $("#pincode").val(data[0].pincode);
-                        $("#stock").find(":selected").val(data[0].stock);
-                        $("#stock").find(":selected").text(data[0].stock == 1 ? "Yes" : "No");
+                        $("#stock").val(data[0].stock);
                         $("#productStatus").find(":selected").text(data[0].status == 1 ? "Publish" : "Unpublish");
                         $("#productStatus").find(":selected").val(data[0].status);
                         $("#popular").find(":selected").text(data[0].popular == 1 ? "Popular" : "Unpopular");

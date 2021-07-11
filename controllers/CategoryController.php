@@ -47,10 +47,10 @@ class CategoryController extends Controller
             return $this->render("categories/addCategory");
         } else if ($this->app->request->getMethod() === "post") {
             try {
-                if (isset($_POST['categoryName']) && isset($_FILES['categoryimage']['name']) && $_FILES['categoryimage']['name'] != "") {
+                if (isset($_POST['categoryName']) && isset($_POST['cstatus']) && ($_POST['cstatus'] != "") && isset($_FILES['categoryimage']['name']) && $_FILES['categoryimage']['name'] != "") {
                     $validateImage = $this->validateImage();
                     if ($validateImage === true) {
-                        if ($this->db->create("category", $_POST["categoryName"], $this->imageDest)) {
+                        if ($this->db->create("category", $_POST["categoryName"], $this->imageDest, $_POST['cstatus'])) {
                             $msg = urlencode("Added new Category!");
                             return header("Location: /categorylist?msg=$msg");
                         } else {
@@ -122,13 +122,13 @@ class CategoryController extends Controller
     {
         try {
             if ($this->app->request->getMethod() === "post") {
-                if (isset($_POST['id']) && isset($_POST['categoryName'])) {
+                if (isset($_POST['id']) && isset($_POST['categoryName']) && isset($_POST['cstatus']) && ($_POST['cstatus'] != "")) {
                     $validateImage = NULL;
                     if (isset($_FILES['categoryimage']['name']) && $_FILES['categoryimage']['name'] != "") {
                         $validateImage = $this->validateImage();
                     }
                     if ($validateImage === true || $validateImage == NULL) {
-                        if ($this->db->update("category", $_POST['id'], $_POST["categoryName"], $validateImage == true ? $this->imageDest : "")) {
+                        if ($this->db->update("category", $_POST['id'], $_POST["categoryName"], $_POST['cstatus'], $validateImage == true ? $this->imageDest : "")) {
                             $msg = urlencode("Category updated successfully!");
                             return header("Location: /categorylist?msg=$msg");
                         } else {
@@ -151,8 +151,19 @@ class CategoryController extends Controller
 
     public function validateImage()
     {
+        function generateRandomString($length = 25) {
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $charactersLength = strlen($characters);
+            $randomString = '';
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $characters[rand(0, $charactersLength - 1)];
+            }
+            return $randomString;
+        }
+        $fileName = generateRandomString(15);
+        
         $targetDir = Application::$ROOT_DIR . "/public/assets/images/cat/";
-        $targetFile = $targetDir . basename($_FILES['categoryimage']['name']);
+        $targetFile = sprintf("%s%s.%s", $targetDir, $fileName, pathinfo($_FILES['categoryimage']['name'])['extension']);
         $uploadOk = 1;
         $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
@@ -169,8 +180,7 @@ class CategoryController extends Controller
 
         //check if image file already exist
         if (file_exists($targetFile)) {
-            return "Image file already exist";
-            $uploadOk = 0;
+            $this->validateImage();
         }
 
         // limit the file size
@@ -189,7 +199,7 @@ class CategoryController extends Controller
             // if everything is ok, try to upload file
         } else {
             if (move_uploaded_file($_FILES["categoryimage"]["tmp_name"], $targetFile)) {
-                $this->imageDest = "/assets/images/cat/" . basename($_FILES['categoryimage']['name']);
+                $this->imageDest = sprintf("/assets/images/cat/%s.%s", $fileName, pathinfo($_FILES['categoryimage']['name'])['extension']);
                 return true;
             } else {
                 return false;

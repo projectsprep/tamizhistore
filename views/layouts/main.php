@@ -63,14 +63,17 @@ $array = json_decode($json, true);
                     <div class="navbar-brand-box">
                         <a href="/" class="logo logo-dark">
                             <span class="logo-sm">
-                                <img src="/assets/images/logo.svg" alt="" height="22">
+                                <img src="/assets/images/firsticon.png" alt="" height="22">
                             </span>
                             <span class="logo-lg">
-                                <img src="/assets/images/logo-dark.png" alt="" height="17">
+                                <img src="/assets/images/firsticon.png" alt="" height="17">
                             </span>
                         </a>
 
                         <a href="/" class="logo logo-light">
+                            <span class="logo-sm">
+                                <img src="/assets/images/firsticon.png" alt="" height="25">
+                            </span>
                             <span class="logo-lg">
                                 <img src="/assets/images/firsticon.png" alt="" height="32">
                                 <span class="navbar-brand text-white">TamizhiStore</span>
@@ -221,6 +224,17 @@ $array = json_decode($json, true);
 
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-image-area"></i>
+                            <span key="t-ecommerce"><span>Banners</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="/bannerlist/add" key="t-products">Add Banner</a></li>
+                            <li><a href="/bannerlist" key="t-orders">Banner List</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
                             <i class="bx bx-book-bookmark"></i>
                             <span key="t-ecommerce"><span>Bookings</span>
                         </a>
@@ -236,6 +250,17 @@ $array = json_decode($json, true);
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
                             <li><a href="/productrequest" key="t-orders">Product Request List</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-image-edit"></i>
+                            <span key="t-ecommerce"><span>Information Banner</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="/stepsinfo/add" key="t-orders">Add Banner</a></li>
+                            <li><a href="/stepsinfo" key="t-orders">Banner List</a></li>
                         </ul>
                     </li>
 
@@ -308,7 +333,7 @@ $array = json_decode($json, true);
 
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="bx bxs-flag"></i>
+                            <i class="mdi mdi-flag-checkered"></i>
                             <span key="t-ecommerce"><span>Country Code</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
@@ -316,7 +341,12 @@ $array = json_decode($json, true);
                             <li><a href="/countrycode" key="t-orders">Country Code List</a></li>
                         </ul>
                     </li>
-
+                    <li>
+                        <a href="/riderorders" class="waves-effect">
+                            <i class="mdi mdi-truck-fast-outline"></i>
+                            <span key="t-chat">Rider Orders</span>
+                        </a>
+                    </li>
                     <li>
                         <a href="/paymentlist" class="waves-effect">
                             <i class="bx bx-credit-card"></i>

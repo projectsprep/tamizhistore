@@ -51,6 +51,34 @@ class AppController
         }
     }
 
+    public function completeOrder(){
+        $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
+        $data = json_decode(file_get_contents("php://input"));
+        if(isset($data->oid) && ($data->oid != "")){
+            $result = $this->appDB->completeOrder($decodedData->data->id, $data->oid);
+            if($result){
+                return json_encode(array("result"=>true));
+            }else{
+                http_response_code(400);
+                return json_encode(array("result"=>false, "message"=>"Unable to complete the order!"));
+            }
+        }else{
+            http_response_code(400);
+            return json_encode(array("result"=>false, "message"=>"Invalid arguments!"));
+        }
+    }
+
+    public function activeOrders(){
+        $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
+        $result = $this->appDB->activeOrders($decodedData->data->id);
+        if($result){
+            return json_encode(array("result"=>true, "data"=>$result));
+        }else{
+            http_response_code(400);
+            return json_encode(array("result"=>false, "message"=>"No Orders found!"));
+        }
+    }
+
     public function pendingOrders()
     {
         $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
@@ -99,7 +127,7 @@ class AppController
 
             // initialize orders
             foreach ($result as $row) {
-                $result = $this->appDB->create($decodedData->data->id, $row['productid'], $row['aid'], $row['quantity'], $note, $address, $oid, $phone);
+                $result = $this->appDB->create($decodedData->data->id, $row['productid'], $row['aid'], $row['quantity'], $oid, $phone, $note, $address);
                 if ($result === true) {
                     // if order is made, delete products from cart
                     $query = "DELETE FROM cart WHERE id=" . $row['id'];
@@ -135,11 +163,7 @@ class AppController
         $result = $this->appDB->create($decodedData->data->id, $pid, $aid, $qty, $note, $address, $oid, $phone);
         if ($result) {
             $result = $this->assignDeliveryBoy();
-            if ($result === true) {
-                return true;
-            } else {
-                return $result;
-            }
+            return true;
         } else {
             return $result;
         }
@@ -160,6 +184,10 @@ class AppController
         }
     }
 
+    // public function checkOrders(){
+    //     $query = "SELECT * FROM "
+    // }
+
     public function assignDeliveryBoy()
     {
         $channelName = "deliveryboys";
@@ -176,13 +204,13 @@ class AppController
                             $result = $this->conn->query($query);
                             if ($result->num_rows > 0) {
                                 while ($row = $result->fetch_assoc()) {
-                                    $this->app->expo->subscribe($channelName, $row['token']);
+                                    $this->expoNotifications(array("title" => "Place an order!", "msg" => "You have got an order to place!"), $channelName, $row['token']);
+                                    // $this->app->expo->subscribe($channelName, $row['token']);
                                 }
                             }
                         }
                     }
                 }
-                $this->expoNotifications(array("title" => "Place an order!", "msg" => "You have got an order to place!"), $channelName);
 
                 return true;
             } else {
@@ -239,7 +267,7 @@ class AppController
                         $row = $result->fetch_assoc();
                         $uid = $row['uid'];
                         $this->app->expo->subscribe($row['uid'], $row['token']);
-                        $this->expoNotifications(array("title" => 'Order Info', "msg" => "Your order is placed successfully. Thank you for your orders!"), $uid);
+                        $this->expoNotifications(array("title" => 'Order Info', "msg" => "Your order is placed successfully. Thank you for your orders!"), $uid, $row['token']);
                     }
                     return json_encode(array("result" => true));
                 } else if ($result == true) {
@@ -282,10 +310,22 @@ class AppController
     }
 
 
-    public function expoNotifications($data, $uid)
+    public function expoNotifications($data, $uid, $token)
     {
-        $channelName = "default";
-        $notification = ["title" => $data['title'], "body" => $data['msg']];
-        $this->app->expo->notify([$uid], $notification);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,"https://exp.host/--/api/v2/push/send");
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS,
+        http_build_query(array("to"=>"$token", "title"=>$data['title'], "body"=>$data['msg'])));
+
+
+        // Receive server response ...
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        $server_output = curl_exec($ch);
+
+        curl_close ($ch);
     }
 }

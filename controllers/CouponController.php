@@ -126,8 +126,19 @@ class CouponController extends Controller
 
     public function validateImage()
     {
+        function generateRandomString($length = 25) {
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $charactersLength = strlen($characters);
+            $randomString = '';
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $characters[rand(0, $charactersLength - 1)];
+            }
+            return $randomString;
+        }
+        $fileName = generateRandomString(15);
+
         $targetDir = Application::$ROOT_DIR . "/public/assets/images/coupon/";
-        $targetFile = $targetDir . basename($_FILES['couponimage']['name']);
+        $targetFile = sprintf("%s%s.%s", $targetDir, $fileName, pathinfo($_FILES['couponimage']['name'])['extension']);
         $uploadOk = 1;
         $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
@@ -144,8 +155,7 @@ class CouponController extends Controller
 
         //check if image file already exist
         if (file_exists($targetFile)) {
-            return "Image file already exist";
-            $uploadOk = 0;
+            $this->validateImage();
         }
 
         // limit the file size
@@ -164,7 +174,7 @@ class CouponController extends Controller
             // if everything is ok, try to upload file
         } else {
             if (move_uploaded_file($_FILES["couponimage"]["tmp_name"], $targetFile)) {
-                $this->imageDest = "/assets/images/coupon/" . basename($_FILES['couponimage']['name']);
+                $this->imageDest = sprintf("/assets/images/coupon/%s.%s", $fileName, pathinfo($_FILES['couponimage']['name'])['extension']);
                 return true;
             } else {
                 return false;

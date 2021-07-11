@@ -35,6 +35,7 @@ $conn = $db->conn();
                                     <thead class="table-light thead-dark">
                                         <tr>
                                             <th scope="col" style="width: 70px;">Sl.no</th>
+                                            <th scope="col">User ID</th>
                                             <th scope="col">Name</th>
                                             <th scope="col">Username</th>
                                             <th scope="col">Register Date</th>
@@ -54,6 +55,9 @@ $conn = $db->conn();
                                                     <span class="">
                                                         <?= $i++; ?>
                                                     </span>
+                                                </td>
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $id; ?></h5>
                                                 </td>
                                                 <td align="center">
                                                     <h5 class="font-size-14 mb-1"><?= $name; ?></h5>

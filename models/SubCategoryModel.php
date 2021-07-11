@@ -22,14 +22,17 @@ class SubCategoryModel
         $this->conn->close();
     }
 
-    public function create($table, $subcategoryName, $subcategoryImage, $category)
+    public function create($table, $subcategoryName, $subcategoryImage, $category, $deliverycharge, $address, $status)
     {
         $table = $this->conn->real_escape_string($table);
         $subcategoryName = $this->conn->real_escape_string($subcategoryName);
         $subcategoryImage = $this->conn->real_escape_string($subcategoryImage);
         $category = $this->conn->real_escape_string($category);
+        $deliverycharge = $this->conn->real_escape_string($deliverycharge);
+        $address = $this->conn->real_escape_string($address);
+        $status = $this->conn->real_escape_string($status);
 
-        $query = "INSERT INTO $table (`name`, img, cat_id) VALUES ('$subcategoryName', '$subcategoryImage', $category);";
+        $query = "INSERT INTO $table (`name`, img, cat_id, deliverycharge, address, status) VALUES ('$subcategoryName', '$subcategoryImage', $category, $deliverycharge, '$address', $status);";
         $result = $this->conn->query($query);
         if ($result) {
             return true;
@@ -71,7 +74,7 @@ class SubCategoryModel
         $table = $this->conn->real_escape_string($table);
         $id = $this->conn->real_escape_string($id);
 
-        $query = "Select s.id, s.cat_id, s.name, s.img, category.catname from $table s inner join category on s.cat_id = category.id  where s.id=$id ORDER BY s.id DESC";
+        $query = "Select s.*, category.catname from $table s inner join category on s.cat_id = category.id  where s.id=$id ORDER BY s.id DESC";
         $result = $this->conn->query($query);
         $array = [];
         if ($result->num_rows > 0) {
@@ -108,7 +111,7 @@ class SubCategoryModel
     {
         $table = $this->conn->real_escape_string($table);
 
-        $query = "Select s.id, s.cat_id, s.name, s.img, category.catname from $table s left join category on s.cat_id = category.id ORDER BY s.id DESC";
+        $query = "Select s.*, category.catname from $table s left join category on s.cat_id = category.id ORDER BY s.id DESC";
         $result = $this->conn->query($query);
         $array = [];
         if ($result->num_rows > 0) {
@@ -121,6 +124,24 @@ class SubCategoryModel
         } else {
 
 
+            return false;
+        }
+    }
+
+    public function apiRead($table){
+        $table = $this->conn->real_escape_string($table);
+
+        $query = "Select s.*, category.catname from $table s left join category on s.cat_id = category.id where category.status = 1 and s.status = 1 ORDER BY s.id DESC";
+        $result = $this->conn->query($query);
+        $array = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                array_push($array, $row);
+            }
+
+
+            return json_encode($array);
+        } else {
             return false;
         }
     }
@@ -144,18 +165,21 @@ class SubCategoryModel
         }
     }
 
-    public function update($table, $id, $cat_id, $name, $img = "")
+    public function update($table, $id, $cat_id, $name, $deliverycharge, $address, $status, $img = "")
     {
         $table = $this->conn->real_escape_string($table);
         $id = $this->conn->real_escape_string($id);
         $cat_id = $this->conn->real_escape_string($cat_id);
         $name = $this->conn->real_escape_string($name);
         $img = $this->conn->real_escape_string($img);
+        $address = $this->conn->real_escape_string($address);
+        $deliverycharge = $this->conn->real_escape_string($deliverycharge);
+        $status = $this->conn->real_escape_string($status);
 
         if (isset($img) && $img != "") {
-            $query = "UPDATE $table set name='$name', img='$img', cat_id='$cat_id' where id=$id";
+            $query = "UPDATE $table set name='$name', deliverycharge=$deliverycharge, status=$status, address='$address', img='$img', cat_id='$cat_id' where id=$id";
         } else {
-            $query = "UPDATE $table set name='$name', cat_id='$cat_id' where id=$id";
+            $query = "UPDATE $table set name='$name', deliverycharge=$deliverycharge, status=$status, address='$address', cat_id='$cat_id' where id=$id";
         }
         $result = $this->conn->query($query);
         if ($this->conn->affected_rows > 0) {

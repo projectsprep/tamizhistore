@@ -38,6 +38,8 @@ $conn = $db->conn();
                                             <th scope="col">Product Name</th>
                                             <th scope="col">Product Image</th>
                                             <th scope="col">Message</th>
+                                            <th scope="col">Phone</th>
+                                            <th scope="col">Username</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -64,6 +66,16 @@ $conn = $db->conn();
                                                 <td align="center">
                                                     <div>
                                                         <h5 class="font-size-14 mb-1"><?= $message ?></h5>
+                                                    </div>
+                                                </td>
+                                                <td align="center">
+                                                    <div>
+                                                        <h5 class="font-size-14 mb-1"><?= $phone ?></h5>
+                                                    </div>
+                                                </td>
+                                                <td align="center">
+                                                    <div>
+                                                        <h5 class="font-size-14 mb-1"><?= $username ?></h5>
                                                     </div>
                                                 </td>
                                             </tr>

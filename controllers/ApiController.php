@@ -21,6 +21,7 @@ use app\models\ApiProductsModel;
 use app\models\CustomersModel;
 use app\models\BookingsModel;
 use app\models\DelNotiTokenModel;
+use app\models\StepsInfoModel;
 
 use \Firebase\JWT\JWT;
 
@@ -44,6 +45,7 @@ class ApiController extends Controller
     private CustomersModel $customerDB;
     private BookingsModel $bookingDB;
     private DelNotiTokenModel $delnotiDB;
+    private StepsInfoModel $bannerInfoDB;
     private $secretKey = "tamizhiowt";
     private $token;
     private $conn = null;
@@ -69,6 +71,7 @@ class ApiController extends Controller
         $this->customerDB = new CustomersModel();
         $this->bookingDB = new BookingsModel();
         $this->delnotiDB = new DelNotiTokenModel();
+        $this->bannerInfoDB = new StepsInfoModel();
         $this->app = new Application(dirname(__DIR__));
 
         $headers = getallheaders();
@@ -92,6 +95,33 @@ class ApiController extends Controller
             http_response_code(401);
             echo json_encode(array("result" => false, "message" => "User not Authorized"));
             exit();
+        }
+    }
+
+    public function test(){
+        $query = "SELECT * FROM testing";
+        $result = $this->conn->query($query);
+        if($result->num_rows > 0){  
+            $row = $result->fetch_assoc();
+            if($row['active'] == 1){
+                return json_encode(array("result"=>true));
+            }else if($row['active'] == 0){
+                return json_encode(array("result"=>false, "title"=>$row['title'], "message"=>$row['message']));
+            }
+        }else{
+            http_response_code(400);
+            return json_encode(array("result"=>false, "message"=>"No testings found!"));
+        }
+    }
+
+    public function infobanner(){
+        $result = $this->bannerInfoDB->read();
+        if($result){
+            $result = json_decode($result);
+            return json_encode(array("result"=>true, "data"=>$result));
+        }else{
+            http_response_code(400);
+            return json_encode(array("result"=>false, "message"=>"No banners found!"));
         }
     }
 
@@ -177,7 +207,14 @@ class ApiController extends Controller
         $array = [];
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                array_push($array, $row['pincode']);
+                $temp = explode(",", $row['pincode']);
+                foreach($temp as $t){
+                    if(in_array($t, $array)){
+                        continue;
+                    }else{
+                        array_push($array, $t);
+                    }
+                }
             }
             return json_encode(array('result' => true, "data" => $array));
         } else {
@@ -188,11 +225,18 @@ class ApiController extends Controller
 
     public function requestProduct()
     {
-        if (isset($_POST['pname']) && ($_POST['pname'] !== "") && isset($_POST['msg']) && ($_POST['msg'] !== "") && isset($_FILES['image']['name']) && ($_FILES['image']['name'] !== "")) {
+        $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
+        if (isset($_POST['pname']) && ($_POST['pname'] !== "") && isset($_POST['msg']) && ($_POST['msg'] !== "") && isset($_POST['phone']) && ($_POST['phone'] !== "") && isset($_FILES['image']['name']) && ($_FILES['image']['name'] !== "")) {
             $productName = $this->conn->real_escape_string($_POST['pname']);
             $msg = $this->conn->real_escape_string($_POST['msg']);
+            $phone = $this->conn->real_escape_string($_POST['phone']);
 
-            $query = "SELECT * FROM productrequest where productname='$productName' and `message`='$msg'";
+            if(strlen($phone) <> 10){
+                http_response_code(400);
+                return json_encode(array("result"=>false, "message"=>"Phone should be a valid 10 digit number!"));
+            }
+
+            $query = "SELECT * FROM productrequest where productname='$productName' and `message`='$msg' and uid=".$decodedData->data->id;
             $result = $this->conn->query($query);
             if ($result->num_rows > 0) {
                 http_response_code(400);
@@ -200,7 +244,7 @@ class ApiController extends Controller
             } else {
                 $validateImage = $this->validateImage();
                 if ($validateImage === true) {
-                    $query = "INSERT INTO productrequest SET productname='$productName', `message`='$msg', `image`='" . $this->imageDest . "'";;
+                    $query = "INSERT INTO productrequest SET productname='$productName', `message`='$msg', phone=$phone, `image`='" . $this->imageDest . "', uid=".$decodedData->data->id;
                     $result = $this->conn->query($query);
                     if ($this->conn->affected_rows > 0) {
                         return json_encode(array("result" => true));
@@ -508,7 +552,7 @@ class ApiController extends Controller
         try {
             if (isset($_GET['rows']) && ($_GET['rows'] != "")) {
                 $array = [];
-                $query = "select * from category order by(case id when 3 then 1 when 2 then 2 when 4 then 3 when 13 then 4 else 5 end) asc";
+                $query = "select * from category where status=1 order by(case id when 3 then 1 when 2 then 2 when 4 then 3 when 13 then 4 else 5 end) asc";
                 $result = $this->conn->query($query);
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
@@ -551,7 +595,7 @@ class ApiController extends Controller
         try {
             if (isset($_GET['rows']) && ($_GET['rows'] != "")) {
                 $array = [];
-                $query = "select * from subcategory order by(case cat_id when 3 then 1 when 2 then 2 when 4 then 3 when 13 then 4 else 5 end) asc";
+                $query = "select * from subcategory where subcategory.status = 1 order by(case cat_id when 3 then 1 when 2 then 2 when 4 then 3 when 13 then 4 else 5 end) asc";
                 $result = $this->conn->query($query);
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
@@ -586,7 +630,7 @@ class ApiController extends Controller
                     throw new Exception("Invalid CID");
                 }
             } else {
-                return $this->sDB->read("subcategory");
+                return $this->sDB->apiRead("subcategory");
             }
         } catch (Exception $e) {
             http_response_code(400);
@@ -835,7 +879,7 @@ class ApiController extends Controller
                     throw new Exception("Invalid ID");
                 }
             } else {
-                return $this->cDB->read("category");
+                return $this->cDB->apiRead("category");
             }
         } catch (Exception $e) {
             http_response_code(400);
@@ -981,8 +1025,18 @@ class ApiController extends Controller
 
     public function validateImage()
     {
+        function generateRandomString($length = 25) {
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $charactersLength = strlen($characters);
+            $randomString = '';
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $characters[rand(0, $charactersLength - 1)];
+            }
+            return $randomString;
+        }
+        $fileName = generateRandomString(15);
         $targetDir = Application::$ROOT_DIR . "/public/assets/images/request/";
-        $targetFile = $targetDir . basename($_FILES['image']['name']);
+        $targetFile = sprintf("%s%s.%s", $targetDir, $fileName, pathinfo($_FILES['image']['name'])['extension']);
         $uploadOk = 1;
         $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
@@ -999,10 +1053,8 @@ class ApiController extends Controller
 
         //check if image file already exist
         if (file_exists($targetFile)) {
-            $uploadOk = 0;
-            return "Image file already exist";
+            $this->validateImage();
         }
-
         // limit the file size
         if ($_FILES['image']['size'] > 5000000) {
             $uploadOk = 0;
@@ -1019,7 +1071,7 @@ class ApiController extends Controller
             // if everything is ok, try to upload file
         } else {
             if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetFile)) {
-                $this->imageDest = "/assets/images/request/" . basename($_FILES['image']['name']);
+                $this->imageDest = sprintf("/assets/images/request/%s.%s", $fileName, pathinfo($_FILES['image']['name'])['extension']);
                 return true;
             } else {
                 return false;

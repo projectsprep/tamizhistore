@@ -22,7 +22,7 @@ class DeliveryBoysModel
     
     public function read()
     {
-        $query = "Select * from $this->table";
+        $query = "Select * from $this->table order by id desc";
         $result = $this->conn->query($query);
         $array = [];
         if ($result->num_rows > 0) {

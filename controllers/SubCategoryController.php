@@ -34,7 +34,7 @@ class SubCategoryController extends Controller
                     throw new Exception("Invalid ID!");
                 }
             } else {
-                return $this->db->read("subcategory");
+                return $this->db->apiRead("subcategory");
             }
         } catch (Exception $e) {
             http_response_code(400);
@@ -48,10 +48,12 @@ class SubCategoryController extends Controller
             return $this->render("subcategories/addSubcategory");
         } else if ($this->app->request->getMethod() === "post") {
             try {
-                if (isset($_POST['subcategoryname']) && ($_POST['subcategoryname'] !== "") && isset($_POST['category']) && ($_POST['category'] !== "")  && isset($_FILES['subcategoryimage']['name']) && $_FILES['subcategoryimage']['name'] != "") {
+                if (isset($_POST['subcategoryname']) && ($_POST['subcategoryname'] !== "") && isset($_POST['shopstatus']) && ($_POST['shopstatus'] !== "") && isset($_POST['charge']) && ($_POST['charge'] !== "") && isset($_POST['category']) && ($_POST['category'] !== "") && isset($_POST['doorno']) && ($_POST['doorno'] !== "") && isset($_POST['addr1']) && ($_POST['addr1'] !== "") && isset($_POST['addr2']) && ($_POST['addr2'] !== "") && isset($_POST['pincode']) && ($_POST['pincode'] !== "")  && isset($_FILES['subcategoryimage']['name']) && $_FILES['subcategoryimage']['name'] != "") {
                     $validateImage = $this->validateImage();
                     if ($validateImage === true) {
-                        if ($this->db->create("subcategory", $_POST["subcategoryname"], $this->imageDest, $_POST['category'])) {
+                        $address = [$_POST['doorno'], $_POST['addr1'], $_POST['addr2'], $_POST['pincode']];
+                        $address = implode("|", $address);
+                        if ($this->db->create("subcategory", $_POST["subcategoryname"], $this->imageDest, $_POST['category'], $_POST['charge'], $address, $_POST['shopstatus'])) {
                             $msg = urlencode("Added subcategory successfully!");
                             return header("Location: /subcategorylist?msg=$msg");
                         } else {
@@ -108,13 +110,15 @@ class SubCategoryController extends Controller
     {
         try {
             if ($this->app->request->getMethod() === "post") {
-                if (isset($_POST['id']) && isset($_POST['subcategoryName']) && isset($_POST['category'])) {
+                if (isset($_POST['id']) && isset($_POST['subcategoryName']) && isset($_POST['category']) && isset($_POST['charge']) && isset($_POST['doorno']) && ($_POST['doorno'] !== "") && isset($_POST['shopstatus']) && ($_POST['shopstatus'] !== "") && isset($_POST['addr1']) && ($_POST['addr1'] !== "") && isset($_POST['addr2']) && ($_POST['addr2'] !== "") && isset($_POST['pincode']) && ($_POST['pincode'] !== "")) {
                     $validateImage = NULL;
                     if (isset($_FILES['subcategoryimage']['name']) && $_FILES['subcategoryimage']['name'] != "") {
                         $validateImage = $this->validateImage();
                     }
                     if ($validateImage === true || $validateImage == NULL) {
-                        if ($this->db->update("subcategory", $_POST['id'], $_POST['category'], $_POST['subcategoryName'], $validateImage == true ? $this->imageDest : "")) {
+                        $address = [$_POST['doorno'], $_POST['addr1'], $_POST['addr2'], $_POST['pincode']];
+                        $address = implode("|", $address);
+                        if ($this->db->update("subcategory", $_POST['id'], $_POST['category'], $_POST['subcategoryName'], $_POST['charge'], $address, $_POST['shopstatus'], $validateImage == true ? $this->imageDest : "")) {
                             $msg = urlencode("SubCategory updated successfully!");
                             return header("Location: /subcategorylist?msg=$msg");
                         } else {
@@ -135,8 +139,19 @@ class SubCategoryController extends Controller
 
     public function validateImage()
     {
+        function generateRandomString($length = 25) {
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $charactersLength = strlen($characters);
+            $randomString = '';
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $characters[rand(0, $charactersLength - 1)];
+            }
+            return $randomString;
+        }
+        $fileName = generateRandomString(15);
+
         $targetDir = Application::$ROOT_DIR . "/public/assets/images/cat/";
-        $targetFile = $targetDir . basename($_FILES['subcategoryimage']['name']);
+        $targetFile = sprintf("%s%s.%s", $targetDir, $fileName, pathinfo($_FILES['subcategoryimage']['name'])['extension']);
         $uploadOk = 1;
         $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
@@ -153,8 +168,7 @@ class SubCategoryController extends Controller
 
         //check if image file already exist
         if (file_exists($targetFile)) {
-            $uploadOk = 0;
-            return "Image file already exist";
+            $this->validateImage();
         }
 
         // limit the file size
@@ -173,7 +187,7 @@ class SubCategoryController extends Controller
             // if everything is ok, try to upload file
         } else {
             if (move_uploaded_file($_FILES["subcategoryimage"]["tmp_name"], $targetFile)) {
-                $this->imageDest = "cat/" . basename($_FILES['subcategoryimage']['name']);
+                $this->imageDest = sprintf("cat/%s.%s", $fileName, pathinfo($_FILES['subcategoryimage']['name'])['extension']);
                 return true;
             } else {
                 return false;

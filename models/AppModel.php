@@ -21,9 +21,24 @@ class AppModel
         $this->conn->close();
     }
 
-    public function pendingOrders($rid){
-        $query = "SELECT r.*, t.userid, t.paymentmethod, t.note, t.customaddress, t.customerphone, t.totalproductprice as productsPrice, t.deliverycharge, t.totalprice FROM rnoti r INNER JOIN temporders t on r.oid = t.oid INNER JOIN product p on t.productid = p.id WHERE r.rid = $rid and r.status='pending' group by oid";
-        // $query = "SELECT r.*, t.userid, t.productid, t.quantity, t.paymentmethod, t.note, t.customaddress, t.customerphone, t.totalproductprice as productsPrice, t.deliverycharge, t.totalprice FROM rnoti r inner join temporders t on t.oid = r.oid WHERE rid=$rid";
+    public function completeOrder($rid, $oid){
+        $rid = $this->conn->real_escape_string($rid);
+        $oid = $this->conn->real_escape_string($oid);
+
+        $query = "UPDATE temporders SET deliverystatus='completed', orderstatus='completed', deliverydate=NOW() WHERE riderid=$rid and oid = $oid; ";
+        $query .= "UPDATE rider SET complete = complete + 1 where id=$rid";
+        $result = $this->conn->multi_query($query);
+        if($this->conn->affected_rows > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function activeOrders($rid){
+        $rid = $this->conn->real_escape_string($rid);
+
+        $query = "SELECT r.*, t.userid, t.paymentmethod, t.note, t.customaddress, t.customerphone, t.totalproductprice as productsPrice, t.deliverycharge, t.totalprice FROM rnoti r INNER JOIN temporders t on r.oid = t.oid INNER JOIN product p on t.productid = p.id WHERE r.rid = $rid and r.status='accepted' and t.deliverystatus='assigned' group by oid";
         $result = $this->conn->query($query);
         $array = [];
         if($result->num_rows > 0){
@@ -31,7 +46,33 @@ class AppModel
                 $list = [];
                 array_push($list, $row);
                 $list[0]['products'] = [];
-                $query = "SELECT p.pname, p.sname, t.quantity, t.productid FROM temporders t INNER JOIN product p on p.id = t.productid where oid=".$row['oid'];
+                $query = "SELECT p.pname, p.sname, t.quantity, t.productid, s.address as shopAddress FROM temporders t INNER JOIN product p on p.id = t.productid INNER JOIN subcategory s on s.id = p.sid where oid=".$row['oid'];
+                $orderResult = $this->conn->query($query);
+                if($orderResult->num_rows > 0){
+                    while($orderRow = $orderResult->fetch_assoc()){
+                        array_push($list[0]['products'], $orderRow);
+                    }
+                }
+                array_push($array, $list);
+            }
+            return $array;
+        }else{
+            return false;
+        }
+    }
+
+    public function pendingOrders($rid){
+        $rid = $this->conn->real_escape_string($rid);
+
+        $query = "SELECT r.*, t.userid, t.paymentmethod, t.note, t.customaddress, t.customerphone, t.totalproductprice as productsPrice, t.deliverycharge, t.totalprice FROM rnoti r INNER JOIN temporders t on r.oid = t.oid INNER JOIN product p on t.productid = p.id WHERE r.rid = $rid and r.status='pending' group by oid";
+        $result = $this->conn->query($query);
+        $array = [];
+        if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+                $list = [];
+                array_push($list, $row);
+                $list[0]['products'] = [];
+                $query = "SELECT p.pname, p.sname, t.quantity, t.productid, s.address as shopAddress FROM temporders t INNER JOIN product p on p.id = t.productid INNER JOIN subcategory s on s.id = p.sid where oid=".$row['oid'];
                 $orderResult = $this->conn->query($query);
                 if($orderResult->num_rows > 0){
                     while($orderRow = $orderResult->fetch_assoc()){
@@ -45,12 +86,11 @@ class AppModel
         }else{
             return false;
         }
-        // $query = "SELECT r.*, t.userid, t.productid, t.quantity, t.paymentmethod, t.note, t.customaddress, t.customerphone, t.totalproductprice as productsPrice, t.deliverycharge, t.totalprice, p.pname, p.sname FROM rnoti r INNER JOIN temporders t on r.oid = t.oid INNER JOIN product p on t.productid = p.id WHERE r.rid = $rid and r.status='pending'";
     }
 
     public function readCart($uid){
         $uid = $this->conn->real_escape_string($uid);
-        // $query = "SELECT c.*, u.id aid FROM cart c LEFT JOIN useraddress u on u.userid=c.userid WHERE c.userid=$uid";
+        
         $query = "SELECT c.*, (SELECT id from useraddress where userid=c.userid LIMIT 1) as aid, p.pname, p.sname, p.cid, p.sid, p.psdesc, p.pgms, p.pprice, p.status, p.stock, p.pimg, p.prel, p.date, p.discount, p.popular FROM cart c INNER JOIN product p on p.id = c.productid WHERE c.userid=$uid";
         $result = $this->conn->query($query);
         $array = [];
@@ -68,7 +108,7 @@ class AppModel
     public function read($uid){
         $uid = $this->conn->real_escape_string($uid);
 
-        $query = "SELECT o.oid, o.totalprice as TotalPrice FROM orderid o where o.uid = $uid";
+        $query = "SELECT o.oid, o.totalprice as TotalPrice FROM orderid o where o.uid = $uid order by o.id desc LIMIT 7";
 
         $result = $this->conn->query($query);
 
@@ -81,13 +121,14 @@ class AppModel
 
         if($result->num_rows > 0){
             while($row = $result->fetch_assoc()){
-                $list = ["oid"=>"", "TotalPrice"=>"", "products"=>[]];
+                $list = ["oid"=>"", "TotalPrice"=>"", "DeliveryCharge"=>0, "products"=>[]];
                 $list['oid'] = $row['oid'];
                 $list['TotalPrice'] = $row['TotalPrice'];
-                $query = "SELECT t.*, p.* FROM orderid o INNER JOIN temporders t on t.oid = o.oid INNER JOIN product p on p.id = t.productid where o.uid=$uid and o.oid=".$row['oid'] . " ORDER BY orderdate DESC";
+                $query = "SELECT t.*, p.* FROM orderid o INNER JOIN temporders t on t.oid = o.oid INNER JOIN product p on p.id = t.productid where o.uid=$uid and o.oid=".$row['oid'];
                 $productResult = $this->conn->query($query);
                 if($productResult->num_rows > 0){
                     while($productRow = $productResult->fetch_assoc()){
+                        $list['DeliveryCharge'] += $productRow['deliverycharge'];
                         array_push($list['products'], $productRow);
                     }
                 }
@@ -97,7 +138,7 @@ class AppModel
         }
 
         
-        $query = "SELECT b.*, p.pname, p.sname, p.cid, p.sid, p.pprice, p.pgms, p.psdesc, p.type producttype, p.pincode, p.popular, p.pimg, p.discount FROM bookings b inner join product p on p.id=b.productid where userid=$uid ORDER BY bookeddate DESC";
+        $query = "SELECT b.*, p.pname, p.sname, p.cid, p.sid, p.pprice, p.pgms, p.psdesc, p.type producttype, p.pincode, p.popular, p.pimg, p.discount FROM bookings b inner join product p on p.id=b.productid where userid=$uid ORDER BY bookeddate DESC LIMIT 3";
         $result = $this->conn->query($query);
         if($result->num_rows > 0){
             while($row = $result->fetch_assoc()){
@@ -114,7 +155,7 @@ class AppModel
         
     }
 
-    public function create($userid, $productid, $addressid, $qty, $note="", $address="", $oid, $phone){
+    public function create($userid, $productid, $addressid, $qty, $oid, $phone, $note="", $address=""){
         $oid = $this->conn->real_escape_string($oid);
         $userid = $this->conn->real_escape_string($userid);
         $productid = $this->conn->real_escape_string($productid);
@@ -134,7 +175,7 @@ class AppModel
             $sid = $row['sid'];
         }
 
-        $query = "SELECT t.*, p.sid FROM temporders t inner join product p on p.id=t.productid WHERE t.oid=$oid and p.sid=t.sid";
+        $query = "SELECT t.*, p.sid FROM temporders t inner join product p on p.id=t.productid WHERE t.oid=$oid and p.sid=$sid";
         $result = $this->conn->query($query);
         $rows = $result->num_rows;
         $deliveryCharge = $rows > 0 ? 0 : $deliveryCharge;
@@ -278,10 +319,10 @@ class AppModel
                 $query1 .= "INSERT INTO ordersnoti SET oid=$oid, rid=$rid; ";
                 $query1 .= "UPDATE rider SET accept=accept+1 WHERE id=$rid; ";
                 $result = $this->conn->multi_query($query1);
-                if (0 !== $this->conn->errno) {
-                    return false;    
+                if ($this->conn->affected_rows > 0) {
+                    return true;    
                 } else {
-                    return true;
+                    return false;
                 }    
             }
         }else{

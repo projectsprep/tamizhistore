@@ -52,9 +52,9 @@ class ApiProductsModel
         $page = $this->conn->real_escape_string($page);
 
         if($page == 0 || $page == 1){
-            $query = "SELECT * FROM $table WHERE pname LIKE '%$q%' and pincode=$pincode and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\")) LIMIT 10";
+            $query = "SELECT p.* FROM $table p INNER JOIN category c on c.id=p.cid INNER JOIN subcategory s on s.id = p.sid WHERE p.pname LIKE '%$q%' and p.status=1 and s.status = 1 and c.status = 1 and p.pincode LIKE '%$pincode%' and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\")) LIMIT 10";
         }else{
-            $query = "SELECT * FROM $table WHERE pname LIKE '%$q%' and pincode=$pincode and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\")) LIMIT " . (($page * 10) - 10) . ", 10";
+            $query = "SELECT p.* FROM $table p INNER JOIN category c on c.id=p.cid INNER JOIN subcategory s on s.id = p.sid WHERE p.pname LIKE '%$q%' and p.status=1 and s.status = 1 and c.status = 1 and p.pincode LIKE '%$pincode%' and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\")) LIMIT " . (($page * 10) - 10) . ", 10";
         }
         $result = $this->conn->query($query);
         $array = [];
@@ -66,7 +66,7 @@ class ApiProductsModel
                 array_push($array, $row);
             }
 
-            $query = "SELECT count(*) FROM $table WHERE pname LIKE '%$q%' and pincode=$pincode and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\"))";
+            $query = "SELECT count(*) FROM $table p INNER JOIN category c on c.id=p.cid INNER JOIN subcategory s on s.id = p.sid WHERE p.pname LIKE '%$q%' and p.status=1 and s.status = 1 and c.status = 1 and p.pincode LIKE '%$pincode%' and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\"))";
             $result = $this->conn->query($query);
             $row = $result->fetch_assoc();
             $isMore = $row['count(*)'] - (($page === 0 || $page === 1 ? 1 : $page) * 10);
@@ -77,7 +77,7 @@ class ApiProductsModel
         }
     }
     public function getFoodItems($pincode){
-        $query = "SELECT * FROM product where cid = 3 and pincode=$pincode and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\"))";
+        $query = "SELECT p.* FROM product p INNER JOIN category c on c.id=p.cid INNER JOIN subcategory s on s.id = p.sid where p.cid = 3 and p.status=1 and s.status = 1 and c.status = 1 and p.pincode LIKE '%$pincode%' and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\"))";
         $result = $this->conn->query($query);
         $array = [];
         if($result->num_rows > 0){
@@ -100,9 +100,9 @@ class ApiProductsModel
         $page = $this->conn->real_escape_string($page);
 
         if($page == 0 || $page == 1){
-            $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id WHERE cid=$cid and pincode=$pincode and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\")) order by id desc LIMIT 10";
+            $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id WHERE cid=$cid and category.status=1 and subcategory.status=1 and p.status = 1 and pincode LIKE '%$pincode%' and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\")) order by id desc LIMIT 10";
         }else{
-            $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id WHERE cid=$cid and pincode=$pincode and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\")) order by id desc LIMIT " . (($page * 10) - 10) . ", 10";
+            $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id WHERE cid=$cid and category.status=1 and subcategory.status=1 and p.status = 1 and pincode LIKE '%$pincode%' and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\")) order by id desc LIMIT " . (($page * 10) - 10) . ", 10";
         }
         $result = $this->conn->query($query);
         $array = [];
@@ -114,7 +114,7 @@ class ApiProductsModel
                 array_push($array, $row);
             }
             shuffle($array);
-            $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id WHERE cid=$cid and pincode=$pincode and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\"))";
+            $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id WHERE cid=$cid and category.status=1 and subcategory.status=1 and p.status = 1 and pincode LIKE '%$pincode%' and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\"))";
             $result = $this->conn->query($query);
             $row = $result->num_rows;
             $isMore = $row - (($page === 0 || $page === 1 ? 1 : $page) * 10);
@@ -130,16 +130,15 @@ class ApiProductsModel
         $table = $this->conn->real_escape_string($table);
         $sid = $this->conn->real_escape_string($sid);
         $page = $this->conn->real_escape_string($page);
+        $pincode = $this->conn->real_escape_string($pincode);
 
         if($page == 0 || $page == 1){
-            $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id WHERE sid=$sid and pincode=$pincode " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\")) order by id desc LIMIT 10";
+            $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id WHERE sid=$sid and p.status=1 and category.status = 1 and subcategory.status = 1 and p.pincode LIKE '%$pincode%' and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\")) order by id desc LIMIT 10";
         }else{
-            $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id WHERE sid=$sid and pincode=$pincode " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\")) order by id desc LIMIT " . (($page * 10) - 10) . ", 10";
+            $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id WHERE sid=$sid and p.status=1 and category.status = 1 and subcategory.status = 1 and p.pincode LIKE '%$pincode%' and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\")) order by id desc LIMIT " . (($page * 10) - 10) . ", 10";
         }
-
         $result = $this->conn->query($query);
         $array = [];
-
         if($result->num_rows > 0){
             while($row = $result->fetch_assoc()){
                 $rating = $this->getProductRating($row['id']);
@@ -148,13 +147,14 @@ class ApiProductsModel
                 array_push($array, $row);
             }
             shuffle($array);
-            $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id WHERE sid=$sid and pincode=$pincode and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\"))";
+            $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id WHERE sid=$sid and p.status=1 and category.status = 1 and subcategory.status = 1 and p.pincode LIKE '%$pincode%' and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\"))";
             $result = $this->conn->query($query);
             $row = $result->num_rows;
             $isMore = $row - (($page === 0 || $page === 1 ? 1 : $page) * 10);
             $isMore = $isMore > 0 ? True : False;
             return array("data"=>$array, "isMore"=>$isMore);
         }else{
+            echo $this->conn->error;
             return false;
         }
     }
@@ -165,9 +165,9 @@ class ApiProductsModel
         $table = $this->conn->real_escape_string($table);
 
         if($page == 0 || $page == 1){
-            $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id where pincode=$pincode and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\")) order by id desc limit 10";
+            $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id where p.pincode LIKE '%$pincode%' and p.status=1 and category.status = 1 and subcategory.status = 1 and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\")) order by id desc limit 10";
         }else{
-            $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id where pincode=$pincode and " . sprintf('convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s"', date("H:i"), date("H:i")) ."or minTime=\"00:00\" or maxTime=\"00:00\" order by id desc limit " . (($page * 10) - 10) . ", 10";
+            $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id where p.pincode LIKE '%$pincode%' and p.status=1 and category.status = 1 and subcategory.status = 1 and " . sprintf('convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s"', date("H:i"), date("H:i")) ."or minTime=\"00:00\" or maxTime=\"00:00\" order by id desc limit " . (($page * 10) - 10) . ", 10";
         }
         $result = $this->conn->query($query);
         $array = [];
@@ -179,7 +179,7 @@ class ApiProductsModel
                 array_push($array, $row);
             }
             $array = mb_convert_encoding($array, 'UTF-8', 'UTF-8');
-            $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id where pincode=$pincode and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\"))";
+            $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id where p.pincode LIKE '%$pincode%' and p.status=1 and category.status = 1 and subcategory.status = 1 and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\"))";
             $result = $this->conn->query($query);
             $row = $result->num_rows;
             $isMore = $row - (($page === 0 || $page === 1 ? 1 : $page) * 10);
@@ -198,9 +198,9 @@ class ApiProductsModel
         $page = $this->conn->real_escape_string($page);
 
         if($page == 0 || $page == 1){
-            $query = "select p.*, category.catname, subcategory.name, category.id cid, subcategory.id sid, subcategory.name subname from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id where p.id = $id and pincode=$pincode " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\")) LIMIT 10";
+            $query = "select p.*, category.catname, subcategory.name, category.id cid, subcategory.id sid, subcategory.name subname from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id where p.id = $id and p.status=1 and category.status = 1 and subcategory.status = 1 and pincode LIKE '%$pincode%' " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\")) LIMIT 10";
         }else{
-            $query = "select p.*, category.catname, subcategory.name, category.id cid, subcategory.id sid, subcategory.name subname from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id where p.id = $id and pincode=$pincode " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\")) limit " . (($page * 10) - 10) . ", 10";
+            $query = "select p.*, category.catname, subcategory.name, category.id cid, subcategory.id sid, subcategory.name subname from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id where p.id = $id and p.status=1 and category.status = 1 and subcategory.status = 1 and pincode LIKE '%$pincode%' " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\")) limit " . (($page * 10) - 10) . ", 10";
         }
         $array = [];
         $result = $this->conn->query($query);
@@ -212,7 +212,7 @@ class ApiProductsModel
                 array_push($array, $row);
             }
 
-            $query = "select p.*, category.catname, subcategory.name, category.id cid, subcategory.id sid, subcategory.name subname from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id where p.id = $id and pincode=$pincode and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\"))";
+            $query = "select p.*, category.catname, subcategory.name, category.id cid, subcategory.id sid, subcategory.name subname from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id where p.id = $id and p.status=1 and category.status = 1 and subcategory.status = 1 and pincode LIKE '%$pincode%' and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\"))";
             $result = $this->conn->query($query);
             $row = $result->num_rows;
             $isMore = $row - (($page === 0 || $page === 1 ? 1 : $page) * 10);

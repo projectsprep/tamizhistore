@@ -90,14 +90,11 @@ $result = $conn->query("select id, catname from category");
                                             Please enter a valid Max time
                                         </div>
                                     </div>
-                                    <h6>(Leave the time blank or at 00:00 to make product available all the time.)</h6>
+                                    <p>(Leave the time blank or at 00:00 to make product available all the time.)</p>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Out of Stock?</label>
-                                    <select class="form-select" name="outofstock">
-                                        <option selected="" value="no">No</option>
-                                        <option value="yes">Yes</option>
-                                    </select>
+                                    <label class="form-label">Quantity of stock</label>
+                                    <input type="number" class="form-control" name="stock" />
                                     <div class="invalid-feedback">
                                         Please select a valid option.
                                     </div>
@@ -129,6 +126,16 @@ $result = $conn->query("select id, catname from category");
                                     </div>
                                 </div>
                                 <div class="mb-3">
+                                    <label class="form-label">Product Type</label>
+                                    <select class="form-select" name="type">
+                                        <option selected="" value="multiple">Multiple</option>
+                                        <option value="booking">Booking</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select a valid option.
+                                    </div>
+                                </div>
+                                <div class="mb-3">
                                     <label class="form-label">Product (GMS,KG,LTR,ML,PCS..)</label>
                                     <input type="text" name="unit" required class="form-control">
                                     <div class="invalid-feedback">
@@ -156,11 +163,12 @@ $result = $conn->query("select id, catname from category");
                                 <div class="mb-3">
                                     <label class="form-label">Product Pincode (in digits)</label>
                                     <div>
-                                        <input type="number" class="form-control" name="pincode" min="0" />
+                                        <input type="text" class="form-control" name="pincode" min="0" />
                                     </div>
                                     <div class="invalid-feedback">
                                         Please enter a valid Product Discount.
                                     </div>
+                                    <p>(If multiple Pincodes are available, separate with a (,) in between them. For example: 000000,111111,222222)</p>
                                 </div>
                                 <div class="d-flex flex-wrap gap-2">
                                     <button type="submit" class="btn btn-primary waves-effect waves-light">
@@ -189,17 +197,17 @@ $result = $conn->query("select id, catname from category");
 
 
 <script>
-    $(document).ready(function() {
-        $("#category").on("change", function() {
+    $(document).ready(function(){
+        $("#category").on("change", function(){
             var id = $(this).val();
-            // console.log(id);
+
             $.ajax({
                 url: "/getsubcategorynames?id="+id,
                 method: "GET",
                 dataType: "json",
-                success: function(data) {
-                    $("#subCategory").html(data);
-                },
+                success: function(data){
+                    $("#subCategory").html(data)
+                }
             })
         })
     })
