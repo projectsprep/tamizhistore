@@ -38,7 +38,7 @@ class AppModel
     public function activeOrders($rid){
         $rid = $this->conn->real_escape_string($rid);
 
-        $query = "SELECT r.*, t.userid, t.paymentmethod, t.note, t.customaddress, t.customerphone, t.totalproductprice as productsPrice, t.deliverycharge, t.totalprice FROM rnoti r INNER JOIN temporders t on r.oid = t.oid INNER JOIN product p on t.productid = p.id WHERE r.rid = $rid and r.status='accepted' and t.deliverystatus='assigned' group by oid";
+        $query = "SELECT r.*, t.userid, t.paymentmethod, t.note, t.customaddress, t.customerphone, t.totalproductprice as productsPrice, t.deliverycharge, t.totalprice FROM rnoti r INNER JOIN temporders t on r.oid = t.oid INNER JOIN product p on t.productid = p.id WHERE r.rid = $rid and r.status='accepted' and t.deliverystatus='assigned' order by oid";
         $result = $this->conn->query($query);
         $array = [];
         if($result->num_rows > 0){
@@ -46,11 +46,21 @@ class AppModel
                 $list = [];
                 array_push($list, $row);
                 $list[0]['products'] = [];
-                $query = "SELECT p.pname, p.sname, t.quantity, t.productid, s.address as shopAddress FROM temporders t INNER JOIN product p on p.id = t.productid INNER JOIN subcategory s on s.id = p.sid where oid=".$row['oid'];
+                $query = "SELECT p.pname, p.sname, p.pprice, p.pgms, t.quantity, t.productid, t.subproductid, s.address as shopAddress FROM temporders t INNER JOIN product p on p.id = t.productid INNER JOIN subcategory s on s.id = p.sid where oid=".$row['oid'];
                 $orderResult = $this->conn->query($query);
                 if($orderResult->num_rows > 0){
                     while($orderRow = $orderResult->fetch_assoc()){
                         array_push($list[0]['products'], $orderRow);
+                        if($orderRow['subproductid'] != ""){
+                            $subproductQuery = "SELECT * FROM subproduct WHERE id=".$orderRow['subproductid'];
+                            $subProductResult = $this->conn->query($subproductQuery);
+                            if($subProductResult->num_rows > 0){
+                                while($subProductRow = $subProductResult->fetch_assoc()){
+                                    $list[0]['products'][0]['pprice'] = $subProductRow['price'];
+                                    $list[0]['products'][0]['pgms'] = $subProductRow['unit'];
+                                }
+                            }
+                        }
                     }
                 }
                 array_push($array, $list);
@@ -64,7 +74,7 @@ class AppModel
     public function pendingOrders($rid){
         $rid = $this->conn->real_escape_string($rid);
 
-        $query = "SELECT r.*, t.userid, t.paymentmethod, t.note, t.customaddress, t.customerphone, t.totalproductprice as productsPrice, t.deliverycharge, t.totalprice FROM rnoti r INNER JOIN temporders t on r.oid = t.oid INNER JOIN product p on t.productid = p.id WHERE r.rid = $rid and r.status='pending' group by oid";
+        $query = "SELECT r.*, t.userid, t.paymentmethod, t.note, t.customaddress, t.customerphone, t.totalproductprice as productsPrice, t.deliverycharge, t.totalprice FROM rnoti r INNER JOIN temporders t on r.oid = t.oid INNER JOIN product p on t.productid = p.id WHERE r.rid = $rid and r.status='pending' order by oid";
         $result = $this->conn->query($query);
         $array = [];
         if($result->num_rows > 0){
@@ -72,11 +82,21 @@ class AppModel
                 $list = [];
                 array_push($list, $row);
                 $list[0]['products'] = [];
-                $query = "SELECT p.pname, p.sname, t.quantity, t.productid, s.address as shopAddress FROM temporders t INNER JOIN product p on p.id = t.productid INNER JOIN subcategory s on s.id = p.sid where oid=".$row['oid'];
+                $query = "SELECT p.pname, p.sname, p.pprice, p.pgms, t.quantity, t.productid, t.subproductid, s.address as shopAddress FROM temporders t INNER JOIN product p on p.id = t.productid INNER JOIN subcategory s on s.id = p.sid where oid=".$row['oid'];
                 $orderResult = $this->conn->query($query);
                 if($orderResult->num_rows > 0){
                     while($orderRow = $orderResult->fetch_assoc()){
                         array_push($list[0]['products'], $orderRow);
+                        if($orderRow['subproductid'] != ""){
+                            $subproductQuery = "SELECT * FROM subproduct WHERE id=".$orderRow['subproductid'];
+                            $subProductResult = $this->conn->query($subproductQuery);
+                            if($subProductResult->num_rows > 0){
+                                while($subProductRow = $subProductResult->fetch_assoc()){
+                                    $list[0]['products'][0]['pprice'] = $subProductRow['price'];
+                                    $list[0]['products'][0]['pgms'] = $subProductRow['unit'];
+                                }
+                            }
+                        }
                     }
                 }
                 array_push($array, $list);
@@ -109,7 +129,6 @@ class AppModel
         $uid = $this->conn->real_escape_string($uid);
 
         $query = "SELECT o.oid, o.totalprice as TotalPrice FROM orderid o where o.uid = $uid order by o.id desc LIMIT 7";
-
         $result = $this->conn->query($query);
 
         // $query = "SELECT o.*, a.address, p.pname, p.sname, p.cid, p.sid, p.psdesc, p.pgms, p.pprice, p.status, p.stock, p.pimg, p.prel, p.date, p.discount, p.popular FROM $this->table o INNER JOIN product p on p.id = o.productid LEFT JOIN useraddress a ON a.id = o.addressid WHERE o.userid=$uid ORDER BY o.id DESC";
@@ -130,6 +149,16 @@ class AppModel
                     while($productRow = $productResult->fetch_assoc()){
                         $list['DeliveryCharge'] += $productRow['deliverycharge'];
                         array_push($list['products'], $productRow);
+                        if($productRow['subproductid'] != ""){
+                            $subproductQuery = "SELECT * FROM subproduct s WHERE s.id = ".$productRow['subproductid'];
+                            $subProductResult = $this->conn->query($subproductQuery);
+                            if($subProductResult->num_rows > 0){
+                                while($subProductRow = $subProductResult->fetch_assoc()){
+                                    $list['products'][0]['pprice'] = $subProductRow['price'];
+                                    $list['products'][0]['pgms'] = $subProductRow['unit'];
+                                }
+                            }  
+                        }
                     }
                 }
                 array_push($array, $list);
@@ -155,7 +184,7 @@ class AppModel
         
     }
 
-    public function create($userid, $productid, $addressid, $qty, $oid, $phone, $note="", $address=""){
+    public function create($userid, $productid, $addressid, $qty, $oid, $phone, $subproducttid, $note="", $address=""){
         $oid = $this->conn->real_escape_string($oid);
         $userid = $this->conn->real_escape_string($userid);
         $productid = $this->conn->real_escape_string($productid);
@@ -164,9 +193,15 @@ class AppModel
         $note = $this->conn->real_escape_string($note);
         $address = $this->conn->real_escape_string($address);
         $phone = $this->conn->real_escape_string($phone);
+        $subproducttid = $this->conn->real_escape_string($subproducttid);
         $orderdate = time();
 
-        $query = "SELECT p.pprice, p.sid, s.deliverycharge from product p inner join subcategory s on s.id=p.sid WHERE p.id=$productid";
+        if($subproducttid == ""){
+            $query = "SELECT p.pprice, p.sid, s.deliverycharge from product p inner join subcategory s on s.id=p.sid WHERE p.id=$productid";
+        }else{
+            $query = "SELECT s.deliverycharge, p.sid, sub.price as pprice from product p inner join subcategory s on s.id=p.sid inner join subproduct sub on sub.id = $subproducttid WHERE p.id=$productid";
+        }
+
         $result = $this->conn->query($query);
         if($result->num_rows > 0){
             $row = $result->fetch_assoc();
@@ -181,9 +216,9 @@ class AppModel
         $deliveryCharge = $rows > 0 ? 0 : $deliveryCharge;
         $price = $productPrice + $deliveryCharge;
         if($address == ""){
-            $query = "INSERT INTO $this->table SET oid=$oid, sid=$sid, orderdate=$orderdate, userid=$userid, productid=$productid, addressid=$addressid, quantity=$qty, note='$note', customerPhone=$phone, totalprice=$price, totalproductprice=$productPrice, deliverycharge= $deliveryCharge";
+            $query = "INSERT INTO $this->table SET oid=$oid, sid=$sid, orderdate=$orderdate, userid=$userid, productid=$productid, addressid=$addressid, quantity=$qty, note='$note', customerPhone=$phone, totalprice=$price, totalproductprice=$productPrice, deliverycharge= $deliveryCharge".($subproducttid == "" ? "" : ", subproductid=$subproducttid");
         }else{
-            $query = "INSERT INTO $this->table SET oid=$oid, sid=$sid, orderdate=$orderdate, userid=$userid, productid=$productid, addressid=0, quantity=$qty, note='$note', customerPhone=$phone, totalprice=$price, totalproductprice=$productPrice, deliverycharge= $deliveryCharge, customaddress='$address'";
+            $query = "INSERT INTO $this->table SET oid=$oid, sid=$sid, orderdate=$orderdate, userid=$userid, productid=$productid, addressid=0, quantity=$qty, note='$note', customerPhone=$phone, totalprice=$price, totalproductprice=$productPrice, deliverycharge= $deliveryCharge, customaddress='$address'".($subproducttid == "" ? "" : ", subproductid=$subproducttid");
         }
         $this->conn->query($query);
         if($this->conn->affected_rows > 0){

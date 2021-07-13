@@ -28,7 +28,7 @@ class OrdersController extends Controller
             if ($json) {
                 return $this->render("orders/ordersList", $json);
             } else {
-                throw new Exception("No orders found. Try adding a new item into list!");
+                return $this->render("orders/ordersList", "", json_encode(array("No items found!")));
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());
@@ -43,7 +43,7 @@ class OrdersController extends Controller
             if ($json) {
                 return $this->render("orders/pendingOrderList", $json);
             } else {
-                throw new Exception("Unable to fetch pending orders data. Please try again later!");
+                return $this->render("orders/pendingOrderList", "", json_encode(array("No items found!")));
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());
@@ -58,7 +58,7 @@ class OrdersController extends Controller
             if ($json) {
                 return $this->render("orders/exportOrders", $json);
             } else {
-                throw new Exception("Unable to fetch data. Please try again later!");
+                return $this->render("orders/exportOrders", "", json_encode(array("No items found!")));
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());

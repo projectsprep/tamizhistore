@@ -28,7 +28,7 @@ class CustomersController extends Controller
             if ($json) {
                 return $this->render("customers/customersList", $json);
             } else {
-                throw new Exception("Unable to fetch data. Please try again later!");
+                return $this->render("customers/customersList", "", json_encode(array("No items found!")));
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());
@@ -43,7 +43,7 @@ class CustomersController extends Controller
             if ($json) {
                 return $this->render("customers/customerFeedback", $json);
             } else {
-                throw new Exception("Unable to fetch data. Please try again later!");
+                return $this->render("customers/customerFeedback", "", json_encode(array("No items found!")));
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());

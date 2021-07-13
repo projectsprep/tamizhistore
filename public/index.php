@@ -1,6 +1,6 @@
 <?php
 require __DIR__. '/../vendor/autoload.php';
-// error_reporting(0);
+error_reporting(0);
 
 $expo = \ExponentPhpSDK\Expo::normalSetup();
 
@@ -28,6 +28,7 @@ use app\controllers\RiderOrdersController;
 use app\controllers\SettingsController;
 use app\controllers\BannerController;
 use app\controllers\StepsInfoController;
+use app\controllers\SubProductsController;
 
 $app = new Application(dirname(__DIR__));
 $db = new DB();
@@ -222,5 +223,13 @@ $app->router->post("/stepsinfo/add", [StepsInfoController::class, "add"]);
 $app->router->post("/stepsinfo/update", [StepsInfoController::class, "update"]);
 $app->router->post("/stepsinfo/delete", [StepsInfoController::class, "delete"]);
 $app->router->get("/getstepsinfo", [StepsInfoController::class, "getstepsinfo"]);
+
+// /subproducts
+$app->router->get("/subproducts", [SubProductsController::class, "read"]);
+$app->router->get("/subproducts/add", [SubProductsController::class, "add"]);
+$app->router->post("/subproducts/add", [SubProductsController::class, "add"]);
+$app->router->post("/subproducts/update", [SubProductsController::class, "update"]);
+$app->router->post("/subproducts/delete", [SubProductsController::class, "delete"]);
+$app->router->get("/getsubproduct", [SubProductsController::class, "getSubProduct"]);
 
 $app->run();

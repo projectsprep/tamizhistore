@@ -127,7 +127,7 @@ class AppController
 
             // initialize orders
             foreach ($result as $row) {
-                $result = $this->appDB->create($decodedData->data->id, $row['productid'], $row['aid'], $row['quantity'], $oid, $phone, $note, $address);
+                $result = $this->appDB->create($decodedData->data->id, $row['productid'], $row['aid'], $row['quantity'], $oid, $phone, $row['subproductid'], $note, $address);
                 if ($result === true) {
                     // if order is made, delete products from cart
                     $query = "DELETE FROM cart WHERE id=" . $row['id'];

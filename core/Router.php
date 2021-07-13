@@ -63,7 +63,7 @@ class Router
         return ob_get_clean();
     }
 
-    public function renderOnlyView($view, $params = [], $msg = [])
+    public function renderOnlyView($view, $params = "", $msg = "")
     {
         if (!empty($params)) {
             $params = json_decode($params, true);

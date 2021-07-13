@@ -79,7 +79,7 @@ class SubCategoryController extends Controller
             if ($json) {
                 return $this->render("subcategories/subCategoryList", $json);
             } else {
-                throw new Exception("No subcategories found. Try adding a new item into list!");
+                return $this->render("subcategories/subCategoryList", "", json_encode(array("No items found!")));
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());

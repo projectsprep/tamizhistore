@@ -30,7 +30,7 @@ class DeliveryBoysController extends Controller
             if ($json) {
                 return $this->render("deliveryboys/deliveryBoysList", $json);
             } else {
-                throw new Exception("No deliveryboys list found. Try adding a new item into list!");
+                return $this->render("deliveryboys/deliveryBoysList", "", json_encode(array("No items found!")));
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());

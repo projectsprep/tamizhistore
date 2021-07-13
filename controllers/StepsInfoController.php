@@ -45,7 +45,7 @@ class StepsInfoController extends Controller{
             if($data){
                 return $this->render("stepsInfo/stepsInfoList", $data);
             }else{
-                throw new Exception("No Informations found. Try adding a new item into the list!");
+                return $this->render("stepsInfo/stepsInfoList", "", json_encode(array("No items found!")));
             }
         }catch(Exception $e){
             $msg = urlencode($e->getMessage());

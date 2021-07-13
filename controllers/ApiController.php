@@ -480,8 +480,9 @@ class ApiController extends Controller
         } else if ($this->app->request->getMethod() == "post") {
             $data = json_decode(file_get_contents("php://input"));
             if (isset($data->pid) && ($data->pid != "")) {
+                $subProductId = isset($data->subpid) && ($data->subpid != "") ? $data->subpid : "";
                 $decodedData = JWT::decode($this->token, $this->secretKey, array("HS256"));
-                $result = $this->cartDB->add($decodedData->data->id, $data->pid);
+                $result = $this->cartDB->add($decodedData->data->id, $data->pid, $subProductId);
                 if ($result === true) {
                     $json = $this->cartDB->read($decodedData->data->id);
                     return json_encode(array("result" => true, "data" => $json));

@@ -48,7 +48,7 @@ class PaymentController extends Controller
             if ($json) {
                 return $this->render("payment/paymentList", $json);
             } else {
-                throw new Exception("No payments found. Try adding a new item into list!");
+                return $this->render("payment/paymentList", "", json_encode(array("No items found!")));
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());

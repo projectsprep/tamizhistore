@@ -10,7 +10,7 @@ $conn = $db->conn();
 
     <div class="page-content">
         <div class="container-fluid">
-        <?php
+            <?php
             if (isset($_GET['msg']) || isset($msg['error'])) {
             ?>
                 <div class="alert alert-primary alert-dismissible fade show">
@@ -35,8 +35,10 @@ $conn = $db->conn();
                                     <thead class="table-light thead-dark">
                                         <tr>
                                             <th scope="col" style="width: 70px;">Sl.no</th>
-                                            <th scope="col">Banner Image</th>
-                                            <th scope="col">Message</th>
+                                            <th scope="col">Subproduct ID</th>
+                                            <th scope="col">Product ID</th>
+                                            <th scope="col">Product Unit</th>
+                                            <th scope="col">Product Price</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -44,10 +46,11 @@ $conn = $db->conn();
 
                                         <?php
                                         $i = 1;
-                                        foreach ($params as $param) {
-                                            foreach ($param as $key => $value) {
-                                                $$key = $value;
-                                            }
+                                        if(isset($params) && !empty($params)){
+                                            foreach ($params as $param) {
+                                                foreach ($param as $key => $value) {
+                                                    $$key = $value;
+                                                }
                                         ?>
                                             <tr>
                                                 <td align="center">
@@ -56,21 +59,30 @@ $conn = $db->conn();
                                                     </span>
                                                 </td>
                                                 <td align="center">
-                                                    <img src="<?= $image; ?>" class="img-thumbnail" alt="">
+                                                    <h5 class="font-size-14 mb-1"><?= $id; ?></h5>
+                                                </td>
+                                                <td align="center">
+                                                    <h5 class="font-size-14 mb-1"><?= $pid; ?></h5>
                                                 </td>
                                                 <td align="center">
                                                     <div>
-                                                        <h5 class="font-size-14 mb-1"><?= $message; ?></h5>
+                                                        <h5 class="font-size-14 mb-1"><?= $unit ; ?></h5>
                                                     </div>
                                                 </td>
                                                 <td align="center">
-                                                    <a href="#" id=<?= $id ?> class="text-danger deletebanner"><i class="bx bx-trash-alt"></i></a>
-                                                    <a href="#" id=<?= $id ?> class="editbanner"><i class="bx bx-edit"></i></a>
+                                                    <div>
+                                                        <h5 class="font-size-14 mb-1"><?= $price ?></h5>
+                                                    </div>
+                                                </td>
+                                                <td align="center">
+                                                    <a href="#" id=<?= $id ?> class="text-danger deletesubproduct"><i class="bx bx-trash-alt"></i></a>
+                                                    <a href="#" id=<?= $id ?> class="editsubproduct"><i class="bx bx-edit"></i></a>
                                                 </td>
 
                                             </tr>
                                         <?php
                                         }
+                                    }
                                         ?>
                                     </tbody>
                                 </table>
@@ -93,22 +105,26 @@ $conn = $db->conn();
 <div class="modal fade hide" role="dialog" id="editModal" aria-labelledby="editModalLabel" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="/stepsinfo/update" method="Post" id="editBannerForm" enctype="multipart/form-data">
+            <form action="/subproducts/update" method="Post" id="editSubProduct" enctype="multipart/form-data">
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit Banner</h4>
+                    <h4 class="modal-title">Edit Subproduct</h4>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="">Banner Message</label>
-                        <input type="text" name="msg" id="msg" class="form-control">
+                        <label for="">Product Price</label>
+                        <input type="number" name="pprice" required id="pprice" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="">Banner Image (optional)</label>
-                        <input type="file" name="image" class="form-control">
+                        <label for="">product Unit</label>
+                        <input type="text" name="unit" id="unit" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Product ID</label>
+                        <input type="number" name="pid" id="pid" required class="form-control">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="hidden" name="id" id="bannerid">
+                    <input type="hidden" name="id" id="subpid">
                     <input type="submit" name="submit" class="btn btn-primary waves-effect waves-light">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal" aria-hidden="true">Close</button>
                 </div>
@@ -178,42 +194,29 @@ $conn = $db->conn();
 <script>
     $(document).ready(
         function() {
-            $(document).on("click", ".editbanner", function() {
-                var bannerid = $(this).attr('id');
-                $("#bannerid").val(bannerid);
+            // if(location.pathname != "/categorylist"){
+            //     history.pushState("", "", "/subproducts")
+            // }
+            $(document).on("click", ".editsubproduct", function() {
+                var subpid = $(this).attr('id');
+                $("#subpid").val(subpid);
 
                 $.ajax({
-                    url: "/getstepsinfo?id=" + bannerid,
+                    url: "/getsubproduct?id=" + subpid,
                     method: "GET",
                     dataType: "json",
                     success: function(data) {
                         $("#editModal").modal("show");
-                        $("#bannerid").val(bannerid);
-                        $("#msg").val(data[0].message);
+                        $("#subpid").val(subpid);
+                        $("#pprice").val(data[0].price)
+                        $("#unit").val(data[0].unit)
+                        $("#pid").val(data[0].pid)
                     }
                 })
             })
 
-            $("#editBannerForm").on("submit", function() {
-                if ($("#categoryname").val() == "") {
-                    event.preventDefault();
-                    $("#editModal").modal("hide");
-                    $(".container-fluid").prepend("<div class='alert alert-danger alert-dismissible fade show'>All fields are required <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>");
-                } else {
-                    $.ajax({
-                        url: "/stepsinfo/update",
-                        method: "POST",
-                        data: $("#editBannerForm").serialize(),
-                        success: function(data) {
-                            $("#editModal").modal("hide");
-                            $(".container-fluid").prepend("<div class='alert alert-success alert-dismissible fade show'>Category added successfully <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>")
-                        },
-                    })
-                }
-            })
-
             $.ajax({
-                url: "/stepsinfo",
+                url: "/subproducts",
                 method: "GET",
                 data: {
                     view: ""
@@ -225,12 +228,9 @@ $conn = $db->conn();
                     $("#loader").hide();
                     $("#display").show();
                 },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    alert(thrownError);
-                },
             })
 
-            $(document).on("click", ".deletebanner", function() {
+            $(document).on("click", ".deletesubproduct", function() {
                 var id = $(this).attr("id");
                 swal({
                         title: "Are you sure?",
@@ -242,13 +242,13 @@ $conn = $db->conn();
                     .then((willDelete) => {
                         if (willDelete) {
                             $.ajax({
-                                url: "/stepsinfo/delete",
+                                url: "/subproducts/delete",
                                 method: "POST",
                                 data: {
                                     id: id
                                 },
                                 success: function() {
-                                    swal("Banner deleted successfully!", {
+                                    swal("Subproduct deleted successfully!", {
                                         icon: "success",
                                     }).then((value) => {
                                         location.reload();
@@ -260,7 +260,7 @@ $conn = $db->conn();
                             })
 
                         } else {
-                            swal("Your Banner is safe!");
+                            swal("Your subproduct is safe!");
                         }
                     })
             })

@@ -62,7 +62,15 @@ class ApiProductsModel
             while($row = $result->fetch_assoc()){
                 $rating = $this->getProductRating($row['id']);
                 $userRating = $this->userRating($row['id']);
-                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating));
+                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating), array("prices"=>[]));
+                $query = "SELECT * from subproduct WHERE pid=".$row['id'];
+                $subResult = $this->conn->query($query);
+                if($subResult->num_rows > 0){
+                    while($subRow = $subResult->fetch_assoc()){
+                        array_push($row['prices'], $subRow);
+                    }
+                }
+
                 array_push($array, $row);
             }
 
@@ -84,7 +92,14 @@ class ApiProductsModel
             while($row = $result->fetch_assoc()){
                 $rating = $this->getProductRating($row['id']);
                 $userRating = $this->userRating($row['id']);
-                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating));
+                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating), array("prices"=>[]));
+                $query = "SELECT * from subproduct WHERE pid=".$row['id'];
+                $subResult = $this->conn->query($query);
+                if($subResult->num_rows > 0){
+                    while($subRow = $subResult->fetch_assoc()){
+                        array_push($row['prices'], $subRow);
+                    }
+                }
                 array_push($array, $row);
             }
             return json_encode($array);
@@ -110,7 +125,14 @@ class ApiProductsModel
             while($row = $result->fetch_assoc()){
                 $rating = $this->getProductRating($row['id']);
                 $userRating = $this->userRating($row['id']);
-                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating));
+                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating), array("prices"=>[]));
+                $query = "SELECT * from subproduct WHERE pid=".$row['id'];
+                $subResult = $this->conn->query($query);
+                if($subResult->num_rows > 0){
+                    while($subRow = $subResult->fetch_assoc()){
+                        array_push($row['prices'], $subRow);
+                    }
+                }
                 array_push($array, $row);
             }
             shuffle($array);
@@ -143,7 +165,14 @@ class ApiProductsModel
             while($row = $result->fetch_assoc()){
                 $rating = $this->getProductRating($row['id']);
                 $userRating = $this->userRating($row['id']);
-                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating));
+                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating), array("prices"=>[]));
+                $query = "SELECT * from subproduct WHERE pid=".$row['id'];
+                $subResult = $this->conn->query($query);
+                if($subResult->num_rows > 0){
+                    while($subRow = $subResult->fetch_assoc()){
+                        array_push($row['prices'], $subRow);
+                    }
+                }
                 array_push($array, $row);
             }
             shuffle($array);
@@ -154,7 +183,6 @@ class ApiProductsModel
             $isMore = $isMore > 0 ? True : False;
             return array("data"=>$array, "isMore"=>$isMore);
         }else{
-            echo $this->conn->error;
             return false;
         }
     }
@@ -175,10 +203,17 @@ class ApiProductsModel
             while ($row = $result->fetch_assoc()) {
                 $rating = $this->getProductRating($row['id']);
                 $userRating = $this->userRating($row['id']);
-                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating));
+                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating), array("prices"=>[]));
+                $query = "SELECT * from subproduct WHERE pid=".$row['id'];
+                $subResult = $this->conn->query($query);
+                if($subResult->num_rows > 0){
+                    while($subRow = $subResult->fetch_assoc()){
+                        array_push($row['prices'], $subRow);
+                    }
+                }
                 array_push($array, $row);
             }
-            $array = mb_convert_encoding($array, 'UTF-8', 'UTF-8');
+            // $array = mb_convert_encoding($array, 'UTF-8', 'UTF-8');
             $query = "select p.*, category.catname, subcategory.name from product p inner join category on p.cid = category.id inner join subcategory on p.sid=subcategory.id where p.pincode LIKE '%$pincode%' and p.status=1 and category.status = 1 and subcategory.status = 1 and " . sprintf('((convert(minTime, time) <= "%s" and convert(maxTime, time) >= "%s") ', date("H:i"), date("H:i")) ."or (minTime=\"00:00\" or maxTime=\"00:00\"))";
             $result = $this->conn->query($query);
             $row = $result->num_rows;
@@ -208,7 +243,15 @@ class ApiProductsModel
             while ($row = $result->fetch_assoc()) {
                 $rating = $this->getProductRating($row['id']);
                 $userRating = $this->userRating($row['id']);
-                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating));
+                $row = array_merge($row, array("rating"=>$rating), array("userRating"=>$userRating), array("prices"=>[]));
+                $query = "SELECT * from subproduct WHERE pid=".$row['id'];
+                $subResult = $this->conn->query($query);
+                if($subResult->num_rows > 0){
+                    while($subRow = $subResult->fetch_assoc()){
+                        array_push($row['prices'], $subRow);
+                    }
+                }
+
                 array_push($array, $row);
             }
 

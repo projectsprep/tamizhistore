@@ -8,7 +8,7 @@ use mysqli;
 class DB
 {
 
-    // protected string $hostName = "cloud1.zolahost.net";
+    // protected string $hostName = "localhost";
     // protected string $port = "3306";
     // protected string $dbName = "testtamizhistore";
     // protected string $username = "projectsprep";

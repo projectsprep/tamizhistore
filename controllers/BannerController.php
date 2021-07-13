@@ -43,8 +43,7 @@ class BannerController extends Controller{
         if($data){
             return $this->render("banner/bannerList", $data);
         }else{
-            $msg = urlencode("No Banner found!. Try adding a new item into the list.");
-            return header("Location: /?msg=$msg");
+            return $this->render("banner/bannerList", "", json_encode(array("No items found!")));
         }
     }
 

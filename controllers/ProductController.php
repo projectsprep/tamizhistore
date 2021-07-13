@@ -137,7 +137,7 @@ class ProductController extends Controller
             if ($json) {
                 return $this->render("products/productList", $json);
             } else {
-                throw new Exception("No products found. Try adding a new item into list!");
+                return $this->render("products/productList", "", json_encode(array("No items found!")));
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());

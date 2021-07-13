@@ -37,7 +37,7 @@ class NotificationsController extends Controller
             if ($json) {
                 return $this->render("notifications/notificationList", $json);
             } else {
-                throw new Exception("No notifications found. Try adding a new item into list!");
+                return $this->render("notifications/notificationList", "", json_encode(array("No items found!")));
             }
         } catch (Exception $e) {
             http_response_code(400);

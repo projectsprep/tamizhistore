@@ -10,11 +10,11 @@ $conn = $db->conn();
 
     <div class="page-content">
         <div class="container-fluid">
-            <?php
-            if (isset($_GET['msg'])) {
+        <?php
+            if (isset($_GET['msg']) || isset($msg['error'])) {
             ?>
                 <div class="alert alert-primary alert-dismissible fade show">
-                    <?php echo $_GET['msg']; ?>
+                    <?php if(isset($_GET['msg'])){echo $_GET['msg']; }else if(isset($msg['error'])){echo $msg['error'];} ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <?php

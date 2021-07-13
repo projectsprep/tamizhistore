@@ -76,7 +76,7 @@ class CouponController extends Controller
             if ($json) {
                 return $this->render("coupon/couponList", $json);
             } else {
-                throw new Exception("No coupon found. Try adding a new item into list!");
+                return $this->render("coupon/couponList", "", json_encode(array("No items found!")));
             }
         } catch (Exception $e) {
             $msg = urlencode($e->getMessage());

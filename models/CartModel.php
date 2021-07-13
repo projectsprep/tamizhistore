@@ -22,13 +22,32 @@ class CartModel{
 
     public function read($uid){
         $uid = $this->conn->real_escape_string($uid);
-
-        $query = "SELECT c.id id, c.userid, c.productid, c.quantity, p.pname, p.sname, p.cid, p.sid, p.psdesc, p.pgms, p.pprice, p.status, p.stock, p.pimg, p.prel, p.date, p.discount, p.popular FROM $this->table c INNER JOIN product p on c.productid=p.id where userid=$uid";
+        $query = "SELECT * FROM cart";
         $result = $this->conn->query($query);
         $array = [];
         if($result->num_rows > 0){
             while($row = $result->fetch_assoc()){
-                array_push($array, $row);
+                if($row['subproductid'] != ""){
+                    $query = "SELECT c.*, p.pname, p.sname, p.cid, p.sid, p.psdesc, p.status, p.stock, p.pimg, p.prel, p.date, p.discount, p.popular, s.price as pprice, s.unit as pgms FROM $this->table c INNER JOIN product p on c.productid=p.id INNER JOIN subproduct s on s.id = c.subproductid where userid=$uid";
+                    $result = $this->conn->query($query);
+                    if($result->num_rows > 0){
+                        while($row = $result->fetch_assoc()){
+                            array_push($array, $row);
+                        }
+                    }else{
+                        return false;
+                    }
+                }else{
+                    $query = "SELECT c.*, p.pname, p.sname, p.cid, p.sid, p.psdesc, p.pgms, p.pprice, p.status, p.stock, p.pimg, p.prel, p.date, p.discount, p.popular FROM $this->table c INNER JOIN product p on c.productid=p.id where userid=$uid";
+                    $result = $this->conn->query($query);
+                    if($result->num_rows > 0){
+                        while($row = $result->fetch_assoc()){
+                            array_push($array, $row);
+                        }
+                    }else{
+                        return false;
+                    }
+                }
             }
             return $array;
         }else{
@@ -37,15 +56,18 @@ class CartModel{
 
     }
 
-    public function add($uid, $pid){
+    public function add($uid, $pid, $subproductId){
         $uid = $this->conn->real_escape_string($uid);
         $pid = $this->conn->real_escape_string($pid);
-        $query = "SELECT * FROM $this->table where userid=$uid and productid=$pid";
+        $subproductId = $this->conn->real_escape_string($subproductId);
+
+        $query = "SELECT * FROM $this->table where userid=$uid and productid=$pid".($subproductId == "" ? " and subproductid is NULL" : " and subproductid=$subproductId");
+        echo $query;
         $result = $this->conn->query($query);
         if($result->num_rows > 0){
             return "Cart already exists!";
         }
-        $query = "INSERT INTO $this->table SET userid=$uid, productid=$pid";
+        $query = "INSERT INTO $this->table SET userid=$uid, productid=$pid" . ($subproductId == "" ? "" : ", subproductid=$subproductId");
         $result = $this->conn->query($query);
         if($this->conn->affected_rows > 0){
             return true;

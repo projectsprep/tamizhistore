@@ -21,7 +21,7 @@ $array = json_decode($json, true);
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
-    <link rel="shortcut icon" href="/assets/images/favicon.ico" />
+    <link rel="shortcut icon" href="/assets/images/firsticon.png" />
     <link href="/assets/libs/dropzone/min/dropzone.min.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
     <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
@@ -201,6 +201,17 @@ $array = json_decode($json, true);
                         <ul class="sub-menu" aria-expanded="false">
                             <li><a href="/productlist/add" key="t-products">Add Product</a></li>
                             <li><a href="/productlist" key="t-orders">Product List</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-cube"></i>
+                            <span key="t-ecommerce"><span>Subproduct</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="/subproducts/add" key="t-products">Add Subproduct</a></li>
+                            <li><a href="/subproducts" key="t-orders">Subproduct List</a></li>
                         </ul>
                     </li>
 

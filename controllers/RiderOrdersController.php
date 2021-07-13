@@ -30,8 +30,7 @@ class RiderOrdersController extends Controller{
             $json = json_encode($array);
             return $this->render("deliveryboys/riderOrders", $json);
         }else{
-            $msg = urlencode("No Orders found for riders!");
-            return header("Location: /?msg=$msg");
+            return $this->render("deliveryboys/riderOrders", "", json_encode(array("No items found!")));
         }
     }
 }

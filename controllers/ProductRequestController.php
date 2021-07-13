@@ -29,8 +29,7 @@ class ProductRequestController extends Controller{
         if($json){
             return $this->render("productrequest/list", $json);
         }else{
-            $msg = urlencode("No product requests found!");
-            return header("Location: /?msg=$msg");
+            return $this->render("productrequest/list", "", json_encode(array("No items found!")));
         }
     }
 
@@ -40,8 +39,7 @@ class ProductRequestController extends Controller{
         if($json){
             return $this->render("bookings/bookingslist", $json);
         }else{
-            $msg = urlencode("No bookings found!");
-            return header("Location: /?msg=$msg");
+            return $this->render("bookings/bookingslist", "", json_encode(array("No items found!")));
         }
     }
 
